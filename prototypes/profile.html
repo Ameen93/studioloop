@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop - Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-700: #374151;
+            --sl-neutral-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--sl-neutral-25);
+            color: var(--sl-neutral-900);
+            line-height: 1.5;
+            overflow: hidden;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--sl-neutral-0);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: var(--sl-neutral-0);
+            padding: 60px 24px 20px 24px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            z-index: 100;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--sl-brand);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--sl-neutral-50);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            flex: 1;
+            text-align: center;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--sl-neutral-700);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+        }
+
+        /* Content Area */
+        .content {
+            position: absolute;
+            top: 108px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--sl-neutral-25);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Profile Header Section */
+        .profile-header {
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            opacity: 0.5;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--sl-neutral-0);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--sl-brand);
+            border: 4px solid rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-email {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .membership-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stats Grid */
+        .stats-section {
+            padding: 24px;
+            background: var(--sl-neutral-0);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--sl-neutral-50);
+            padding: 16px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--sl-neutral-200);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--sl-brand);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--sl-brand);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--sl-neutral-700);
+            font-weight: 500;
+        }
+
+        /* Credits Card */
+        .credits-card {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--sl-accent-violet), var(--sl-accent-peach));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .credits-info h3 {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .credits-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .topup-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .topup-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        /* Goals Section */
+        .goals-section {
+            padding: 0 24px 24px;
+            background: var(--sl-neutral-0);
+            margin-top: 12px;
+        }
+
+        .goals-header {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-goal-btn {
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-goal-btn:hover {
+            background: var(--sl-brand-700);
+            transform: scale(1.05);
+        }
+
+        .goal-card {
+            background: var(--sl-neutral-50);
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--sl-brand);
+        }
+
+        .goal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .goal-description {
+            font-size: 14px;
+            color: var(--sl-neutral-700);
+            margin-bottom: 16px;
+        }
+
+        .goal-progress {
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--sl-neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sl-brand), var(--sl-accent-aqua));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .goal-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--sl-neutral-700);
+            margin-top: 8px;
+        }
+
+        .goal-stats strong {
+            color: var(--sl-brand);
+            font-weight: 600;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            padding: 24px;
+            background: var(--sl-neutral-0);
+            margin-top: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--sl-neutral-200);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.yoga {
+            background: linear-gradient(135deg, var(--sl-accent-violet), #b565d8);
+            color: white;
+        }
+
+        .activity-icon.hiit {
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            color: white;
+        }
+
+        .activity-icon.strength {
+            background: linear-gradient(135deg, var(--sl-accent-peach), #ff6b4a);
+            color: white;
+        }
+
+        .activity-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .activity-info {
+            font-size: 13px;
+            color: var(--sl-neutral-700);
+            display: flex;
+            gap: 12px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--sl-neutral-700);
+            text-align: right;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            padding: 24px;
+            background: var(--sl-neutral-0);
+            margin-top: 12px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .action-btn {
+            background: var(--sl-neutral-50);
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--sl-neutral-900);
+            display: block;
+        }
+
+        .action-btn:hover {
+            background: var(--sl-brand);
+            color: white;
+            border-color: var(--sl-brand);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,119,255,0.2);
+        }
+
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .action-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Scrollbar */
+        .content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: var(--sl-neutral-200);
+            border-radius: 2px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: var(--sl-neutral-700);
+        }
+
+        /* CRITICAL FIX: Force visibility of all content */
+        .stats-section,
+        .stats-section *,
+        .goals-section,
+        .goals-section *,
+        .quick-actions,
+        .quick-actions *,
+        .stat-card,
+        .stat-card *,
+        .goal-card,
+        .goal-card *,
+        .action-btn,
+        .action-btn * {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .stats-grid,
+        .actions-grid {
+            display: grid !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .stat-value,
+        .stat-label,
+        .goal-title,
+        .goal-description,
+        .goal-stats,
+        .action-icon,
+        .action-label {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .progress-fill {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .credits-info,
+        .credits-value,
+        .topup-btn {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .credits-card {
+            display: flex !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- Header -->
+            <header class="header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h1 class="header-title">Profile</h1>
+                <button class="settings-btn" onclick="openSettings()">⚙</button>
+            </header>
+
+            <!-- Content -->
+            <main class="content">
+                <!-- Profile Header -->
+                <section class="profile-header">
+                    <div class="profile-avatar">JD</div>
+                    <h2 class="profile-name">John Doe</h2>
+                    <p class="profile-email">john.doe@example.com</p>
+                    <span class="membership-badge">Premium Member</span>
+                </section>
+
+                <!-- Stats Section -->
+                <section class="stats-section">
+                    <h3 class="section-title">
+                        📊 Your Stats
+                    </h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">47</div>
+                            <div class="stat-label">Classes Attended</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Streak Days</div>
+                        </div>
+                        <div class="stat-card credits-card">
+                            <div class="credits-info">
+                                <h3>Available Credits</h3>
+                                <div class="credits-value">24 💎</div>
+                            </div>
+                            <button class="topup-btn">Top Up</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Goals Section -->
+                <section class="goals-section">
+                    <div class="goals-header">
+                        <h3 class="section-title">
+                            🎯 Fitness Goals
+                        </h3>
+                        <button class="add-goal-btn">+ Add Goal</button>
+                    </div>
+                    
+                    <div class="goal-card">
+                        <div class="goal-title">Weekly Workout Target</div>
+                        <div class="goal-description">Complete 5 fitness sessions this week</div>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="goal-stats">
+                            <span><strong>4 of 5</strong> completed</span>
+                            <span>80% done</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-card">
+                        <div class="goal-title">Monthly Classes Goal</div>
+                        <div class="goal-description">Attend 15 different fitness classes</div>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                        <div class="goal-stats">
+                            <span><strong>9 of 15</strong> classes</span>
+                            <span>60% done</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section class="activity-section">
+                    <h3 class="section-title">
+                        ⏱ Recent Activity
+                    </h3>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon yoga">🧘</div>
+                        <div class="activity-details">
+                            <div class="activity-name">Morning Yoga Flow</div>
+                            <div class="activity-info">
+                                <span>45 min</span>
+                                <span>•</span>
+                                <span>Sarah Klein</span>
+                            </div>
+                        </div>
+                        <div class="activity-time">Today</div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon hiit">💪</div>
+                        <div class="activity-details">
+                            <div class="activity-name">HIIT Power Session</div>
+                            <div class="activity-info">
+                                <span>30 min</span>
+                                <span>•</span>
+                                <span>Mike Johnson</span>
+                            </div>
+                        </div>
+                        <div class="activity-time">Yesterday</div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon strength">🏋️</div>
+                        <div class="activity-details">
+                            <div class="activity-name">Strength Training</div>
+                            <div class="activity-info">
+                                <span>60 min</span>
+                                <span>•</span>
+                                <span>Tom Wilson</span>
+                            </div>
+                        </div>
+                        <div class="activity-time">2 days ago</div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="quick-actions">
+                    <h3 class="section-title">
+                        ⚡ Quick Actions
+                    </h3>
+                    <div class="actions-grid">
+                        <a href="booking-flow.html" class="action-btn">
+                            <div class="action-icon">📅</div>
+                            <div class="action-label">Book Class</div>
+                        </a>
+                        <a href="class-schedule.html" class="action-btn">
+                            <div class="action-icon">📋</div>
+                            <div class="action-label">My Schedule</div>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <div class="action-icon">🏆</div>
+                            <div class="action-label">Achievements</div>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <div class="action-icon">⚙️</div>
+                            <div class="action-label">Settings</div>
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Initialize GSAP animations
+        gsap.registerPlugin();
+
+        // Navigation functions
+        function goBack() {
+            window.location.href = 'home-screen.html';
+        }
+
+        function openSettings() {
+            // Placeholder for settings
+            alert('Settings coming soon!');
+        }
+
+        // Animate elements on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure all content is visible first
+            document.querySelectorAll('.stat-card, .goal-card, .action-btn').forEach(el => {
+                el.style.opacity = '1';
+                el.style.visibility = 'visible';
+            });
+
+            // Header animation
+            gsap.fromTo('.header', 
+                { y: -50, opacity: 0 },
+                { duration: 0.6, y: 0, opacity: 1, ease: 'power3.out' }
+            );
+
+            // Profile header animation
+            gsap.fromTo('.profile-header',
+                { scale: 0.95, opacity: 0 },
+                { duration: 0.8, scale: 1, opacity: 1, ease: 'power3.out', delay: 0.2 }
+            );
+
+            // Stats cards animation
+            gsap.fromTo('.stat-card',
+                { y: 30, opacity: 0 },
+                { duration: 0.6, y: 0, opacity: 1, stagger: 0.1, ease: 'power2.out', delay: 0.4 }
+            );
+
+            // Goals animation
+            gsap.fromTo('.goal-card',
+                { x: -30, opacity: 0 },
+                { duration: 0.6, x: 0, opacity: 1, stagger: 0.15, ease: 'power2.out', delay: 0.6 }
+            );
+
+            // Activity items animation
+            gsap.fromTo('.activity-item',
+                { x: 30, opacity: 0 },
+                { duration: 0.6, x: 0, opacity: 1, stagger: 0.1, ease: 'power2.out', delay: 0.8 }
+            );
+
+            // Action buttons animation
+            gsap.fromTo('.action-btn',
+                { scale: 0.9, opacity: 0 },
+                { duration: 0.5, scale: 1, opacity: 1, stagger: 0.05, ease: 'back.out(1.7)', delay: 1 }
+            );
+
+            // Animate progress bars
+            document.querySelectorAll('.progress-fill').forEach((bar, index) => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                
+                gsap.to(bar, {
+                    duration: 1.2,
+                    width: width,
+                    ease: 'power2.out',
+                    delay: 0.8 + (index * 0.2)
+                });
+            });
+        });
+
+        // Add interactivity to cards
+        document.querySelectorAll('.stat-card, .goal-card, .action-btn').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    duration: 0.3,
+                    scale: 1.02,
+                    ease: 'power2.out'
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Add goal button interaction
+        document.querySelector('.add-goal-btn').addEventListener('click', () => {
+            alert('Add new goal feature coming soon!');
+        });
+
+        // Top up button interaction
+        document.querySelector('.topup-btn').addEventListener('click', () => {
+            window.location.href = 'payment.html';
+        });
+
+        // Activity item click handler
+        document.querySelectorAll('.activity-item').forEach(item => {
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', () => {
+                const activityName = item.querySelector('.activity-name').textContent;
+                alert(`View details for: ${activityName}`);
+            });
+        });
+    </script>
+</body>
+</html>

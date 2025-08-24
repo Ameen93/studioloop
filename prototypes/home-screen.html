@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop - Your Fitness Dashboard</title>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Inter Font - Primary Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons for modern iconography -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        :root {
+            /* StudioLoop Brand System - 8px Grid */
+            --sl-brand: #0077ff;
+            --sl-brand-50: #eff6ff;
+            --sl-brand-100: #dbeafe;
+            --sl-brand-200: #bfdbfe;
+            --sl-brand-500: #0077ff;
+            --sl-brand-600: #0057cc;
+            --sl-brand-700: #1d4ed8;
+            --sl-brand-900: #1e3a8a;
+
+            /* Accent Colors */
+            --sl-aqua: #00e5ff;
+            --sl-aqua-50: #f0fdff;
+            --sl-violet: #8e24aa;
+            --sl-violet-50: #faf5ff;
+            --sl-peach: #ff8a65;
+            --sl-peach-50: #fff7ed;
+            
+            /* Success & Status */
+            --sl-success: #10b981;
+            --sl-success-50: #ecfdf5;
+            --sl-warning: #f59e0b;
+            --sl-warning-50: #fffbeb;
+            --sl-error: #ef4444;
+            --sl-error-50: #fef2f2;
+            
+            /* Neutral Palette */
+            --sl-white: #ffffff;
+            --sl-gray-50: #f9fafb;
+            --sl-gray-100: #f3f4f6;
+            --sl-gray-200: #e5e7eb;
+            --sl-gray-300: #d1d5db;
+            --sl-gray-400: #9ca3af;
+            --sl-gray-500: #6b7280;
+            --sl-gray-600: #4b5563;
+            --sl-gray-700: #374151;
+            --sl-gray-800: #1f2937;
+            --sl-gray-900: #111827;
+            
+            /* Typography System */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 30px;
+            
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            
+            /* Spacing System - 8px Grid */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            
+            /* Shadows - Layered Design */
+            --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --backdrop-blur: 12px;
+        }
+        
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--sl-gray-50) 0%, var(--sl-brand-50) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2);
+            color: var(--sl-gray-900);
+        }
+        
+        /* Mobile Phone Container */
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: var(--sl-gray-900);
+            border-radius: 40px;
+            padding: 6px;
+            box-shadow: var(--shadow-xl), 0 0 0 1px var(--sl-gray-800);
+            position: relative;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--sl-white);
+            border-radius: 34px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            height: 44px;
+            background: var(--sl-white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-3);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--sl-gray-900);
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--sl-gray-50);
+            position: relative;
+        }
+        
+        /* Smooth Scrolling */
+        .main-content {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Header Section - Modern Dashboard */
+        .header {
+            background: linear-gradient(135deg, var(--sl-brand) 0%, var(--sl-violet) 100%);
+            color: var(--sl-white);
+            padding: var(--space-3);
+            margin: var(--space-2);
+            border-radius: var(--radius-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.15), transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(0, 229, 255, 0.1), transparent 40%);
+            pointer-events: none;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* User Greeting */
+        .greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-3);
+        }
+        
+        .greeting-main {
+            flex: 1;
+        }
+        
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            margin-bottom: var(--space-1);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            opacity: 0.9;
+        }
+        
+        .greeting h1 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+        
+        .greeting p {
+            font-size: var(--font-size-sm);
+            opacity: 0.85;
+            font-weight: var(--font-weight-normal);
+        }
+        
+        .weather-info {
+            text-align: right;
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .weather-temp {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: 2px;
+        }
+        
+        /* Dashboard Stats Cards */
+        .stats-container {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-3);
+        }
+        
+        .stat-card {
+            flex: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--backdrop-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .stat-card:hover::before {
+            left: 100%;
+        }
+        
+        .stat-card-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .credit-card {
+            cursor: pointer;
+        }
+        
+        .credit-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .credits-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            margin-bottom: 4px;
+        }
+        
+        .credit-icon {
+            font-size: var(--font-size-lg);
+        }
+        
+        .credit-count {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--sl-white);
+        }
+        
+        .credit-label {
+            font-size: var(--font-size-xs);
+            opacity: 0.8;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .next-class-info {
+            text-align: center;
+        }
+        
+        .next-class-time {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: 2px;
+        }
+        
+        .next-class-name {
+            font-size: var(--font-size-xs);
+            opacity: 0.8;
+        }
+        
+        /* Active Booking Card */
+        .active-booking {
+            background: var(--sl-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            margin: 0 var(--space-2) var(--space-3) var(--space-2);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--sl-success);
+            position: relative;
+        }
+        
+        .booking-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-2);
+        }
+        
+        .booking-title-area {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .booking-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--sl-success-50);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+        }
+        
+        .booking-info h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--sl-gray-900);
+            margin-bottom: 2px;
+        }
+        
+        .booking-status {
+            background: var(--sl-success-50);
+            color: var(--sl-success);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .booking-details {
+            color: var(--sl-gray-600);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-2);
+            line-height: 1.5;
+        }
+        
+        .booking-meta {
+            display: flex;
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: var(--font-size-xs);
+            color: var(--sl-gray-500);
+        }
+        
+        .qr-button {
+            background: linear-gradient(135deg, var(--sl-brand) 0%, var(--sl-brand-600) 100%);
+            color: var(--sl-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .qr-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .qr-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Section Styling */
+        .section {
+            margin-bottom: var(--space-4);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 var(--space-2) var(--space-2) var(--space-2);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--sl-gray-900);
+            position: relative;
+        }
+        
+        .section-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--sl-gray-500);
+            font-weight: var(--font-weight-normal);
+        }
+        
+        /* Quick Actions Grid */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-1);
+            padding: 0 var(--space-2);
+            margin-bottom: var(--space-2);
+        }
+        
+        .action-card {
+            background: var(--sl-white);
+            border: 1px solid var(--sl-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2) var(--space-1);
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 88px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, var(--sl-brand) 0%, var(--sl-violet) 100%);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--sl-brand-200);
+        }
+        
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: var(--space-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            background: var(--sl-brand-50);
+            color: var(--sl-brand);
+        }
+        
+        .action-card:nth-child(2) .action-icon {
+            background: var(--sl-violet-50);
+            color: var(--sl-violet);
+        }
+        
+        .action-card:nth-child(3) .action-icon {
+            background: var(--sl-peach-50);
+            color: var(--sl-peach);
+        }
+        
+        .action-card:nth-child(4) .action-icon {
+            background: var(--sl-success-50);
+            color: var(--sl-success);
+        }
+        
+        .action-label {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            color: var(--sl-gray-900);
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+        
+        .action-subtitle {
+            font-size: 10px;
+            color: var(--sl-gray-500);
+            font-weight: var(--font-weight-normal);
+            line-height: 1.2;
+        }
+        
+        /* Featured Classes */
+        .featured-classes {
+            padding: 0 var(--space-2);
+        }
+        
+        .class-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .class-card {
+            background: var(--sl-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--sl-gray-200);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .class-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--sl-brand) 0%, var(--sl-violet) 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .class-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--sl-brand-200);
+        }
+        
+        .class-card:hover::before {
+            width: 6px;
+        }
+        
+        .class-card.featured {
+            border: 2px solid var(--sl-brand-200);
+            background: linear-gradient(135deg, var(--sl-white) 0%, var(--sl-brand-50) 100%);
+        }
+        
+        .class-card.featured::before {
+            background: linear-gradient(135deg, var(--sl-aqua) 0%, var(--sl-violet) 100%);
+        }
+        
+        .class-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+            margin-bottom: var(--space-2);
+        }
+        
+        .class-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            background: var(--sl-gray-100);
+            flex-shrink: 0;
+        }
+        
+        .class-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .class-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--sl-gray-900);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        
+        .class-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            font-size: var(--font-size-xs);
+            color: var(--sl-gray-500);
+            margin-bottom: 2px;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .class-badge {
+            position: absolute;
+            top: var(--space-2);
+            right: var(--space-2);
+            background: linear-gradient(135deg, var(--sl-peach) 0%, var(--sl-violet) 100%);
+            color: var(--sl-white);
+            font-size: 10px;
+            font-weight: var(--font-weight-bold);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .class-details {
+            font-size: var(--font-size-sm);
+            color: var(--sl-gray-600);
+            line-height: 1.5;
+            margin-bottom: var(--space-2);
+        }
+        
+        .class-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-2);
+        }
+        
+        .availability-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .spots-available {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            color: var(--sl-success);
+        }
+        
+        .spots-available.limited {
+            color: var(--sl-warning);
+        }
+        
+        .spots-available.few {
+            color: var(--sl-error);
+        }
+        
+        .popularity-count {
+            font-size: 10px;
+            color: var(--sl-gray-400);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .book-button {
+            background: linear-gradient(135deg, var(--sl-brand) 0%, var(--sl-brand-600) 100%);
+            color: var(--sl-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-1) var(--space-3);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .book-button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .book-button:active {
+            transform: translateY(0);
+        }
+        
+        .book-button.urgent {
+            background: linear-gradient(135deg, var(--sl-peach) 0%, var(--sl-violet) 100%);
+            animation: pulse-glow 2s infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: var(--shadow-sm), 0 0 0 0 rgba(255, 138, 101, 0.4);
+            }
+            50% {
+                box-shadow: var(--shadow-md), 0 0 0 8px rgba(255, 138, 101, 0);
+            }
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            height: 72px;
+            background: var(--sl-white);
+            border-top: 1px solid var(--sl-gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: var(--space-1) var(--space-2);
+            position: relative;
+        }
+        
+        .bottom-nav::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.05));
+            pointer-events: none;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: var(--sl-gray-400);
+            transition: all 0.3s ease;
+            padding: var(--space-1);
+            border-radius: var(--radius-md);
+            min-width: 60px;
+            position: relative;
+        }
+        
+        .nav-item.active {
+            color: var(--sl-brand);
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: var(--sl-brand);
+            border-radius: 2px;
+        }
+        
+        .nav-item:not(.active):hover {
+            color: var(--sl-gray-600);
+            background: var(--sl-gray-100);
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-label {
+            font-size: 10px;
+            font-weight: var(--font-weight-medium);
+            line-height: 1;
+        }
+        
+        /* Animations & Interactions */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideDown {
+            from { 
+                transform: translate(-50%, -20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+        
+        /* Animation Classes */
+        .animate-in {
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .animate-slide {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* CRITICAL FIX: Force visibility of content */
+        .quick-actions,
+        .quick-actions *,
+        .action-card,
+        .action-card *,
+        .featured-classes,
+        .featured-classes *,
+        .class-card,
+        .class-card *,
+        .class-list,
+        .class-list * {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .action-card {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+
+        .class-card {
+            display: block !important;
+        }
+        
+        /* Accessibility & Responsive Design */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus States */
+        .action-card:focus,
+        .class-card:focus,
+        .book-button:focus,
+        .qr-button:focus {
+            outline: 2px solid var(--sl-brand);
+            outline-offset: 2px;
+        }
+        
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--sl-gray-300);
+            border-top-color: var(--sl-brand);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Navigation Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: var(--space-3);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: var(--space-2);
+            border-radius: var(--radius-xl);
+            backdrop-filter: blur(var(--backdrop-blur));
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-1 { gap: var(--space-1); }
+        .gap-2 { gap: var(--space-2); }
+        .mb-1 { margin-bottom: var(--space-1); }
+        .mb-2 { margin-bottom: var(--space-2); }
+        .p-1 { padding: var(--space-1); }
+        .p-2 { padding: var(--space-2); }
+        
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --sl-white: #111827;
+                --sl-gray-50: #1f2937;
+                --sl-gray-100: #374151;
+                --sl-gray-900: #f9fafb;
+            }
+        }
+        
+        /* Safe Area Support for iPhone */
+        @supports (padding: max(0px)) {
+            .phone-screen {
+                padding-bottom: max(0px, env(safe-area-inset-bottom));
+            }
+            
+            .bottom-nav {
+                padding-bottom: max(var(--space-1), env(safe-area-inset-bottom));
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="phone-screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div>9:41</div>
+                <div>🔋87%</div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content" id="main-content">
+                <!-- Header Dashboard -->
+                <div class="header">
+                    <div class="header-content">
+                        <!-- User Greeting -->
+                        <div class="greeting">
+                            <div class="greeting-main">
+                                <div class="app-title">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="StudioLoop" fill="none" style="width: 20px; height: 20px;">
+                                        <g stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M128 84 Q 88 120 80 166" />
+                                            <path d="M128 84 Q 168 120 176 166" />
+                                            <path d="M80 166 Q 128 208 176 166" />
+                                        </g>
+                                        <g fill="currentColor">
+                                            <circle cx="128" cy="56" r="20"/>
+                                            <circle cx="68" cy="188" r="20"/>
+                                            <circle cx="188" cy="188" r="20"/>
+                                        </g>
+                                    </svg>
+                                    <span>StudioLoop</span>
+                                </div>
+                                <h1>Good morning, Sarah!</h1>
+                                <p>Ready to crush your fitness goals? 💪</p>
+                            </div>
+                            <div class="weather-info">
+                                <div class="weather-temp">22°C</div>
+                                <div>Cape Town</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dashboard Stats -->
+                        <div class="stats-container">
+                            <div class="stat-card credit-card" onclick="navigate('credits')">
+                                <div class="stat-card-content">
+                                    <div class="credits-info">
+                                        <i class="ph ph-diamond credit-icon"></i>
+                                        <span class="credit-count" id="credit-count">12</span>
+                                    </div>
+                                    <div class="credit-label">Credits</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-content next-class-info">
+                                    <div class="next-class-time">2 hours</div>
+                                    <div class="next-class-name">Next: Yoga</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Active Booking -->
+                <div class="active-booking">
+                    <div class="booking-header">
+                        <div class="booking-title-area">
+                            <div class="booking-icon">
+                                🧘‍♀️
+                            </div>
+                            <div class="booking-info">
+                                <h3>Morning Yoga</h3>
+                            </div>
+                        </div>
+                        <div class="booking-status">Booked</div>
+                    </div>
+                    
+                    <div class="booking-details">
+                        Transform your morning with mindful movement and deep breathing
+                    </div>
+                    
+                    <div class="booking-meta">
+                        <div class="meta-item">
+                            <i class="ph ph-clock"></i>
+                            <span>Today 10:00-11:00 AM</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="ph ph-map-pin"></i>
+                            <span>FitLife Gym • 1.2km</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="ph ph-user"></i>
+                            <span>Sarah Johnson</span>
+                        </div>
+                    </div>
+                    
+                    <button class="qr-button" onclick="showQRCode()">
+                        <i class="ph ph-qr-code"></i>
+                        <span>View QR Code</span>
+                    </button>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Quick Actions</h2>
+                            <p class="section-subtitle">Everything you need at your fingertips</p>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="#" class="action-card" onclick="navigate('book')">
+                            <div class="action-icon">
+                                <i class="ph ph-calendar-plus"></i>
+                            </div>
+                            <div class="action-label">Book Class</div>
+                            <div class="action-subtitle">Find & reserve</div>
+                        </a>
+                        <a href="#" class="action-card" onclick="navigate('explore')">
+                            <div class="action-icon">
+                                <i class="ph ph-compass"></i>
+                            </div>
+                            <div class="action-label">Explore</div>
+                            <div class="action-subtitle">Discover gyms</div>
+                        </a>
+                        <a href="#" class="action-card" onclick="navigate('credits')">
+                            <div class="action-icon">
+                                <i class="ph ph-diamond"></i>
+                            </div>
+                            <div class="action-label">Buy Credits</div>
+                            <div class="action-subtitle">Top up wallet</div>
+                        </a>
+                        <a href="#" class="action-card" onclick="navigate('scan')">
+                            <div class="action-icon">
+                                <i class="ph ph-qr-code"></i>
+                            </div>
+                            <div class="action-label">QR Scan</div>
+                            <div class="action-subtitle">Quick check-in</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Featured Classes -->
+                <div class="section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Popular Near You</h2>
+                            <p class="section-subtitle">Trending classes in your area</p>
+                        </div>
+                    </div>
+                    <div class="featured-classes">
+                        <div class="class-list">
+                            <!-- Featured HIIT Class -->
+                            <div class="class-card featured" onclick="navigate('class-details')">
+                                <div class="class-badge">🔥 Hot</div>
+                                <div class="class-header">
+                                    <div class="class-icon">🏋️‍♂️</div>
+                                    <div class="class-info">
+                                        <h3 class="class-title">HIIT Blast</h3>
+                                        <div class="class-meta">
+                                            <span>Iron Gym</span>
+                                            <span>•</span>
+                                            <span>1.2km</span>
+                                            <span>•</span>
+                                            <div class="rating">
+                                                <span>⭐</span>
+                                                <span>4.8</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="class-details">
+                                    Today 6:00-7:00 PM (45 min) • Advanced Level<br>
+                                    Mike Thompson • High intensity cardio & strength training
+                                </div>
+                                <div class="class-footer">
+                                    <div class="availability-info">
+                                        <span class="spots-available few">Only 3 spots left!</span>
+                                        <div class="popularity-count">
+                                            <i class="ph ph-users"></i>
+                                            <span>28 booked</span>
+                                        </div>
+                                    </div>
+                                    <button class="book-button urgent" onclick="event.stopPropagation(); bookClass('HIIT Blast')">
+                                        <span>Book</span>
+                                        <span>2 💎</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Pilates Flow -->
+                            <div class="class-card" onclick="navigate('class-details')">
+                                <div class="class-header">
+                                    <div class="class-icon">🧘‍♀️</div>
+                                    <div class="class-info">
+                                        <h3 class="class-title">Pilates Flow</h3>
+                                        <div class="class-meta">
+                                            <span>Zen Studio</span>
+                                            <span>•</span>
+                                            <span>2.1km</span>
+                                            <span>•</span>
+                                            <div class="rating">
+                                                <span>⭐</span>
+                                                <span>4.6</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="class-details">
+                                    Today 7:30-8:30 PM (60 min) • All Levels<br>
+                                    Anna Klein • Core strength & flexibility focus
+                                </div>
+                                <div class="class-footer">
+                                    <div class="availability-info">
+                                        <span class="spots-available">8 spots available</span>
+                                        <div class="popularity-count">
+                                            <i class="ph ph-users"></i>
+                                            <span>12 booked</span>
+                                        </div>
+                                    </div>
+                                    <button class="book-button" onclick="event.stopPropagation(); bookClass('Pilates Flow')">
+                                        <span>Book</span>
+                                        <span>1 💎</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Boxing Basics -->
+                            <div class="class-card" onclick="navigate('class-details')">
+                                <div class="class-header">
+                                    <div class="class-icon">🥊</div>
+                                    <div class="class-info">
+                                        <h3 class="class-title">Boxing Basics</h3>
+                                        <div class="class-meta">
+                                            <span>FightClub</span>
+                                            <span>•</span>
+                                            <span>1.8km</span>
+                                            <span>•</span>
+                                            <div class="rating">
+                                                <span>⭐</span>
+                                                <span>4.7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="class-details">
+                                    Tomorrow 6:00-7:00 PM (50 min) • Beginner Friendly<br>
+                                    Tom Richards • Learn fundamentals & technique
+                                </div>
+                                <div class="class-footer">
+                                    <div class="availability-info">
+                                        <span class="spots-available">12 spots available</span>
+                                        <div class="popularity-count">
+                                            <i class="ph ph-users"></i>
+                                            <span>8 booked</span>
+                                        </div>
+                                    </div>
+                                    <button class="book-button" onclick="event.stopPropagation(); bookClass('Boxing Basics')">
+                                        <span>Book</span>
+                                        <span>2 💎</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Sunrise Yoga -->
+                            <div class="class-card" onclick="navigate('class-details')">
+                                <div class="class-header">
+                                    <div class="class-icon">🌅</div>
+                                    <div class="class-info">
+                                        <h3 class="class-title">Sunrise Yoga</h3>
+                                        <div class="class-meta">
+                                            <span>Beach Studio</span>
+                                            <span>•</span>
+                                            <span>2.3km</span>
+                                            <span>•</span>
+                                            <div class="rating">
+                                                <span>⭐</span>
+                                                <span>4.9</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="class-details">
+                                    Tomorrow 7:00-8:00 AM (60 min) • All Levels<br>
+                                    Sarah Johnson • Oceanview morning flow
+                                </div>
+                                <div class="class-footer">
+                                    <div class="availability-info">
+                                        <span class="spots-available limited">6 spots available</span>
+                                        <div class="popularity-count">
+                                            <i class="ph ph-users"></i>
+                                            <span>14 booked</span>
+                                        </div>
+                                    </div>
+                                    <button class="book-button" onclick="event.stopPropagation(); bookClass('Sunrise Yoga')">
+                                        <span>Book</span>
+                                        <span>1 💎</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Spacer for bottom navigation -->
+                <div style="height: var(--space-3);"></div>
+            </div>
+            
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <a href="#" class="nav-item active">
+                    <div class="nav-icon">
+                        <i class="ph ph-house-fill"></i>
+                    </div>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="#" class="nav-item" onclick="navigate('discover')">
+                    <div class="nav-icon">
+                        <i class="ph ph-compass"></i>
+                    </div>
+                    <span class="nav-label">Discover</span>
+                </a>
+                <a href="#" class="nav-item" onclick="navigate('bookings')">
+                    <div class="nav-icon">
+                        <i class="ph ph-calendar-check"></i>
+                    </div>
+                    <span class="nav-label">Bookings</span>
+                </a>
+                <a href="#" class="nav-item" onclick="navigate('profile')">
+                    <div class="nav-icon">
+                        <i class="ph ph-user-circle"></i>
+                    </div>
+                    <span class="nav-label">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <a href="index.html" style="color: white; text-decoration: none; padding: 8px 16px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 14px; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">← Back to Prototypes</a>
+    </div>
+    
+    <script>
+        let startY = 0;
+        let currentY = 0;
+        let isPulling = false;
+        
+        const mainContent = document.getElementById('main-content');
+        const pullRefresh = document.getElementById('pull-refresh');
+        
+        // Pull to refresh functionality
+        mainContent.addEventListener('touchstart', (e) => {
+            if (mainContent.scrollTop === 0) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        });
+        
+        mainContent.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            
+            currentY = e.touches[0].clientY;
+            const pullDistance = currentY - startY;
+            
+            if (pullDistance > 0 && mainContent.scrollTop === 0) {
+                e.preventDefault();
+                pullRefresh.classList.add('active');
+                pullRefresh.style.transform = `translateY(${Math.min(pullDistance * 0.5, 50)}px)`;
+                
+                if (pullDistance > 60) {
+                    pullRefresh.innerHTML = '<div>🔄 Release to refresh</div>';
+                } else {
+                    pullRefresh.innerHTML = '<div>🔄 Pull to refresh</div>';
+                }
+            }
+        });
+        
+        mainContent.addEventListener('touchend', (e) => {
+            if (!isPulling) return;
+            
+            const pullDistance = currentY - startY;
+            
+            if (pullDistance > 60) {
+                refreshContent();
+            } else {
+                pullRefresh.style.transform = '';
+                pullRefresh.classList.remove('active');
+            }
+            
+            isPulling = false;
+        });
+        
+        // Simulate refresh
+        function refreshContent() {
+            pullRefresh.innerHTML = '<div>🔄 Refreshing...</div>';
+            
+            setTimeout(() => {
+                // Animate credit update
+                const creditCount = document.getElementById('credit-count');
+                creditCount.classList.add('pulse');
+                
+                setTimeout(() => {
+                    creditCount.textContent = '13';
+                    creditCount.classList.remove('pulse');
+                }, 500);
+                
+                // Hide refresh indicator
+                pullRefresh.style.transform = '';
+                pullRefresh.classList.remove('active');
+                
+                // Show update notification
+                showNotification('Updated! You earned 1 bonus credit 💎');
+            }, 1500);
+        }
+        
+        // Navigation functions
+        function navigate(page) {
+            switch(page) {
+                case 'book':
+                    window.location.href = 'booking-flow.html';
+                    break;
+                case 'explore':
+                case 'discover':
+                    window.location.href = 'discovery.html';
+                    break;
+                case 'credits':
+                    showNotification('Credits purchase would open here 💳');
+                    break;
+                case 'class-details':
+                    window.location.href = 'booking-flow.html';
+                    break;
+                case 'bookings':
+                    window.location.href = 'profile.html';
+                    break;
+                case 'profile':
+                    window.location.href = 'profile.html';
+                    break;
+                case 'scan':
+                    showQRScanner();
+                    break;
+                default:
+                    showNotification(`${page} feature coming soon!`);
+            }
+        }
+        
+        function bookClass(className) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Booking...';
+            btn.disabled = true;
+            btn.style.background = '#ccc';
+            
+            setTimeout(() => {
+                // Update credits
+                const creditCount = document.getElementById('credit-count');
+                const currentCredits = parseInt(creditCount.textContent);
+                const cost = className === 'Pilates Flow' ? 1 : 2;
+                
+                creditCount.textContent = currentCredits - cost;
+                creditCount.classList.add('pulse');
+                
+                setTimeout(() => {
+                    creditCount.classList.remove('pulse');
+                }, 1000);
+                
+                // Show success
+                btn.textContent = '✅ Booked';
+                btn.style.background = 'var(--accent-green)';
+                
+                showNotification(`${className} booked successfully! 🎉`);
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    btn.style.background = 'var(--primary-orange)';
+                }, 3000);
+            }, 1500);
+        }
+        
+        function showQRCode() {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 16px;
+                    padding: 32px;
+                    text-align: center;
+                    max-width: 300px;
+                    animation: slideUp 0.3s ease-out;
+                ">
+                    <h3 style="margin-bottom: 16px; color: var(--dark-gray);">Your QR Code</h3>
+                    <div style="
+                        width: 200px;
+                        height: 200px;
+                        background: #000;
+                        margin: 0 auto 16px;
+                        border-radius: 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 14px;
+                    ">📱 QR CODE</div>
+                    <p style="color: var(--medium-gray); font-size: 14px; margin-bottom: 16px;">
+                        Show this at FitLife Gym check-in
+                    </p>
+                    <button onclick="this.closest('.modal-overlay').remove()" style="
+                        background: var(--primary-orange);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    ">Close</button>
+                </div>
+            `;
+            
+            modal.className = 'modal-overlay';
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            document.body.appendChild(modal);
+        }
+
+        function showQRScanner() {
+            // Create scanner modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 20px;
+                    padding: 32px;
+                    text-align: center;
+                    max-width: 320px;
+                    width: 90%;
+                    animation: slideUp 0.3s ease-out;
+                ">
+                    <h3 style="margin-bottom: 20px; color: var(--dark-gray);">QR Code Scanner</h3>
+                    <div style="
+                        width: 200px;
+                        height: 200px;
+                        background: linear-gradient(135deg, #0F172A 0%, #334155 100%);
+                        margin: 0 auto 20px;
+                        border-radius: 16px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 14px;
+                        position: relative;
+                        overflow: hidden;
+                    ">
+                        <div style="
+                            width: 150px;
+                            height: 150px;
+                            border: 2px solid #FF6B35;
+                            border-radius: 8px;
+                            position: relative;
+                        ">
+                            <div style="
+                                position: absolute;
+                                top: -2px;
+                                left: -2px;
+                                width: 20px;
+                                height: 20px;
+                                border-left: 2px solid #00C851;
+                                border-top: 2px solid #00C851;
+                            "></div>
+                            <div style="
+                                position: absolute;
+                                top: -2px;
+                                right: -2px;
+                                width: 20px;
+                                height: 20px;
+                                border-right: 2px solid #00C851;
+                                border-top: 2px solid #00C851;
+                            "></div>
+                            <div style="
+                                position: absolute;
+                                bottom: -2px;
+                                left: -2px;
+                                width: 20px;
+                                height: 20px;
+                                border-left: 2px solid #00C851;
+                                border-bottom: 2px solid #00C851;
+                            "></div>
+                            <div style="
+                                position: absolute;
+                                bottom: -2px;
+                                right: -2px;
+                                width: 20px;
+                                height: 20px;
+                                border-right: 2px solid #00C851;
+                                border-bottom: 2px solid #00C851;
+                            "></div>
+                            <div style="
+                                position: absolute;
+                                top: 50%;
+                                left: 0;
+                                right: 0;
+                                height: 2px;
+                                background: linear-gradient(90deg, transparent, #FF6B35, transparent);
+                                animation: scan 2s linear infinite;
+                            "></div>
+                        </div>
+                    </div>
+                    <p style="color: var(--medium-gray); font-size: 14px; margin-bottom: 20px;">
+                        Point camera at gym's QR code to check in
+                    </p>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="simulateSuccess()" style="
+                            flex: 1;
+                            background: var(--primary-orange);
+                            color: white;
+                            border: none;
+                            padding: 12px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            font-weight: 600;
+                        ">Simulate Scan</button>
+                        <button onclick="this.closest('.modal-overlay').remove()" style="
+                            flex: 1;
+                            background: var(--medium-gray);
+                            color: white;
+                            border: none;
+                            padding: 12px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            font-weight: 600;
+                        ">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            modal.className = 'modal-overlay';
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            // Add scan animation
+            const scanStyle = document.createElement('style');
+            scanStyle.textContent = `
+                @keyframes scan {
+                    0% { transform: translateY(-75px); }
+                    100% { transform: translateY(75px); }
+                }
+            `;
+            document.head.appendChild(scanStyle);
+            
+            // Simulate success function
+            window.simulateSuccess = function() {
+                modal.remove();
+                setTimeout(() => {
+                    showNotification('✅ Check-in successful! Welcome to FitLife Gym');
+                }, 300);
+            };
+            
+            document.body.appendChild(modal);
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 60px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--dark-gray);
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 1000;
+                animation: slideDown 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes slideUp {
+                from { transform: translateY(20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            
+            @keyframes slideDown {
+                from { transform: translate(-50%, -20px); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Enhanced GSAP Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Register GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Initial page load animation
+            const tl = gsap.timeline();
+            
+            tl.from('.header', {
+                duration: 0.8,
+                y: -100,
+                opacity: 0,
+                ease: "back.out(1.7)"
+            })
+            .from('.greeting-text h1', {
+                duration: 0.6,
+                x: -50,
+                opacity: 0,
+                ease: "power2.out"
+            }, "-=0.4")
+            .from('.weather', {
+                duration: 0.6,
+                x: 50,
+                opacity: 0,
+                ease: "power2.out"
+            }, "-=0.5")
+            .from('.user-stats', {
+                duration: 0.8,
+                scale: 0.9,
+                opacity: 0,
+                ease: "back.out(1.7)"
+            }, "-=0.3")
+            .from('.todays-class', {
+                duration: 0.6,
+                y: 50,
+                opacity: 0,
+                ease: "power2.out"
+            }, "-=0.2")
+            .from('.action-card', {
+                duration: 0.5,
+                y: 30,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "power2.out"
+            }, "-=0.3")
+            .from('.class-card', {
+                duration: 0.6,
+                y: 40,
+                opacity: 0,
+                stagger: 0.15,
+                ease: "power2.out"
+            }, "-=0.4");
+            
+            // Floating animation for credit count
+            gsap.to('.credits .count', {
+                duration: 2,
+                y: -3,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+            
+            // Enhanced hover animations
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        duration: 0.3,
+                        y: -8,
+                        scale: 1.02,
+                        ease: "power2.out"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        duration: 0.3,
+                        y: 0,
+                        scale: 1,
+                        ease: "power2.out"
+                    });
+                });
+            });
+            
+            // Class card hover animations
+            document.querySelectorAll('.class-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        duration: 0.3,
+                        y: -4,
+                        boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.15)",
+                        ease: "power2.out"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        duration: 0.3,
+                        y: 0,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        ease: "power2.out"
+                    });
+                });
+            });
+            
+            // Enhanced button click animation
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('book-btn') || e.target.classList.contains('action-card')) {
+                    gsap.to(e.target, {
+                        duration: 0.1,
+                        scale: 0.95,
+                        yoyo: true,
+                        repeat: 1,
+                        ease: "power2.inOut"
+                    });
+                }
+            });
+        });
+        
+        // Enhanced bookClass function with GSAP
+        function bookClass(className) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            // GSAP loading animation
+            gsap.to(btn, {
+                duration: 0.3,
+                scale: 0.95,
+                ease: "power2.out"
+            });
+            
+            btn.textContent = 'Booking...';
+            btn.disabled = true;
+            btn.style.background = '#ccc';
+            
+            setTimeout(() => {
+                // Update credits with GSAP animation
+                const creditCount = document.getElementById('credit-count');
+                const currentCredits = parseInt(creditCount.textContent);
+                const cost = className === 'Pilates Flow' ? 1 : 2;
+                
+                // Animate credit deduction
+                gsap.to(creditCount, {
+                    duration: 0.5,
+                    scale: 1.2,
+                    color: '#EF4444',
+                    ease: "back.out(1.7)",
+                    onComplete: () => {
+                        creditCount.textContent = currentCredits - cost;
+                        gsap.to(creditCount, {
+                            duration: 0.5,
+                            scale: 1,
+                            color: '#FFFFFF',
+                            ease: "power2.out"
+                        });
+                    }
+                });
+                
+                // Success animation
+                gsap.to(btn, {
+                    duration: 0.4,
+                    scale: 1,
+                    backgroundColor: '#00C851',
+                    ease: "back.out(1.7)"
+                });
+                
+                btn.textContent = '✅ Booked';
+                showNotification(`${className} booked successfully! 🎉`);
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    btn.style.background = 'var(--primary-orange)';
+                }, 3000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

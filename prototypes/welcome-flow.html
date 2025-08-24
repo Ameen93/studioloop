@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop - Welcome Flow</title>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    
+    <!-- Inter Font - Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           STUDIOLOOP DESIGN SYSTEM
+           Modern CSS Architecture with Brand Guidelines
+        ======================================== */
+
+        /* CSS Custom Properties - StudioLoop Brand Colors */
+        :root {
+            /* Brand Colors */
+            --primary-blue: #0077ff;
+            --accent-aqua: #00e5ff;
+            --accent-violet: #8e24aa;
+            --accent-peach: #ff8a65;
+            
+            /* Neutral Colors */
+            --white: #ffffff;
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            
+            /* Semantic Colors */
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border-light: #f1f5f9;
+            --border-medium: #e2e8f0;
+            --surface-primary: #ffffff;
+            --surface-secondary: #f8fafc;
+            
+            /* Spacing Scale - 8px Grid System */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            --space-8: 64px;
+            --space-10: 80px;
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-weight-extrabold: 800;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========================================
+           RESET & BASE STYLES
+        ======================================== */
+        
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-aqua) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           PHONE FRAME & LAYOUT
+        ======================================== */
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: var(--gray-800);
+            border-radius: 40px;
+            padding: var(--space-1);
+            box-shadow: 
+                var(--shadow-xl),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--surface-primary);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 44px;
+            background: var(--surface-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-3);
+            font-size: 14px;
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        /* Screen Transitions */
+        .screen {
+            position: absolute;
+            top: 44px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: all var(--transition-normal);
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        /* ========================================
+           WELCOME SCREEN DESIGN
+        ======================================== */
+        
+        .welcome-screen {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-aqua) 50%, var(--accent-violet) 100%);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-4);
+            position: relative;
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .welcome-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            animation: welcomeGlow 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes welcomeGlow {
+            0% { opacity: 0.3; transform: rotate(0deg) scale(1); }
+            100% { opacity: 0.1; transform: rotate(10deg) scale(1.1); }
+        }
+
+        .logo-section {
+            position: relative;
+            z-index: 2;
+            margin-bottom: var(--space-6);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: var(--space-2);
+            filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+        }
+        
+        .logo svg {
+            color: var(--white);
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: var(--font-weight-extrabold);
+            margin-top: var(--space-2);
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-tagline {
+            font-size: 18px;
+            font-weight: var(--font-weight-normal);
+            opacity: 0.9;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+            margin-bottom: var(--space-6);
+        }
+
+        .hero-illustration {
+            width: 240px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: var(--space-6);
+            position: relative;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .hero-illustration::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            border-radius: var(--radius-xl);
+            z-index: -1;
+        }
+
+        /* Call-to-Action Buttons */
+        .welcome-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            width: 100%;
+            max-width: 280px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ========================================
+           BUTTON SYSTEM
+        ======================================== */
+        
+        .btn {
+            width: 100%;
+            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            font-size: 16px;
+            font-weight: var(--font-weight-semibold);
+            font-family: var(--font-family);
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-1);
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.4);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 24px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 6px 16px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Solid Buttons for Forms */
+        .btn-solid {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-solid:hover {
+            background: color-mix(in srgb, var(--primary-blue) 90%, black);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-solid:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-solid:disabled {
+            background: var(--gray-300);
+            color: var(--gray-500);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ========================================
+           FORM SCREENS
+        ======================================== */
+        
+        .form-screen {
+            padding: var(--space-4);
+            background: var(--surface-primary);
+            position: relative;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 160px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-aqua) 100%);
+            opacity: 0.04;
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        }
+
+        /* Header */
+        .form-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-4);
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--primary-blue);
+            cursor: pointer;
+            margin-right: var(--space-2);
+            padding: var(--space-1);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            background: var(--gray-100);
+            transform: translateX(-2px);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            margin-bottom: var(--space-4);
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-message h2 {
+            font-size: 28px;
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+            line-height: 1.2;
+        }
+
+        .welcome-message p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: var(--space-3);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-2);
+            border: 2px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-family: var(--font-family);
+            transition: all var(--transition-normal);
+            background: var(--surface-primary);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input:hover:not(:focus) {
+            border-color: var(--gray-400);
+        }
+
+        /* Input Icons & Toggles */
+        .input-icon {
+            position: absolute;
+            right: var(--space-2);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: var(--space-2);
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: var(--font-weight-medium);
+            color: var(--primary-blue);
+            padding: 4px var(--space-1);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .password-toggle:hover {
+            background: var(--gray-100);
+        }
+
+        /* Checkbox Groups */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-1);
+            margin-bottom: var(--space-3);
+        }
+
+        .checkbox {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        /* Links */
+        .link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color var(--transition-fast);
+        }
+
+        .link:hover {
+            color: var(--accent-violet);
+            text-decoration: underline;
+        }
+
+        /* ========================================
+           VERIFICATION SCREENS
+        ======================================== */
+        
+        .verification-screen {
+            padding: var(--space-6) var(--space-4);
+            background: var(--surface-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 100%;
+            justify-content: center;
+        }
+
+        .verification-icon {
+            font-size: 80px;
+            margin-bottom: var(--space-3);
+            filter: drop-shadow(0 4px 12px rgba(0, 119, 255, 0.2));
+        }
+
+        .verification-title {
+            font-size: 24px;
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .verification-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* OTP Input Container */
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-2);
+            margin: var(--space-4) 0;
+        }
+
+        .otp-input {
+            width: 56px;
+            height: 56px;
+            border: 2px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: 20px;
+            font-weight: var(--font-weight-semibold);
+            font-family: var(--font-family);
+            transition: all var(--transition-fast);
+            color: var(--text-primary);
+            background: var(--surface-primary);
+            outline: none;
+        }
+
+        .otp-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .otp-input:not(:placeholder-shown) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        /* Timer & Links */
+        .countdown {
+            color: var(--text-tertiary);
+            margin: var(--space-3) 0;
+            font-size: 14px;
+            font-weight: var(--font-weight-medium);
+        }
+
+        .text-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            margin-top: var(--space-3);
+        }
+
+        /* ========================================
+           NAVIGATION CONTROLS
+        ======================================== */
+        
+        .nav-controls {
+            position: fixed;
+            bottom: var(--space-3);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: var(--space-1);
+            background: rgba(0, 0, 0, 0.8);
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            padding: var(--space-1) var(--space-2);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: var(--font-weight-medium);
+            font-family: var(--font-family);
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: var(--gray-700);
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+        ======================================== */
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+            
+            .phone-frame {
+                width: 100%;
+                max-width: 375px;
+                height: 100vh;
+                border-radius: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            
+            .phone-screen {
+                border-radius: 0;
+            }
+            
+            .nav-controls {
+                display: none;
+            }
+        }
+
+        /* ========================================
+           ANIMATIONS & INTERACTIONS
+        ======================================== */
+        
+        .welcome-screen {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Smooth transitions for all interactive elements */
+        .btn, .form-input, .otp-input, .nav-btn, .back-btn, .link {
+            transition: all var(--transition-normal);
+        }
+
+        /* Focus states for accessibility */
+        .btn:focus-visible,
+        .form-input:focus-visible,
+        .otp-input:focus-visible,
+        .checkbox:focus-visible {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+
+        /* Loading states */
+        .btn.loading {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        .btn.loading::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            margin-left: var(--space-1);
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div>9:41</div>
+                <div>🔋100%</div>
+            </div>
+            
+            <!-- Welcome Screen -->
+            <div class="screen active" id="welcome-screen">
+                <div class="welcome-screen">
+                    <div class="logo-section">
+                        <div class="logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="StudioLoop logo" fill="none" style="width: 64px; height: 64px;">
+                                <g stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M128 84 Q 88 120 80 166" />
+                                    <path d="M128 84 Q 168 120 176 166" />
+                                    <path d="M80 166 Q 128 208 176 166" />
+                                </g>
+                                <g fill="currentColor">
+                                    <circle cx="128" cy="56" r="22"/>
+                                    <circle cx="68" cy="188" r="22"/>
+                                    <circle cx="188" cy="188" r="22"/>
+                                </g>
+                            </svg>
+                            <div class="brand-name">StudioLoop</div>
+                        </div>
+                        <div class="welcome-tagline">Transform your fitness journey with personalized coaching</div>
+                    </div>
+                    
+                    <div class="hero-illustration">
+                        <span style="font-size: 48px;">🏋️‍♀️✨</span>
+                    </div>
+                    
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary" onclick="goToScreen('registration-screen')" aria-label="Create new account">
+                            <span>Get Started</span>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-secondary" onclick="goToScreen('signin-screen')" aria-label="Sign in to existing account">
+                            <span>Sign In</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sign In Screen -->
+            <div class="screen" id="signin-screen">
+                <div class="form-screen">
+                    <div class="form-header">
+                        <button class="back-btn" onclick="goToScreen('welcome-screen')" aria-label="Go back to welcome screen">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m7 7l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <div class="header-title">Sign In</div>
+                    </div>
+                    
+                    <div class="welcome-message">
+                        <h2>Welcome back!</h2>
+                        <p>Sign in to continue your fitness journey</p>
+                    </div>
+                    
+                    <form id="signin-form" style="flex: 1;">
+                        <div class="form-group">
+                            <label for="signin-email" class="form-label">Email Address</label>
+                            <div class="input-wrapper">
+                                <input type="email" class="form-input" placeholder="Enter your email" id="signin-email" required autocomplete="email">
+                                <span class="input-icon">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signin-password" class="form-label">Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" class="form-input" placeholder="Enter your password" id="signin-password" required autocomplete="current-password">
+                                <button type="button" class="password-toggle" onclick="toggleSignInPassword()">Show</button>
+                            </div>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" class="checkbox" id="remember-me">
+                            <label for="remember-me" class="checkbox-label">Remember me for 30 days</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-solid" id="signin-btn" style="margin: 24px 0;">
+                            Sign In
+                        </button>
+                        
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <a href="#" class="link" style="font-size: 14px;">
+                                Forgot your password?
+                            </a>
+                        </div>
+                        
+                        <div style="text-align: center; padding-top: 24px; border-top: 1px solid var(--border-medium);">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Don't have an account? </span>
+                            <button type="button" onclick="goToScreen('registration-screen')" class="link" style="background: none; border: none; font-size: 14px; cursor: pointer;">
+                                Sign up
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Registration Screen -->
+            <div class="screen" id="registration-screen">
+                <div class="form-screen">
+                    <div class="form-header">
+                        <button class="back-btn" onclick="goToScreen('welcome-screen')" aria-label="Go back to welcome screen">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m7 7l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <div class="header-title">Create Account</div>
+                    </div>
+                    
+                    <div class="welcome-message">
+                        <h2>Welcome to StudioLoop!</h2>
+                        <p>Let's create your account to get started</p>
+                    </div>
+                    
+                    <form id="registration-form" style="flex: 1;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-input" placeholder="John" id="firstName" required autocomplete="given-name">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-input" placeholder="Doe" id="lastName" required autocomplete="family-name">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-wrapper">
+                                <input type="email" class="form-input" placeholder="john.doe@example.com" id="email" required autocomplete="email">
+                                <span class="input-icon">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <div class="input-wrapper">
+                                <input type="tel" class="form-input" placeholder="+1 (555) 000-0000" id="phone" required autocomplete="tel">
+                                <span class="input-icon">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" class="form-input" placeholder="Create a secure password" id="password" required autocomplete="new-password">
+                                <button type="button" class="password-toggle" onclick="togglePassword()">Show</button>
+                            </div>
+                            <div style="margin-top: 8px;">
+                                <div style="height: 4px; background: var(--border-medium); border-radius: 2px; overflow: hidden;">
+                                    <div id="password-strength" style="height: 100%; width: 0%; transition: all 0.3s ease; background: var(--accent-peach);"></div>
+                                </div>
+                                <div id="password-strength-text" style="font-size: 12px; color: var(--text-tertiary); margin-top: 4px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" class="checkbox" id="terms" required>
+                            <label for="terms" class="checkbox-label">
+                                I agree to the <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-solid" id="create-account-btn" style="margin: 32px 0 24px;" disabled>
+                            Create Account
+                        </button>
+                        
+                        <div style="text-align: center; padding-top: 16px; border-top: 1px solid var(--border-medium);">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Already have an account? </span>
+                            <button type="button" onclick="goToScreen('signin-screen')" class="link" style="background: none; border: none; font-size: 14px; cursor: pointer;">
+                                Sign in
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Phone Verification Screen -->
+            <div class="screen" id="phone-verification-screen">
+                <div class="verification-screen">
+                    <div class="form-header" style="position: absolute; top: 32px; left: 32px; right: 32px;">
+                        <button class="back-btn" onclick="goToScreen('registration-screen')" aria-label="Go back to registration">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m7 7l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <div class="header-title">Verify Phone</div>
+                    </div>
+                    
+                    <div class="verification-icon">
+                        <svg width="80" height="80" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-blue);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="verification-title">Verify your phone number</div>
+                    <div class="verification-description">
+                        We'll send a verification code to your phone number to keep your account secure
+                    </div>
+                    
+                    <div style="width: 100%; max-width: 300px; margin-bottom: 32px;">
+                        <label for="phone-number" class="form-label">Phone Number</label>
+                        <div class="input-wrapper">
+                            <input type="tel" class="form-input" placeholder="+1 (555) 000-0000" id="phone-number" style="font-size: 16px; text-align: center;" value="+1 ">
+                            <span class="input-icon">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 12px; color: var(--text-tertiary); text-align: center; margin-bottom: 32px; max-width: 280px; line-height: 1.4;">
+                        By continuing, you agree to our <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a>
+                    </div>
+                    
+                    <button class="btn btn-solid" onclick="goToScreen('otp-verification-screen')" style="width: 100%; max-width: 300px;">
+                        Send Verification Code
+                    </button>
+                </div>
+            </div>
+            
+            <!-- OTP Verification Screen -->
+            <div class="screen" id="otp-verification-screen">
+                <div class="verification-screen">
+                    <div class="form-header" style="position: absolute; top: 32px; left: 32px; right: 32px;">
+                        <button class="back-btn" onclick="goToScreen('phone-verification-screen')" aria-label="Go back to phone verification">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m7 7l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <div class="header-title">Verify Code</div>
+                    </div>
+                    
+                    <div class="verification-icon">
+                        <svg width="80" height="80" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--accent-aqua);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="verification-title">Enter verification code</div>
+                    <div class="verification-description">
+                        We sent a 6-digit code to<br>
+                        <strong style="color: var(--text-primary);" id="display-phone-number">+1 (555) 123-4567</strong>
+                    </div>
+                    
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" aria-label="Digit 1">
+                        <input type="text" class="otp-input" maxlength="1" aria-label="Digit 2">
+                        <input type="text" class="otp-input" maxlength="1" aria-label="Digit 3">
+                        <input type="text" class="otp-input" maxlength="1" aria-label="Digit 4">
+                        <input type="text" class="otp-input" maxlength="1" aria-label="Digit 5">
+                        <input type="text" class="otp-input" maxlength="1" aria-label="Digit 6">
+                    </div>
+                    
+                    <div class="countdown">
+                        <span style="color: var(--text-secondary);">Didn't receive the code? Resend in </span>
+                        <span id="timer" style="color: var(--primary-blue); font-weight: 600;">00:45</span>
+                    </div>
+                    
+                    <button class="btn btn-solid" onclick="verifyCode()" style="width: 100%; max-width: 300px;">
+                        Verify & Continue
+                    </button>
+                    
+                    <div class="text-links">
+                        <button type="button" class="link" onclick="resendCode()" id="resend-btn" style="background: none; border: none; font-size: 14px; cursor: pointer;" disabled>
+                            Resend verification code
+                        </button>
+                        
+                        <button type="button" class="link" onclick="goToScreen('phone-verification-screen')" style="background: none; border: none; font-size: 14px; cursor: pointer; color: var(--text-tertiary);">
+                            Wrong number? Change it
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn active" onclick="goToScreen('welcome-screen')">Welcome</button>
+        <button class="nav-btn" onclick="goToScreen('signin-screen')">Sign In</button>
+        <button class="nav-btn" onclick="goToScreen('registration-screen')">Register</button>
+        <button class="nav-btn" onclick="goToScreen('phone-verification-screen')">Phone</button>
+        <button class="nav-btn" onclick="goToScreen('otp-verification-screen')">OTP</button>
+    </div>
+    
+    <script>
+        /* ========================================
+           STUDIOLOOP WELCOME FLOW - JAVASCRIPT
+           Modern UX with GSAP Animations
+        ======================================== */
+
+        // Application State
+        let currentScreen = 'welcome-screen';
+        let timer = 45;
+        let timerInterval;
+        let isAnimating = false;
+
+        /* ========================================
+           SCREEN NAVIGATION & TRANSITIONS
+        ======================================== */
+        
+        function goToScreen(screenId) {
+            if (isAnimating || screenId === currentScreen) return;
+            
+            isAnimating = true;
+            const currentEl = document.getElementById(currentScreen);
+            const nextEl = document.getElementById(screenId);
+            
+            if (!currentEl || !nextEl) {
+                isAnimating = false;
+                return;
+            }
+
+            // Clear any existing timers
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            // GSAP screen transition animation
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    currentScreen = screenId;
+                    updateNavButtons();
+                    initScreenAnimations(screenId);
+                    
+                    // Start specific screen functionality
+                    if (screenId === 'otp-verification-screen') {
+                        startCountdown();
+                        focusFirstOTPInput();
+                    } else if (screenId === 'phone-verification-screen') {
+                        focusPhoneInput();
+                    }
+                    
+                    isAnimating = false;
+                }
+            });
+            
+            // Smooth slide transition
+            tl.to(currentEl, {
+                duration: 0.3,
+                x: -30,
+                opacity: 0,
+                ease: "power2.inOut"
+            })
+            .set(currentEl, { className: "screen" })
+            .set(nextEl, { className: "screen active", x: 30, opacity: 0 })
+            .to(nextEl, {
+                duration: 0.4,
+                x: 0,
+                opacity: 1,
+                ease: "power2.out"
+            }, "-=0.1");
+        }
+
+        function updateNavButtons() {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                const onclick = btn.getAttribute('onclick');
+                if (onclick && onclick.includes(currentScreen)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        /* ========================================
+           GSAP ANIMATIONS
+        ======================================== */
+        
+        function initScreenAnimations(screenId) {
+            switch(screenId) {
+                case 'welcome-screen':
+                    animateWelcomeScreen();
+                    break;
+                case 'signin-screen':
+                case 'registration-screen':
+                    animateFormScreen();
+                    break;
+                case 'phone-verification-screen':
+                case 'otp-verification-screen':
+                    animateVerificationScreen();
+                    break;
+            }
+        }
+
+        function animateWelcomeScreen() {
+            const tl = gsap.timeline();
+            
+            tl.fromTo('.logo-section', 
+                { y: 30, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
+            )
+            .fromTo('.hero-illustration',
+                { scale: 0.8, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }, "-=0.4"
+            )
+            .fromTo('.welcome-actions .btn',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.3"
+            );
+
+            // Subtle floating animation for hero illustration
+            gsap.to('.hero-illustration', {
+                duration: 4,
+                y: -8,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: 1
+            });
+        }
+
+        function animateFormScreen() {
+            const tl = gsap.timeline();
+            
+            tl.fromTo('.welcome-message', 
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }
+            )
+            .fromTo('.form-group',
+                { y: 15, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: "power2.out" }, "-=0.3"
+            )
+            .fromTo('.checkbox-group, .btn-solid',
+                { y: 15, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: "power2.out" }, "-=0.2"
+            );
+        }
+
+        function animateVerificationScreen() {
+            const tl = gsap.timeline();
+            
+            tl.fromTo('.verification-icon', 
+                { scale: 0, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }
+            )
+            .fromTo('.verification-title, .verification-description',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.3"
+            )
+            .fromTo('.otp-container .otp-input',
+                { scale: 0.8, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.3, stagger: 0.05, ease: "back.out(1.7)" }, "-=0.2"
+            )
+            .fromTo('.btn-solid, .text-links',
+                { y: 15, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, ease: "power2.out" }, "-=0.1"
+            );
+        }
+
+        /* ========================================
+           OTP INPUT HANDLING
+        ======================================== */
+        
+        function setupOTPInputs() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    const value = e.target.value.replace(/[^0-9]/g, ''); // Only numbers
+                    e.target.value = value;
+                    
+                    if (value && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                    
+                    // Check if all inputs are filled
+                    checkOTPComplete();
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace') {
+                        if (!e.target.value && index > 0) {
+                            otpInputs[index - 1].focus();
+                            otpInputs[index - 1].value = '';
+                        }
+                    }
+                });
+                
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const paste = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                    const digits = paste.slice(0, 6).split('');
+                    
+                    digits.forEach((digit, i) => {
+                        if (otpInputs[i]) {
+                            otpInputs[i].value = digit;
+                        }
+                    });
+                    
+                    checkOTPComplete();
+                });
+            });
+        }
+
+        function checkOTPComplete() {
+            const otp = Array.from(document.querySelectorAll('.otp-input'))
+                .map(input => input.value).join('');
+            
+            const verifyBtn = document.querySelector('#otp-verification-screen .btn-solid');
+            if (verifyBtn) {
+                verifyBtn.disabled = otp.length !== 6;
+            }
+        }
+
+        function focusFirstOTPInput() {
+            setTimeout(() => {
+                const firstInput = document.querySelector('.otp-input');
+                if (firstInput) firstInput.focus();
+            }, 500);
+        }
+
+        function focusPhoneInput() {
+            setTimeout(() => {
+                const phoneInput = document.getElementById('phone-number');
+                if (phoneInput) phoneInput.focus();
+            }, 500);
+        }
+
+        /* ========================================
+           COUNTDOWN TIMER
+        ======================================== */
+        
+        function startCountdown() {
+            timer = 45;
+            const timerEl = document.getElementById('timer');
+            const resendBtn = document.getElementById('resend-btn');
+            
+            if (resendBtn) resendBtn.disabled = true;
+            
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                
+                if (timerEl) {
+                    timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    if (resendBtn) {
+                        resendBtn.disabled = false;
+                        resendBtn.textContent = 'Resend code now';
+                    }
+                }
+                
+                timer--;
+            }, 1000);
+        }
+
+        /* ========================================
+           FORM VALIDATION & SUBMISSION
+        ======================================== */
+        
+        function setupFormValidation() {
+            // Registration form
+            const registrationForm = document.getElementById('registration-form');
+            const createBtn = document.getElementById('create-account-btn');
+            
+            if (registrationForm && createBtn) {
+                const inputs = registrationForm.querySelectorAll('input[required]');
+                const termsCheckbox = document.getElementById('terms');
+                
+                function validateRegistrationForm() {
+                    let isValid = true;
+                    
+                    inputs.forEach(input => {
+                        if (!input.value.trim()) isValid = false;
+                    });
+                    
+                    if (!termsCheckbox?.checked) isValid = false;
+                    
+                    createBtn.disabled = !isValid;
+                }
+                
+                inputs.forEach(input => {
+                    input.addEventListener('input', validateRegistrationForm);
+                    input.addEventListener('blur', validateRegistrationForm);
+                });
+                
+                if (termsCheckbox) {
+                    termsCheckbox.addEventListener('change', validateRegistrationForm);
+                }
+                
+                registrationForm.addEventListener('submit', handleRegistrationSubmit);
+            }
+            
+            // Sign-in form
+            const signinForm = document.getElementById('signin-form');
+            if (signinForm) {
+                signinForm.addEventListener('submit', handleSigninSubmit);
+            }
+        }
+
+        function handleRegistrationSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('create-account-btn');
+            
+            if (btn.disabled) return;
+            
+            btn.classList.add('loading');
+            btn.textContent = 'Creating Account...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                goToScreen('phone-verification-screen');
+                btn.classList.remove('loading');
+                btn.textContent = 'Create Account';
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        function handleSigninSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('signin-btn');
+            
+            btn.classList.add('loading');
+            btn.textContent = 'Signing In...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                showSuccessAlert('Welcome back! 🎉', 'You would now be redirected to the home screen.');
+                btn.classList.remove('loading');
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        /* ========================================
+           PASSWORD STRENGTH & TOGGLES
+        ======================================== */
+        
+        function setupPasswordFeatures() {
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', updatePasswordStrength);
+            }
+        }
+
+        function updatePasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('password-strength');
+            const strengthText = document.getElementById('password-strength-text');
+            
+            if (!strengthBar || !strengthText) return;
+            
+            let strength = 0;
+            let feedback = '';
+            
+            if (password.length >= 8) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+            
+            strengthBar.style.width = `${strength}%`;
+            
+            if (strength === 0) {
+                feedback = '';
+                strengthBar.style.background = 'var(--gray-300)';
+            } else if (strength <= 25) {
+                feedback = 'Weak password';
+                strengthBar.style.background = '#ef4444';
+            } else if (strength <= 50) {
+                feedback = 'Fair password';
+                strengthBar.style.background = '#f97316';
+            } else if (strength <= 75) {
+                feedback = 'Good password';
+                strengthBar.style.background = '#eab308';
+            } else {
+                feedback = 'Strong password';
+                strengthBar.style.background = '#22c55e';
+            }
+            
+            strengthText.textContent = feedback;
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const toggle = document.querySelector('#registration-form .password-toggle');
+            
+            if (input && toggle) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.textContent = 'Hide';
+                } else {
+                    input.type = 'password';
+                    toggle.textContent = 'Show';
+                }
+            }
+        }
+
+        function toggleSignInPassword() {
+            const input = document.getElementById('signin-password');
+            const toggle = document.querySelector('#signin-form .password-toggle');
+            
+            if (input && toggle) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.textContent = 'Hide';
+                } else {
+                    input.type = 'password';
+                    toggle.textContent = 'Show';
+                }
+            }
+        }
+
+        /* ========================================
+           VERIFICATION FUNCTIONS
+        ======================================== */
+        
+        function verifyCode() {
+            const otp = Array.from(document.querySelectorAll('.otp-input'))
+                .map(input => input.value).join('');
+            
+            if (otp.length !== 6) {
+                showErrorAlert('Invalid Code', 'Please enter all 6 digits of the verification code.');
+                return;
+            }
+            
+            const btn = document.querySelector('#otp-verification-screen .btn-solid');
+            if (btn) {
+                btn.classList.add('loading');
+                btn.textContent = 'Verifying...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    showSuccessAlert(
+                        'Phone Verified Successfully! 🎉', 
+                        'Your account has been created. You can now start your fitness journey with StudioLoop!'
+                    );
+                    btn.classList.remove('loading');
+                    btn.textContent = 'Verify & Continue';
+                    btn.disabled = false;
+                }, 2000);
+            }
+        }
+
+        function resendCode() {
+            const btn = document.getElementById('resend-btn');
+            if (btn && !btn.disabled) {
+                btn.textContent = 'Sending...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    showSuccessAlert('Code Sent! 📱', 'A new verification code has been sent to your phone.');
+                    startCountdown();
+                    btn.textContent = 'Resend verification code';
+                }, 1500);
+            }
+        }
+
+        /* ========================================
+           UTILITY FUNCTIONS
+        ======================================== */
+        
+        function showSuccessAlert(title, message) {
+            alert(`${title}\n\n${message}`);
+        }
+
+        function showErrorAlert(title, message) {
+            alert(`❌ ${title}\n\n${message}`);
+        }
+
+        /* ========================================
+           INITIALIZATION
+        ======================================== */
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 StudioLoop Welcome Flow - Modern UX Loaded!');
+            
+            // Initialize all features
+            setupOTPInputs();
+            setupFormValidation();
+            setupPasswordFeatures();
+            
+            // Initial screen animation
+            setTimeout(() => {
+                initScreenAnimations(currentScreen);
+            }, 100);
+            
+            // Update phone number display from registration
+            const phoneDisplay = document.getElementById('display-phone-number');
+            const phoneInput = document.getElementById('phone');
+            
+            if (phoneInput && phoneDisplay) {
+                const observer = new MutationObserver(() => {
+                    if (phoneInput.value) {
+                        phoneDisplay.textContent = phoneInput.value;
+                    }
+                });
+                
+                phoneInput.addEventListener('input', () => {
+                    phoneDisplay.textContent = phoneInput.value || '+1 (555) 123-4567';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

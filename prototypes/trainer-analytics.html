@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop Trainer Analytics</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.29.3/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Brand Variables */
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-100: #f1f5f9;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-300: #d1d5db;
+            --sl-neutral-400: #9ca3af;
+            --sl-neutral-500: #6b7280;
+            --sl-neutral-600: #4b5563;
+            --sl-neutral-700: #374151;
+            --sl-neutral-800: #1f2937;
+            --sl-neutral-900: #0f172a;
+            --sl-grad-1: linear-gradient(45deg, #00e5ff, #8e24aa);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--sl-neutral-50);
+            color: var(--sl-neutral-700);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--sl-neutral-0);
+            border-right: 1px solid var(--sl-neutral-200);
+            padding: 24px 0;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            color: var(--sl-brand);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--sl-grad-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            text-decoration: none;
+            color: var(--sl-neutral-600);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 3px solid transparent;
+            position: relative;
+            border-radius: 0 12px 12px 0;
+            margin-right: 16px;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--sl-brand);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+            transform: translateX(4px);
+        }
+        
+        .nav-link:hover::before {
+            width: 3px;
+        }
+
+        .nav-link.active {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+            border-right-color: var(--sl-brand);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::before {
+            width: 3px;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--sl-neutral-50);
+            width: calc(100vw - 280px);
+            position: relative;
+        }
+
+        .header {
+            background: var(--sl-neutral-0);
+            border-bottom: 1px solid var(--sl-neutral-200);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .date-range-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: var(--sl-neutral-100);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .date-range-selector:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-2px);
+        }
+
+        /* Analytics Content */
+        .analytics-content {
+            padding: 32px;
+            width: 100%;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .kpi-icon.revenue {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .kpi-icon.classes {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+        }
+
+        .kpi-icon.students {
+            background: rgba(142, 36, 170, 0.1);
+            color: var(--sl-accent-violet);
+        }
+
+        .kpi-icon.rating {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .kpi-trend.up {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .kpi-trend.down {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: var(--sl-neutral-500);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        @media (min-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .chart-container {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-option {
+            padding: 6px 12px;
+            border: 1px solid var(--sl-neutral-200);
+            background: var(--sl-neutral-0);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--sl-neutral-600);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chart-option.active {
+            background: var(--sl-brand);
+            color: white;
+            border-color: var(--sl-brand);
+        }
+
+        /* Performance Table */
+        .performance-table {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--sl-neutral-50);
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--sl-neutral-500);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--sl-neutral-200);
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--sl-neutral-100);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .class-name {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .performance-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar-bg {
+            flex: 1;
+            height: 8px;
+            background: var(--sl-neutral-100);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--sl-brand);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .performance-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--sl-neutral-700);
+            min-width: 40px;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: auto repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .heatmap-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--sl-neutral-500);
+            display: flex;
+            align-items: center;
+            padding-right: 12px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+        }
+
+        .heat-0 { background: var(--sl-neutral-100); color: var(--sl-neutral-400); }
+        .heat-1 { background: rgba(0, 119, 255, 0.2); color: var(--sl-brand); }
+        .heat-2 { background: rgba(0, 119, 255, 0.4); color: var(--sl-brand); }
+        .heat-3 { background: rgba(0, 119, 255, 0.6); color: white; }
+        .heat-4 { background: rgba(0, 119, 255, 0.8); color: white; }
+        .heat-5 { background: var(--sl-brand); color: white; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .analytics-content {
+                padding: 16px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-section">
+            <svg class="logo" viewBox="0 0 40 40" fill="currentColor">
+                <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M20 10 L25 20 L20 30 L15 20 Z" fill="currentColor"/>
+            </svg>
+            <span class="logo-text">StudioLoop</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="trainer-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-schedule.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-analytics.html" class="nav-link active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-earnings.html" class="nav-link">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-communications.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-equipment.html" class="nav-link">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Equipment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Analytics Dashboard</h1>
+            <div class="header-actions">
+                <div class="date-range-selector">
+                    <i class="fas fa-calendar"></i>
+                    <span>Last 30 Days</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <button class="export-btn">
+                    <i class="fas fa-download"></i>
+                    <span>Export Report</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Analytics Content -->
+        <div class="analytics-content">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card fade-in">
+                    <div class="kpi-header">
+                        <div class="kpi-icon revenue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-value">R24,580</div>
+                    <div class="kpi-label">Total Revenue</div>
+                </div>
+
+                <div class="kpi-card fade-in">
+                    <div class="kpi-header">
+                        <div class="kpi-icon classes">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>8%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-value">142</div>
+                    <div class="kpi-label">Classes Taught</div>
+                </div>
+
+                <div class="kpi-card fade-in">
+                    <div class="kpi-header">
+                        <div class="kpi-icon students">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>15%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-value">1,284</div>
+                    <div class="kpi-label">Total Students</div>
+                </div>
+
+                <div class="kpi-card fade-in">
+                    <div class="kpi-header">
+                        <div class="kpi-icon rating">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>0.2</span>
+                        </div>
+                    </div>
+                    <div class="kpi-value">4.8</div>
+                    <div class="kpi-label">Average Rating</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <!-- Revenue Chart -->
+                <div class="chart-container fade-in">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Revenue Trend</h3>
+                        <div class="chart-options">
+                            <button class="chart-option">Daily</button>
+                            <button class="chart-option active">Weekly</button>
+                            <button class="chart-option">Monthly</button>
+                        </div>
+                    </div>
+                    <canvas id="revenueChart" height="300"></canvas>
+                </div>
+
+                <!-- Class Distribution -->
+                <div class="chart-container fade-in">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Class Distribution</h3>
+                    </div>
+                    <canvas id="classChart" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Performance Table -->
+            <div class="performance-table fade-in">
+                <div class="table-header">
+                    <h3 class="table-title">Class Performance</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Class Name</th>
+                                <th>Students</th>
+                                <th>Attendance Rate</th>
+                                <th>Revenue</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="class-name">HIIT Blast</td>
+                                <td>324</td>
+                                <td>
+                                    <div class="performance-bar">
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 92%"></div>
+                                        </div>
+                                        <span class="performance-value">92%</span>
+                                    </div>
+                                </td>
+                                <td>R6,480</td>
+                                <td>4.9 ⭐</td>
+                            </tr>
+                            <tr>
+                                <td class="class-name">Power Yoga</td>
+                                <td>256</td>
+                                <td>
+                                    <div class="performance-bar">
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 88%"></div>
+                                        </div>
+                                        <span class="performance-value">88%</span>
+                                    </div>
+                                </td>
+                                <td>R5,120</td>
+                                <td>4.8 ⭐</td>
+                            </tr>
+                            <tr>
+                                <td class="class-name">Strength Training</td>
+                                <td>198</td>
+                                <td>
+                                    <div class="performance-bar">
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 85%"></div>
+                                        </div>
+                                        <span class="performance-value">85%</span>
+                                    </div>
+                                </td>
+                                <td>R3,960</td>
+                                <td>4.7 ⭐</td>
+                            </tr>
+                            <tr>
+                                <td class="class-name">Morning Bootcamp</td>
+                                <td>287</td>
+                                <td>
+                                    <div class="performance-bar">
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 90%"></div>
+                                        </div>
+                                        <span class="performance-value">90%</span>
+                                    </div>
+                                </td>
+                                <td>R5,740</td>
+                                <td>4.9 ⭐</td>
+                            </tr>
+                            <tr>
+                                <td class="class-name">Pilates Flow</td>
+                                <td>142</td>
+                                <td>
+                                    <div class="performance-bar">
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 78%"></div>
+                                        </div>
+                                        <span class="performance-value">78%</span>
+                                    </div>
+                                </td>
+                                <td>R2,840</td>
+                                <td>4.6 ⭐</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Activity Heatmap -->
+            <div class="heatmap-container fade-in">
+                <div class="chart-header">
+                    <h3 class="chart-title">Weekly Activity Heatmap</h3>
+                </div>
+                <div class="heatmap-grid">
+                    <!-- Time labels -->
+                    <div></div>
+                    <div class="heatmap-label">Mon</div>
+                    <div class="heatmap-label">Tue</div>
+                    <div class="heatmap-label">Wed</div>
+                    <div class="heatmap-label">Thu</div>
+                    <div class="heatmap-label">Fri</div>
+                    <div class="heatmap-label">Sat</div>
+                    <div class="heatmap-label">Sun</div>
+                    
+                    <!-- 6 AM -->
+                    <div class="heatmap-label">6 AM</div>
+                    <div class="heatmap-cell heat-3">15</div>
+                    <div class="heatmap-cell heat-4">18</div>
+                    <div class="heatmap-cell heat-3">14</div>
+                    <div class="heatmap-cell heat-5">22</div>
+                    <div class="heatmap-cell heat-4">19</div>
+                    <div class="heatmap-cell heat-2">8</div>
+                    <div class="heatmap-cell heat-1">5</div>
+                    
+                    <!-- 9 AM -->
+                    <div class="heatmap-label">9 AM</div>
+                    <div class="heatmap-cell heat-2">10</div>
+                    <div class="heatmap-cell heat-2">9</div>
+                    <div class="heatmap-cell heat-3">12</div>
+                    <div class="heatmap-cell heat-2">11</div>
+                    <div class="heatmap-cell heat-3">14</div>
+                    <div class="heatmap-cell heat-5">25</div>
+                    <div class="heatmap-cell heat-4">20</div>
+                    
+                    <!-- 12 PM -->
+                    <div class="heatmap-label">12 PM</div>
+                    <div class="heatmap-cell heat-1">6</div>
+                    <div class="heatmap-cell heat-1">5</div>
+                    <div class="heatmap-cell heat-2">8</div>
+                    <div class="heatmap-cell heat-1">7</div>
+                    <div class="heatmap-cell heat-2">9</div>
+                    <div class="heatmap-cell heat-3">15</div>
+                    <div class="heatmap-cell heat-3">14</div>
+                    
+                    <!-- 5 PM -->
+                    <div class="heatmap-label">5 PM</div>
+                    <div class="heatmap-cell heat-5">24</div>
+                    <div class="heatmap-cell heat-5">26</div>
+                    <div class="heatmap-cell heat-4">20</div>
+                    <div class="heatmap-cell heat-5">23</div>
+                    <div class="heatmap-cell heat-4">18</div>
+                    <div class="heatmap-cell heat-2">10</div>
+                    <div class="heatmap-cell heat-1">4</div>
+                    
+                    <!-- 7 PM -->
+                    <div class="heatmap-label">7 PM</div>
+                    <div class="heatmap-cell heat-4">18</div>
+                    <div class="heatmap-cell heat-4">20</div>
+                    <div class="heatmap-cell heat-3">16</div>
+                    <div class="heatmap-cell heat-4">19</div>
+                    <div class="heatmap-cell heat-3">15</div>
+                    <div class="heatmap-cell heat-1">6</div>
+                    <div class="heatmap-cell heat-0">2</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [5200, 5800, 6100, 7480],
+                        borderColor: '#0077ff',
+                        backgroundColor: 'rgba(0, 119, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Class Distribution Chart
+            const classCtx = document.getElementById('classChart').getContext('2d');
+            new Chart(classCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['HIIT', 'Yoga', 'Strength', 'Bootcamp', 'Pilates'],
+                    datasets: [{
+                        data: [30, 25, 20, 18, 7],
+                        backgroundColor: [
+                            '#0077ff',
+                            '#00e5ff',
+                            '#8e24aa',
+                            '#ff8a65',
+                            '#10b981'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Animate progress bars
+            const bars = document.querySelectorAll('.bar-fill');
+            setTimeout(() => {
+                bars.forEach(bar => {
+                    bar.style.width = bar.style.width;
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>

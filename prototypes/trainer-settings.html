@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop Trainer Settings</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Brand Variables */
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-100: #f1f5f9;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-300: #d1d5db;
+            --sl-neutral-400: #9ca3af;
+            --sl-neutral-500: #6b7280;
+            --sl-neutral-600: #4b5563;
+            --sl-neutral-700: #374151;
+            --sl-neutral-800: #1f2937;
+            --sl-neutral-900: #0f172a;
+            --sl-grad-1: linear-gradient(45deg, #00e5ff, #8e24aa);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--sl-neutral-50);
+            color: var(--sl-neutral-700);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--sl-neutral-0);
+            border-right: 1px solid var(--sl-neutral-200);
+            padding: 24px 0;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            color: var(--sl-brand);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--sl-grad-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            text-decoration: none;
+            color: var(--sl-neutral-600);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 3px solid transparent;
+            position: relative;
+            border-radius: 0 12px 12px 0;
+            margin-right: 16px;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--sl-brand);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+            transform: translateX(4px);
+        }
+        
+        .nav-link:hover::before {
+            width: 3px;
+        }
+
+        .nav-link.active {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+            border-right-color: var(--sl-brand);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::before {
+            width: 3px;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--sl-neutral-50);
+            width: calc(100vw - 280px);
+            position: relative;
+        }
+
+        .header {
+            background: var(--sl-neutral-0);
+            border-bottom: 1px solid var(--sl-neutral-200);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .save-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .save-btn:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-2px);
+        }
+
+        .save-btn:disabled {
+            background: var(--sl-neutral-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Settings Content */
+        .settings-content {
+            padding: 32px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Settings Tabs */
+        .settings-tabs {
+            display: flex;
+            background: var(--sl-neutral-0);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--sl-neutral-600);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--sl-brand);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--sl-neutral-100);
+        }
+
+        /* Settings Cards */
+        .settings-card {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .settings-card.hidden {
+            display: none;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-description {
+            color: var(--sl-neutral-500);
+            margin-bottom: 32px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--sl-brand);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--sl-neutral-300);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox.checked {
+            background: var(--sl-brand);
+            border-color: var(--sl-brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Profile Photo */
+        .profile-photo-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--sl-neutral-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--sl-neutral-400);
+            overflow: hidden;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .photo-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--sl-neutral-200);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: var(--sl-neutral-700);
+        }
+
+        .photo-btn.primary {
+            background: var(--sl-brand);
+            color: white;
+            border-color: var(--sl-brand);
+        }
+
+        .photo-btn.danger {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .photo-btn:hover {
+            background: var(--sl-neutral-50);
+        }
+
+        .photo-btn.primary:hover {
+            background: var(--sl-brand-700);
+        }
+
+        .photo-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--sl-neutral-300);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--sl-brand);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Notification Settings */
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--sl-neutral-100);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-info h4 {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .notification-info p {
+            color: var(--sl-neutral-500);
+            font-size: 14px;
+        }
+
+        /* Availability Settings */
+        .availability-grid {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .day-label {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            min-width: 80px;
+        }
+
+        .time-input {
+            padding: 8px 12px;
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--sl-neutral-200);
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            border: 1px solid var(--sl-neutral-200);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--sl-neutral-700);
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--sl-neutral-50);
+        }
+
+        .btn-danger {
+            padding: 12px 24px;
+            border: 1px solid var(--danger);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--danger);
+            transition: all 0.2s ease;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .settings-content {
+                padding: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .profile-photo-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .settings-tabs {
+                padding: 4px;
+            }
+
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .availability-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-section">
+            <svg class="logo" viewBox="0 0 40 40" fill="currentColor">
+                <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M20 10 L25 20 L20 30 L15 20 Z" fill="currentColor"/>
+            </svg>
+            <span class="logo-text">StudioLoop</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="trainer-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-schedule.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-analytics.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-earnings.html" class="nav-link">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-communications.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-equipment.html" class="nav-link">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Equipment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-settings.html" class="nav-link active">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Settings</h1>
+            <div class="header-actions">
+                <button class="save-btn" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- Settings Tabs -->
+            <div class="settings-tabs fade-in">
+                <button class="tab-btn active" data-tab="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </button>
+                <button class="tab-btn" data-tab="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </button>
+                <button class="tab-btn" data-tab="availability">
+                    <i class="fas fa-clock"></i>
+                    <span>Availability</span>
+                </button>
+                <button class="tab-btn" data-tab="privacy">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Privacy</span>
+                </button>
+                <button class="tab-btn" data-tab="account">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Account</span>
+                </button>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="settings-card fade-in" id="profile-tab">
+                <h2 class="card-title">
+                    <i class="fas fa-user"></i>
+                    Profile Information
+                </h2>
+                <p class="card-description">Update your personal information and professional details</p>
+
+                <div class="profile-photo-section">
+                    <div class="profile-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="photo-actions">
+                        <button class="photo-btn primary">Upload New Photo</button>
+                        <button class="photo-btn">Choose from Gallery</button>
+                        <button class="photo-btn danger">Remove Photo</button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" value="Alex" placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" value="Johnson" placeholder="Enter your last name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" value="alex.johnson@example.com" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" value="+27 82 123 4567" placeholder="Enter your phone number">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-input form-textarea" placeholder="Tell us about yourself and your training philosophy...">Certified personal trainer with 8 years of experience specializing in HIIT, strength training, and functional fitness. Passionate about helping people achieve their fitness goals through personalized training programs.</textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Specialization</label>
+                        <select class="form-select">
+                            <option value="hiit">HIIT Training</option>
+                            <option value="strength">Strength Training</option>
+                            <option value="yoga">Yoga</option>
+                            <option value="pilates">Pilates</option>
+                            <option value="crossfit">CrossFit</option>
+                            <option value="cardio">Cardio</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Years of Experience</label>
+                        <input type="number" class="form-input" value="8" placeholder="Years">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Certifications</label>
+                    <input type="text" class="form-input" value="ACSM, NASM-CPT, First Aid/CPR" placeholder="List your certifications">
+                </div>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="settings-card fade-in hidden" id="notifications-tab">
+                <h2 class="card-title">
+                    <i class="fas fa-bell"></i>
+                    Notification Preferences
+                </h2>
+                <p class="card-description">Choose how and when you want to receive notifications</p>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Class Bookings</h4>
+                        <p>Get notified when students book or cancel your classes</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>New Messages</h4>
+                        <p>Receive notifications for new messages from students</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Schedule Reminders</h4>
+                        <p>Get reminded about upcoming classes 30 minutes before</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Payment Updates</h4>
+                        <p>Notifications about earnings and payment status</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Marketing Communications</h4>
+                        <p>Updates about new features, tips, and StudioLoop news</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Class Reviews</h4>
+                        <p>Get notified when students leave reviews for your classes</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-top: 32px;">
+                    <label class="form-label">Email Notification Frequency</label>
+                    <select class="form-select">
+                        <option value="immediate">Immediate</option>
+                        <option value="hourly">Hourly Digest</option>
+                        <option value="daily" selected>Daily Digest</option>
+                        <option value="weekly">Weekly Summary</option>
+                        <option value="never">Never</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Availability Settings -->
+            <div class="settings-card fade-in hidden" id="availability-tab">
+                <h2 class="card-title">
+                    <i class="fas fa-clock"></i>
+                    Availability Schedule
+                </h2>
+                <p class="card-description">Set your general availability for classes and bookings</p>
+
+                <div class="availability-grid">
+                    <div class="day-label">Monday</div>
+                    <input type="time" class="time-input" value="06:00">
+                    <input type="time" class="time-input" value="20:00">
+                </div>
+
+                <div class="availability-grid">
+                    <div class="day-label">Tuesday</div>
+                    <input type="time" class="time-input" value="06:00">
+                    <input type="time" class="time-input" value="20:00">
+                </div>
+
+                <div class="availability-grid">
+                    <div class="day-label">Wednesday</div>
+                    <input type="time" class="time-input" value="06:00">
+                    <input type="time" class="time-input" value="20:00">
+                </div>
+
+                <div class="availability-grid">
+                    <div class="day-label">Thursday</div>
+                    <input type="time" class="time-input" value="06:00">
+                    <input type="time" class="time-input" value="20:00">
+                </div>
+
+                <div class="availability-grid">
+                    <div class="day-label">Friday</div>
+                    <input type="time" class="time-input" value="06:00">
+                    <input type="time" class="time-input" value="19:00">
+                </div>
+
+                <div class="availability-grid">
+                    <div class="day-label">Saturday</div>
+                    <input type="time" class="time-input" value="08:00">
+                    <input type="time" class="time-input" value="16:00">
+                </div>
+
+                <div class="availability-grid">
+                    <div class="day-label">Sunday</div>
+                    <input type="time" class="time-input" value="09:00">
+                    <input type="time" class="time-input" value="15:00">
+                </div>
+
+                <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--sl-neutral-200);">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--sl-neutral-900);">Additional Settings</h3>
+                    
+                    <div class="form-checkbox">
+                        <div class="checkbox checked" onclick="toggleCheckbox(this)">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <label>Allow automatic class scheduling during available hours</label>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <div class="checkbox" onclick="toggleCheckbox(this)"></div>
+                        <label>Accept last-minute bookings (less than 2 hours notice)</label>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <div class="checkbox checked" onclick="toggleCheckbox(this)">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <label>Show availability to students for private sessions</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div class="settings-card fade-in hidden" id="privacy-tab">
+                <h2 class="card-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Privacy & Safety
+                </h2>
+                <p class="card-description">Control your privacy settings and data sharing preferences</p>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Profile Visibility</h4>
+                        <p>Make your profile visible to students searching for trainers</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Contact Information</h4>
+                        <p>Show your phone number and email to booked students</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Reviews & Ratings</h4>
+                        <p>Allow students to leave public reviews on your profile</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notification-item">
+                    <div class="notification-info">
+                        <h4>Data Analytics</h4>
+                        <p>Share anonymized data to help improve StudioLoop services</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-top: 32px;">
+                    <label class="form-label">Who can message you directly?</label>
+                    <select class="form-select">
+                        <option value="all">All students</option>
+                        <option value="booked" selected>Only students who have booked classes</option>
+                        <option value="none">No direct messages</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Class Photo Sharing</label>
+                    <select class="form-select">
+                        <option value="always">Always allow photos to be shared</option>
+                        <option value="ask" selected>Ask permission before sharing</option>
+                        <option value="never">Never allow photos to be shared</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="settings-card fade-in hidden" id="account-tab">
+                <h2 class="card-title">
+                    <i class="fas fa-user-cog"></i>
+                    Account Management
+                </h2>
+                <p class="card-description">Manage your account security and preferences</p>
+
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" class="form-input" placeholder="Enter current password">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-input" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-input" placeholder="Confirm new password">
+                    </div>
+                </div>
+
+                <div class="notification-item" style="margin: 32px 0;">
+                    <div class="notification-info">
+                        <h4>Two-Factor Authentication</h4>
+                        <p>Add an extra layer of security to your account</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preferred Language</label>
+                    <select class="form-select">
+                        <option value="en" selected>English</option>
+                        <option value="af">Afrikaans</option>
+                        <option value="zu">Zulu</option>
+                        <option value="xh">Xhosa</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Timezone</label>
+                    <select class="form-select">
+                        <option value="Africa/Johannesburg" selected>South Africa Standard Time</option>
+                        <option value="UTC">UTC</option>
+                        <option value="Europe/London">London</option>
+                        <option value="America/New_York">New York</option>
+                    </select>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-secondary">Export My Data</button>
+                    <button class="btn-secondary">Download Account Report</button>
+                    <button class="btn-danger">Deactivate Account</button>
+                </div>
+
+                <div style="margin-top: 48px; padding-top: 32px; border-top: 2px solid var(--danger);">
+                    <h3 style="color: var(--danger); font-size: 18px; font-weight: 600; margin-bottom: 16px;">Danger Zone</h3>
+                    <p style="color: var(--sl-neutral-500); margin-bottom: 20px;">
+                        Once you delete your account, there is no going back. Please be certain.
+                    </p>
+                    <button class="btn-danger">Delete Account Permanently</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.settings-card');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.dataset.tab + '-tab';
+
+                    // Remove active class from all buttons
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    // Hide all tab contents
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    // Show selected tab content
+                    document.getElementById(tabId).classList.remove('hidden');
+                });
+            });
+
+            // Save button functionality
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.addEventListener('click', function() {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Saving...</span>';
+
+                // Simulate API call
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-check"></i><span>Saved!</span>';
+                    this.style.background = 'var(--success)';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-save"></i><span>Save Changes</span>';
+                        this.style.background = 'var(--sl-brand)';
+                    }, 2000);
+                }, 1500);
+            });
+
+            // Form input change detection
+            const formInputs = document.querySelectorAll('.form-input, .form-select');
+            formInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    saveBtn.disabled = false;
+                    saveBtn.style.background = 'var(--warning)';
+                    saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Unsaved Changes</span>';
+                });
+            });
+
+            // Switch toggle change detection
+            const switches = document.querySelectorAll('.switch input');
+            switches.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    saveBtn.disabled = false;
+                    saveBtn.style.background = 'var(--warning)';
+                    saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Unsaved Changes</span>';
+                });
+            });
+
+            // Photo upload functionality
+            const photoUploadBtn = document.querySelector('.photo-btn.primary');
+            photoUploadBtn.addEventListener('click', function() {
+                // Create hidden file input
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const profilePhoto = document.querySelector('.profile-photo');
+                            profilePhoto.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
+
+            // Remove photo functionality
+            const removePhotoBtn = document.querySelector('.photo-btn.danger');
+            removePhotoBtn.addEventListener('click', function() {
+                const profilePhoto = document.querySelector('.profile-photo');
+                profilePhoto.innerHTML = '<i class="fas fa-user"></i>';
+            });
+        });
+
+        // Checkbox toggle function
+        function toggleCheckbox(checkbox) {
+            if (checkbox.classList.contains('checked')) {
+                checkbox.classList.remove('checked');
+                checkbox.innerHTML = '';
+            } else {
+                checkbox.classList.add('checked');
+                checkbox.innerHTML = '<i class="fas fa-check"></i>';
+            }
+            
+            // Trigger save button state
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = false;
+            saveBtn.style.background = 'var(--warning)';
+            saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Unsaved Changes</span>';
+        }
+    </script>
+</body>
+</html>

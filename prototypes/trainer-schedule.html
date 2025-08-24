@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop Trainer Schedule</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Brand Variables */
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-100: #f1f5f9;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-300: #d1d5db;
+            --sl-neutral-400: #9ca3af;
+            --sl-neutral-500: #6b7280;
+            --sl-neutral-600: #4b5563;
+            --sl-neutral-700: #374151;
+            --sl-neutral-800: #1f2937;
+            --sl-neutral-900: #0f172a;
+            --sl-grad-1: linear-gradient(45deg, #00e5ff, #8e24aa);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--sl-neutral-50);
+            color: var(--sl-neutral-700);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--sl-neutral-0);
+            border-right: 1px solid var(--sl-neutral-200);
+            padding: 24px 0;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            color: var(--sl-brand);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--sl-grad-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            text-decoration: none;
+            color: var(--sl-neutral-600);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 3px solid transparent;
+            position: relative;
+            border-radius: 0 12px 12px 0;
+            margin-right: 16px;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--sl-brand);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+            transform: translateX(4px);
+        }
+        
+        .nav-link:hover::before {
+            width: 3px;
+        }
+
+        .nav-link.active {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+            border-right-color: var(--sl-brand);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::before {
+            width: 3px;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--sl-neutral-50);
+            width: calc(100vw - 280px);
+            position: relative;
+        }
+
+        .header {
+            background: var(--sl-neutral-0);
+            border-bottom: 1px solid var(--sl-neutral-200);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--sl-neutral-100);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--sl-neutral-600);
+            transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+            background: var(--sl-neutral-0);
+            color: var(--sl-brand);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-class-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-class-btn:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-2px);
+        }
+
+        /* Schedule Content */
+        .schedule-content {
+            padding: 32px;
+            width: 100%;
+        }
+
+        /* Calendar Header */
+        .calendar-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 32px;
+            background: var(--sl-neutral-0);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--sl-neutral-200);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sl-neutral-600);
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--sl-neutral-50);
+            border-color: var(--sl-brand);
+            color: var(--sl-brand);
+        }
+
+        .current-date {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin: 0 24px;
+        }
+
+        .today-btn {
+            padding: 8px 16px;
+            background: var(--sl-neutral-100);
+            border: none;
+            border-radius: 8px;
+            color: var(--sl-neutral-700);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .today-btn:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--sl-neutral-50);
+            border-bottom: 1px solid var(--sl-neutral-200);
+        }
+
+        .weekday {
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--sl-neutral-600);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            border-right: 1px solid var(--sl-neutral-100);
+            border-bottom: 1px solid var(--sl-neutral-100);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: var(--sl-neutral-25);
+        }
+
+        .calendar-day.other-month {
+            background: var(--sl-neutral-50);
+            color: var(--sl-neutral-400);
+        }
+
+        .calendar-day.selected {
+            background: rgba(0, 119, 255, 0.1);
+        }
+
+        .day-header {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--sl-neutral-100);
+        }
+
+        .day-number {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .calendar-day.other-month .day-number {
+            color: var(--sl-neutral-400);
+        }
+
+        .day-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--sl-brand);
+        }
+
+        .day-classes {
+            padding: 4px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .class-item {
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .class-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .class-hiit {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+        }
+
+        .class-yoga {
+            background: rgba(142, 36, 170, 0.1);
+            color: var(--sl-accent-violet);
+        }
+
+        .class-strength {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .class-bootcamp {
+            background: rgba(255, 138, 101, 0.1);
+            color: var(--sl-accent-peach);
+        }
+
+        .class-time {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        /* Today's Classes */
+        .today-classes {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .class-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .class-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: var(--sl-neutral-50);
+            border-radius: 12px;
+            border-left: 4px solid var(--sl-brand);
+            transition: all 0.2s ease;
+        }
+
+        .class-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .class-time-badge {
+            padding: 8px 12px;
+            background: var(--sl-brand);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .class-info {
+            flex: 1;
+        }
+
+        .class-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .class-details {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--sl-neutral-500);
+            font-size: 14px;
+        }
+
+        .class-students {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .class-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--sl-neutral-200);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sl-neutral-600);
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .schedule-content {
+                padding: 16px;
+            }
+
+            .calendar-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .calendar-days {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-day {
+                min-height: auto;
+                padding: 12px;
+            }
+
+            .day-classes {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-section">
+            <svg class="logo" viewBox="0 0 40 40" fill="currentColor">
+                <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M20 10 L25 20 L20 30 L15 20 Z" fill="currentColor"/>
+            </svg>
+            <span class="logo-text">StudioLoop</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="trainer-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-schedule.html" class="nav-link active">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-analytics.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-earnings.html" class="nav-link">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-communications.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-equipment.html" class="nav-link">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Equipment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Class Schedule</h1>
+            <div class="header-actions">
+                <div class="view-toggle">
+                    <button class="view-btn active">Month</button>
+                    <button class="view-btn">Week</button>
+                    <button class="view-btn">Day</button>
+                </div>
+                <button class="add-class-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Class</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Schedule Content -->
+        <div class="schedule-content">
+            <!-- Today's Classes -->
+            <div class="today-classes fade-in">
+                <h2 class="section-title">Today's Classes</h2>
+                <div class="class-list">
+                    <div class="class-card">
+                        <div class="class-time-badge">6:00 AM</div>
+                        <div class="class-info">
+                            <div class="class-name">Morning HIIT Blast</div>
+                            <div class="class-details">
+                                <div class="class-students">
+                                    <i class="fas fa-users"></i>
+                                    <span>12/15 students</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Studio A</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-clock"></i>
+                                    <span>45 min</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="action-btn" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn" title="Edit Class">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn danger" title="Cancel Class">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="class-card">
+                        <div class="class-time-badge">7:00 PM</div>
+                        <div class="class-info">
+                            <div class="class-name">Power Yoga Flow</div>
+                            <div class="class-details">
+                                <div class="class-students">
+                                    <i class="fas fa-users"></i>
+                                    <span>8/12 students</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Studio B</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-clock"></i>
+                                    <span>60 min</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="action-btn" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn" title="Edit Class">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn danger" title="Cancel Class">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Header -->
+            <div class="calendar-header fade-in">
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="current-date" id="currentDate">August 2024</div>
+                    <button class="nav-btn" onclick="nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <button class="today-btn" onclick="goToToday()">Today</button>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar-grid fade-in">
+                <div class="calendar-weekdays">
+                    <div class="weekday">Mon</div>
+                    <div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div>
+                    <div class="weekday">Thu</div>
+                    <div class="weekday">Fri</div>
+                    <div class="weekday">Sat</div>
+                    <div class="weekday">Sun</div>
+                </div>
+                
+                <div class="calendar-days" id="calendarDays">
+                    <!-- Calendar days will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        // Sample class data
+        const classData = {
+            '2024-8-5': [
+                { name: 'HIIT', time: '6:00 AM', type: 'hiit', students: 12 },
+                { name: 'Yoga', time: '7:00 PM', type: 'yoga', students: 8 }
+            ],
+            '2024-8-7': [
+                { name: 'Strength', time: '6:30 AM', type: 'strength', students: 10 }
+            ],
+            '2024-8-9': [
+                { name: 'Bootcamp', time: '8:00 AM', type: 'bootcamp', students: 15 },
+                { name: 'Yoga', time: '6:00 PM', type: 'yoga', students: 9 }
+            ],
+            '2024-8-12': [
+                { name: 'HIIT', time: '6:00 AM', type: 'hiit', students: 14 }
+            ],
+            '2024-8-14': [
+                { name: 'Strength', time: '7:00 AM', type: 'strength', students: 11 },
+                { name: 'Bootcamp', time: '7:30 PM', type: 'bootcamp', students: 13 }
+            ],
+            '2024-8-16': [
+                { name: 'Yoga', time: '9:00 AM', type: 'yoga', students: 7 },
+                { name: 'HIIT', time: '6:00 PM', type: 'hiit', students: 16 }
+            ],
+            '2024-8-19': [
+                { name: 'Bootcamp', time: '6:00 AM', type: 'bootcamp', students: 18 }
+            ],
+            '2024-8-21': [
+                { name: 'Strength', time: '7:00 AM', type: 'strength', students: 9 },
+                { name: 'Yoga', time: '8:00 PM', type: 'yoga', students: 12 }
+            ],
+            '2024-8-23': [
+                { name: 'HIIT', time: '6:00 AM', type: 'hiit', students: 15 },
+                { name: 'Bootcamp', time: '7:00 PM', type: 'bootcamp', students: 14 }
+            ]
+        };
+
+        function generateCalendar(month, year) {
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - (firstDay.getDay() + 6) % 7);
+
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            document.getElementById('currentDate').textContent = `${months[month]} ${year}`;
+
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (date.getMonth() !== month) {
+                    dayElement.classList.add('other-month');
+                }
+
+                if (date.toDateString() === new Date().toDateString()) {
+                    dayElement.classList.add('selected');
+                }
+
+                const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                const classes = classData[dateKey] || [];
+
+                let classItems = '';
+                classes.forEach(cls => {
+                    classItems += `
+                        <div class="class-item class-${cls.type}">
+                            <span>${cls.name}</span>
+                            <span class="class-time">${cls.time}</span>
+                        </div>
+                    `;
+                });
+
+                dayElement.innerHTML = `
+                    <div class="day-header">
+                        <span class="day-number">${date.getDate()}</span>
+                        ${classes.length > 0 ? '<div class="day-indicator"></div>' : ''}
+                    </div>
+                    <div class="day-classes">${classItems}</div>
+                `;
+
+                dayElement.addEventListener('click', () => {
+                    document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    dayElement.classList.add('selected');
+                });
+
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function goToToday() {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        // View toggle functionality
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Here you would implement different view modes
+                // For now, we'll just show the month view
+            });
+        });
+
+        // Class card animations
+        function animateClassCards() {
+            const cards = document.querySelectorAll('.class-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar(currentMonth, currentYear);
+            animateClassCards();
+        });
+    </script>
+</body>
+</html>

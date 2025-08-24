@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop Prototypes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #0077ff 0%, #00e5ff 50%, #8e24aa 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .prototype-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .prototype-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .prototype-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .prototype-card p {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 8px;
+            text-align: left;
+        }
+        
+        .section-description {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            text-align: left;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .prototype-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">StudioLoop</div>
+        <div class="subtitle">Interactive Design Prototypes</div>
+        
+        <div class="section-title">📱 StudioLoop Consumer App (B2C)</div>
+        <div class="section-description">Mobile app for fitness enthusiasts to discover, book, and manage their workout sessions</div>
+        <div class="prototype-grid">
+            <a href="welcome-flow.html" class="prototype-card">
+                <h3>🚀 Welcome & Auth Flow</h3>
+                <p>User onboarding, registration, and phone verification</p>
+            </a>
+            
+            <a href="home-screen.html" class="prototype-card">
+                <h3>🏠 Home Dashboard</h3>
+                <p>Personal dashboard with credits, quick actions, and class recommendations</p>
+            </a>
+            
+            <a href="discovery.html" class="prototype-card">
+                <h3>🗺️ Studio Discovery</h3>
+                <p>Find nearby gyms and studios with interactive map and filters</p>
+            </a>
+            
+            <a href="booking-flow.html" class="prototype-card">
+                <h3>📅 Class Booking</h3>
+                <p>Complete booking flow from class selection to confirmation</p>
+            </a>
+            
+            <a href="class-schedule.html" class="prototype-card">
+                <h3>📋 Class Schedule</h3>
+                <p>Browse daily/weekly class schedules and make bookings</p>
+            </a>
+            
+            <a href="payment.html" class="prototype-card">
+                <h3>💳 Payment Gateway</h3>
+                <p>Secure payments with African payment methods and mobile money</p>
+            </a>
+            
+            <a href="profile.html" class="prototype-card">
+                <h3>👤 User Profile</h3>
+                <p>Personal profile, fitness goals, booking history, and achievements</p>
+            </a>
+        </div>
+        
+        <div class="section-title">💼 StudioLoop Business Dashboard (B2B)</div>
+        <div class="section-description">Management system for gym owners, trainers, and fitness studios</div>
+        <div class="prototype-grid">
+            <a href="trainer-dashboard.html" class="prototype-card">
+                <h3>📊 Main Dashboard</h3>
+                <p>Overview with KPIs, recent activity, and member management</p>
+            </a>
+            
+            <a href="trainer-schedule.html" class="prototype-card">
+                <h3>🗓️ Schedule Management</h3>
+                <p>Drag-and-drop class scheduling with load-shedding integration</p>
+            </a>
+            
+            <a href="trainer-analytics.html" class="prototype-card">
+                <h3>📈 Business Analytics</h3>
+                <p>Revenue trends, attendance patterns, and performance insights</p>
+            </a>
+            
+            <a href="trainer-earnings.html" class="prototype-card">
+                <h3>💰 Earnings & Payouts</h3>
+                <p>Financial tracking with South African banking and tax integration</p>
+            </a>
+            
+            <a href="trainer-equipment.html" class="prototype-card">
+                <h3>🏋️ Equipment Management</h3>
+                <p>Inventory tracking, maintenance scheduling, and QR codes</p>
+            </a>
+            
+            <a href="trainer-communications.html" class="prototype-card">
+                <h3>💬 WhatsApp Communications</h3>
+                <p>Bulk messaging, templates, and emergency alerts for members</p>
+            </a>
+            
+            <a href="trainer-settings.html" class="prototype-card">
+                <h3>⚙️ Business Settings</h3>
+                <p>Profile, business info, payments, and system preferences</p>
+            </a>
+        </div>
+        
+        <div style="margin-top: 40px; opacity: 0.8; font-size: 14px;">
+            Built for StudioLoop • Cape Town's Fitness Marketplace
+        </div>
+    </div>
+</body>
+</html>

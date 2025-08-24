@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="StudioLoop logo - three connected nodes" fill="none">
+  <title>StudioLoop Logo</title>
+  <desc>Three circular nodes connected by flowing curves to represent community, movement, and the StudioLoop platform.</desc>
+  <g id="icon" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Connectors -->
+    <path d="M128 84 Q 88 120 80 166" />
+    <path d="M128 84 Q 168 120 176 166" />
+    <path d="M80 166 Q 128 208 176 166" />
+  </g>
+  <g id="nodes" fill="currentColor">
+    <circle cx="128" cy="56" r="24"/>
+    <circle cx="68" cy="188" r="24"/>
+    <circle cx="188" cy="188" r="24"/>
+  </g>
+</svg>

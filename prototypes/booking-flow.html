@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop - Booking Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-700: #374151;
+            --sl-neutral-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--sl-neutral-25);
+            color: var(--sl-neutral-900);
+            line-height: 1.5;
+            overflow: hidden;
+            margin: 0;
+            padding: 20px;
+            font-feature-settings: 'cv11', 'ss01';
+            font-variation-settings: 'slnt' 0;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--sl-neutral-0);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: var(--sl-neutral-0);
+            padding: 60px 24px 20px 24px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            z-index: 100;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--sl-brand);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--sl-neutral-50);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .progress-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--sl-neutral-200);
+            border: 2px solid var(--sl-neutral-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--sl-neutral-700);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-dot.active {
+            background: var(--sl-brand);
+            border-color: var(--sl-brand);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(0, 119, 255, 0.2);
+        }
+
+        .progress-dot.completed {
+            background: var(--sl-accent-aqua);
+            border-color: var(--sl-accent-aqua);
+            color: white;
+        }
+
+        .progress-dot.completed::after {
+            content: '✓';
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .progress-line {
+            width: 12px;
+            height: 2px;
+            background: var(--sl-neutral-200);
+            transition: all 0.4s ease;
+            border-radius: 1px;
+        }
+
+        .progress-line.completed {
+            background: var(--sl-accent-aqua);
+        }
+
+        .step-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--sl-neutral-700);
+            white-space: nowrap;
+            opacity: 0.7;
+        }
+
+        .progress-dot.active + .step-label {
+            color: var(--sl-brand);
+            opacity: 1;
+        }
+
+        .progress-dot.completed + .step-label {
+            color: var(--sl-accent-aqua);
+            opacity: 1;
+        }
+
+        /* Content Area */
+        .content {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            right: 0;
+            bottom: 80px;
+            background: var(--sl-neutral-25);
+            overflow-y: auto;
+        }
+
+        /* Step Container */
+        .step {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 24px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Step 1: Class Selection */
+        .class-selection .instructor-card {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            border: 2px solid var(--sl-neutral-200);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .class-selection .instructor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .class-selection .instructor-card:hover {
+            border-color: var(--sl-brand);
+            box-shadow: 0 8px 32px rgba(0, 119, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .class-selection .instructor-card:hover::before {
+            left: 100%;
+        }
+
+        .class-selection .instructor-card.selected {
+            border-color: var(--sl-brand);
+            background: linear-gradient(135deg, rgba(0, 119, 255, 0.05), rgba(0, 229, 255, 0.03));
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 119, 255, 0.2);
+        }
+
+        .class-selection .instructor-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            background: var(--sl-brand);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            animation: checkmark 0.3s ease;
+        }
+
+        @keyframes checkmark {
+            from { transform: scale(0) rotate(-180deg); }
+            to { transform: scale(1) rotate(0deg); }
+        }
+
+        .instructor-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .instructor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .instructor-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+
+        .instructor-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--sl-neutral-700);
+        }
+
+        .class-details {
+            margin-bottom: 16px;
+        }
+
+        .class-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .class-meta {
+            color: var(--sl-neutral-700);
+            font-size: 15px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .difficulty-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .difficulty-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .difficulty-beginner { background: #dcfce7; color: #166534; }
+        .difficulty-intermediate { background: #fef3c7; color: #b45309; }
+        .difficulty-advanced { background: #fee2e2; color: #dc2626; }
+
+        .equipment-list {
+            background: linear-gradient(135deg, var(--sl-neutral-50), rgba(248, 250, 252, 0.8));
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .equipment-list h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .equipment-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .equipment-item {
+            background: var(--sl-neutral-0);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--sl-neutral-700);
+            border: 1px solid var(--sl-neutral-200);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .equipment-item:hover {
+            background: var(--sl-brand);
+            color: white;
+            border-color: var(--sl-brand);
+            transform: translateY(-1px);
+        }
+
+        /* Step 2: Time Selection */
+        .time-selection .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--sl-neutral-0);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            color: var(--sl-brand);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            background: var(--sl-neutral-50);
+        }
+
+        .calendar-month {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .date-picker {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 16px 0 24px 0;
+            margin-bottom: 24px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .date-picker::-webkit-scrollbar {
+            display: none;
+        }
+
+        .date-option {
+            min-width: 72px;
+            text-align: center;
+            background: var(--sl-neutral-0);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: 16px;
+            padding: 20px 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .date-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .date-option > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .date-option:hover {
+            border-color: var(--sl-brand);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 119, 255, 0.2);
+        }
+
+        .date-option.selected::before {
+            opacity: 1;
+        }
+
+        .date-option.selected {
+            border-color: var(--sl-brand);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 119, 255, 0.3);
+        }
+
+        .date-option .day {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .date-option .date {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .time-slots-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .time-slots-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .availability-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-chip {
+            padding: 6px 12px;
+            background: var(--sl-neutral-100);
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-chip.active {
+            background: var(--sl-brand);
+            border-color: var(--sl-brand);
+            color: white;
+        }
+
+        .time-slot {
+            background: var(--sl-neutral-0);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .time-slot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .time-slot > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .time-slot:hover:not(.unavailable) {
+            border-color: var(--sl-brand);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 119, 255, 0.2);
+        }
+
+        .time-slot.selected::before {
+            opacity: 1;
+        }
+
+        .time-slot.selected {
+            border-color: var(--sl-brand);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 119, 255, 0.3);
+        }
+
+        .time-slot.unavailable {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: var(--sl-neutral-50);
+            border-color: var(--sl-neutral-200);
+        }
+
+        .time-slot.unavailable .spots {
+            color: var(--sl-neutral-500);
+        }
+
+        .time-slot .time {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .time-slot .spots {
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .time-slot .spots.low-availability {
+            color: var(--sl-accent-peach);
+            font-weight: 700;
+        }
+
+        .time-slot .spots.high-availability {
+            color: var(--sl-accent-aqua);
+        }
+
+        /* Step 3: Booking Summary */
+        .booking-summary .summary-card {
+            background: var(--sl-neutral-0);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+        }
+
+        .class-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .summary-details {
+            flex: 1;
+        }
+
+        .summary-class-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .summary-info {
+            color: var(--sl-neutral-700);
+            font-size: 14px;
+        }
+
+        .summary-items {
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--sl-neutral-200);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* Step 4: Add Participants */
+        .participants-section .participant-counter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--sl-neutral-0);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .counter-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .counter-btn:hover {
+            background: var(--sl-brand-700);
+            transform: scale(1.05);
+        }
+
+        .counter-btn:disabled {
+            background: var(--sl-neutral-200);
+            cursor: not-allowed;
+        }
+
+        .counter-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Step 5: Payment Method */
+        .payment-methods .method-option {
+            background: var(--sl-neutral-0);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-methods .method-option.selected {
+            border-color: var(--sl-brand);
+            background: linear-gradient(135deg, rgba(0, 119, 255, 0.05), rgba(0, 229, 255, 0.05));
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .method-icon.credits {
+            background: linear-gradient(135deg, var(--sl-accent-violet), var(--sl-accent-aqua));
+        }
+
+        .method-icon.whatsapp {
+            background: #25d366;
+        }
+
+        .method-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .method-balance {
+            font-size: 14px;
+            color: var(--sl-neutral-700);
+        }
+
+        .cancellation-policy {
+            background: var(--sl-neutral-50);
+            border-left: 4px solid var(--sl-accent-peach);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .policy-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .policy-text {
+            font-size: 13px;
+            color: var(--sl-neutral-700);
+            line-height: 1.5;
+        }
+
+        /* Step 6: Confirmation */
+        .confirmation-success {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sl-accent-aqua), var(--sl-accent-violet));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 12px;
+        }
+
+        .success-message {
+            font-size: 16px;
+            color: var(--sl-neutral-700);
+            margin-bottom: 32px;
+        }
+
+        .booking-details {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .whatsapp-option {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .whatsapp-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        /* Bottom Actions */
+        .bottom-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--sl-neutral-0);
+            border-top: 1px solid var(--sl-neutral-200);
+            padding: 20px 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: var(--sl-neutral-50);
+            border: 2px solid var(--sl-neutral-200);
+            color: var(--sl-neutral-700);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .btn-primary {
+            flex: 2;
+            background: linear-gradient(135deg, var(--sl-brand), var(--sl-accent-aqua));
+            border: none;
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 119, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 119, 255, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: var(--sl-neutral-200);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Form Validation & Error States */
+        .error-message {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.05));
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-left: 4px solid #dc2626;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 16px 0;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: errorSlideIn 0.3s ease-out;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .error-message .error-icon {
+            font-size: 16px;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(74, 222, 128, 0.05));
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-left: 4px solid #22c55e;
+            color: #16a34a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 16px 0;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: successSlideIn 0.3s ease-out;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--sl-neutral-200);
+            border-top: 4px solid var(--sl-brand);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--sl-neutral-700);
+            font-weight: 600;
+        }
+
+        /* Form Validation States */
+        .instructor-card.error {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .date-option.error,
+        .time-slot.error {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes errorSlideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes successSlideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design - Mobile First */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .phone-frame {
+                width: 100%;
+                height: 100vh;
+                max-height: 812px;
+                border-radius: 20px;
+                padding: 4px;
+            }
+
+            .phone-screen {
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 50px 16px 16px 16px;
+            }
+
+            .header-title {
+                font-size: 16px;
+            }
+
+            .progress-indicator {
+                gap: 4px;
+            }
+
+            .progress-dot {
+                width: 20px;
+                height: 20px;
+                font-size: 9px;
+            }
+
+            .progress-line {
+                width: 8px;
+            }
+
+            .step-label {
+                font-size: 8px;
+                bottom: -18px;
+            }
+
+            .content {
+                top: 110px;
+                bottom: 70px;
+            }
+
+            .step {
+                padding: 16px;
+            }
+
+            .instructor-card {
+                padding: 20px;
+                margin-bottom: 12px;
+            }
+
+            .class-name {
+                font-size: 20px;
+            }
+
+            .instructor-info h3 {
+                font-size: 16px;
+            }
+
+            .date-option {
+                min-width: 64px;
+                padding: 16px 12px;
+            }
+
+            .time-slots {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .time-slot {
+                padding: 16px;
+            }
+
+            .bottom-actions {
+                padding: 16px;
+                gap: 8px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .phone-frame {
+                width: 100%;
+                max-width: 375px;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 769px) {
+            body {
+                padding: 20px;
+            }
+
+            .phone-frame {
+                box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+            .instructor-avatar,
+            .class-icon,
+            .method-icon {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
+
+        /* Landscape orientation */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .header {
+                padding: 40px 24px 16px 24px;
+            }
+
+            .content {
+                top: 100px;
+            }
+
+            .progress-indicator {
+                display: none;
+            }
+        }
+
+        /* Touch-friendly interactions */
+        @media (pointer: coarse) {
+            .instructor-card,
+            .date-option,
+            .time-slot,
+            .method-option,
+            .counter-btn {
+                min-height: 44px;
+            }
+
+            .back-btn,
+            .calendar-nav {
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .loading-spinner {
+                animation: none;
+                border: 4px solid var(--sl-brand);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .instructor-card,
+            .date-option,
+            .time-slot {
+                border-width: 3px;
+            }
+
+            .progress-dot {
+                border-width: 3px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                border: 2px solid;
+            }
+        }
+
+        /* CRITICAL FIX: Force visibility of all content */
+        .summary-card,
+        .summary-card *,
+        .summary-items,
+        .summary-items *,
+        .summary-item,
+        .summary-item *,
+        .participant-counter,
+        .participant-counter *,
+        .participant-details,
+        .participant-details *,
+        .payment-methods,
+        .payment-methods *,
+        .method-option,
+        .method-option *,
+        .cancellation-policy,
+        .cancellation-policy *,
+        .booking-summary,
+        .booking-summary *,
+        .participants-section,
+        .participants-section * {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+
+        .summary-items,
+        .counter-controls {
+            display: flex !important;
+        }
+
+        .participant-counter {
+            display: flex !important;
+        }
+
+        .method-option {
+            display: block !important;
+            margin-bottom: 16px !important;
+        }
+
+        .method-header {
+            display: flex !important;
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --sl-neutral-0: #1f2937;
+                --sl-neutral-25: #111827;
+                --sl-neutral-50: #374151;
+                --sl-neutral-200: #6b7280;
+                --sl-neutral-700: #d1d5db;
+                --sl-neutral-900: #f9fafb;
+            }
+
+            .phone-frame {
+                background: #000;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+            }
+
+            .error-message {
+                background: rgba(220, 38, 38, 0.2);
+                border-color: rgba(220, 38, 38, 0.4);
+            }
+
+            .success-message {
+                background: rgba(34, 197, 94, 0.2);
+                border-color: rgba(34, 197, 94, 0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- Header -->
+            <header class="header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h1 class="header-title" id="header-title">Select Class</h1>
+                <div class="progress-indicator">
+                    <div class="progress-step">
+                        <div class="progress-dot active" id="dot-1">1</div>
+                        <div class="step-label">Class</div>
+                    </div>
+                    <div class="progress-line" id="line-1"></div>
+                    <div class="progress-step">
+                        <div class="progress-dot" id="dot-2">2</div>
+                        <div class="step-label">Time</div>
+                    </div>
+                    <div class="progress-line" id="line-2"></div>
+                    <div class="progress-step">
+                        <div class="progress-dot" id="dot-3">3</div>
+                        <div class="step-label">Review</div>
+                    </div>
+                    <div class="progress-line" id="line-3"></div>
+                    <div class="progress-step">
+                        <div class="progress-dot" id="dot-4">4</div>
+                        <div class="step-label">People</div>
+                    </div>
+                    <div class="progress-line" id="line-4"></div>
+                    <div class="progress-step">
+                        <div class="progress-dot" id="dot-5">5</div>
+                        <div class="step-label">Payment</div>
+                    </div>
+                    <div class="progress-line" id="line-5"></div>
+                    <div class="progress-step">
+                        <div class="progress-dot" id="dot-6">6</div>
+                        <div class="step-label">Done</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="content">
+                <!-- Loading Overlay -->
+                <div class="loading-overlay" id="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Processing...</div>
+                </div>
+
+                <!-- Global Error Message -->
+                <div class="error-message" id="global-error">
+                    <span class="error-icon">⚠️</span>
+                    <span id="error-text">Please fix the errors below</span>
+                </div>
+
+                <!-- Global Success Message -->
+                <div class="success-message" id="global-success">
+                    <span class="error-icon">✅</span>
+                    <span id="success-text">Success!</span>
+                </div>
+
+                <!-- Step 1: Class Selection -->
+                <div class="step active class-selection" id="step-1" role="main" aria-label="Class selection step">
+                    <div class="instructor-card" onclick="selectInstructor(this)" role="button" tabindex="0" 
+                         aria-label="Select HIIT Power Session with Mike Johnson, 45 minutes advanced level class" 
+                         data-class="HIIT Power Session" data-instructor="Mike Johnson" data-duration="45">
+                        <div class="instructor-header">
+                            <div class="instructor-avatar" aria-hidden="true">MJ</div>
+                            <div class="instructor-info">
+                                <h3>Mike Johnson</h3>
+                                <div class="instructor-rating">
+                                    <span aria-label="4.9 star rating">⭐ 4.9</span>
+                                    <span aria-hidden="true">•</span>
+                                    <span>125 reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-details">
+                            <h4 class="class-name">HIIT Power Session</h4>
+                            <p class="class-meta">45 minutes • High intensity training</p>
+                            <div class="difficulty-badges">
+                                <span class="difficulty-badge difficulty-advanced" aria-label="Advanced difficulty level">Advanced</span>
+                            </div>
+                            <div class="equipment-list">
+                                <h4>Equipment Required:</h4>
+                                <div class="equipment-items" role="list">
+                                    <span class="equipment-item" role="listitem">Dumbbells</span>
+                                    <span class="equipment-item" role="listitem">Resistance Bands</span>
+                                    <span class="equipment-item" role="listitem">Yoga Mat</span>
+                                    <span class="equipment-item" role="listitem">Water Bottle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="instructor-card" onclick="selectInstructor(this)" role="button" tabindex="0" 
+                         aria-label="Select Pilates Flow with Sarah Klein, 60 minutes intermediate level class" 
+                         data-class="Pilates Flow" data-instructor="Sarah Klein" data-duration="60">
+                        <div class="instructor-header">
+                            <div class="instructor-avatar" style="background: linear-gradient(135deg, var(--sl-accent-violet), var(--sl-accent-peach));" aria-hidden="true">SK</div>
+                            <div class="instructor-info">
+                                <h3>Sarah Klein</h3>
+                                <div class="instructor-rating">
+                                    <span aria-label="4.8 star rating">⭐ 4.8</span>
+                                    <span aria-hidden="true">•</span>
+                                    <span>98 reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-details">
+                            <h4 class="class-name">Pilates Flow</h4>
+                            <p class="class-meta">60 minutes • Core strength & flexibility</p>
+                            <div class="difficulty-badges">
+                                <span class="difficulty-badge difficulty-intermediate" aria-label="Intermediate difficulty level">Intermediate</span>
+                            </div>
+                            <div class="equipment-list">
+                                <h4>Equipment Required:</h4>
+                                <div class="equipment-items" role="list">
+                                    <span class="equipment-item" role="listitem">Pilates Mat</span>
+                                    <span class="equipment-item" role="listitem">Resistance Ball</span>
+                                    <span class="equipment-item" role="listitem">Blocks</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="instructor-card" onclick="selectInstructor(this)" role="button" tabindex="0" 
+                         aria-label="Select Yoga Sunrise with Anna Martinez, 60 minutes beginner level class" 
+                         data-class="Yoga Sunrise" data-instructor="Anna Martinez" data-duration="60">
+                        <div class="instructor-header">
+                            <div class="instructor-avatar" style="background: linear-gradient(135deg, var(--sl-accent-peach), var(--sl-accent-aqua));" aria-hidden="true">AM</div>
+                            <div class="instructor-info">
+                                <h3>Anna Martinez</h3>
+                                <div class="instructor-rating">
+                                    <span aria-label="4.7 star rating">⭐ 4.7</span>
+                                    <span aria-hidden="true">•</span>
+                                    <span>76 reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-details">
+                            <h4 class="class-name">Yoga Sunrise</h4>
+                            <p class="class-meta">60 minutes • Mindful movement & breathing</p>
+                            <div class="difficulty-badges">
+                                <span class="difficulty-badge difficulty-beginner" aria-label="Beginner difficulty level">Beginner</span>
+                            </div>
+                            <div class="equipment-list">
+                                <h4>Equipment Required:</h4>
+                                <div class="equipment-items" role="list">
+                                    <span class="equipment-item" role="listitem">Yoga Mat</span>
+                                    <span class="equipment-item" role="listitem">Blocks (optional)</span>
+                                    <span class="equipment-item" role="listitem">Towel</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Time Selection -->
+                <div class="step time-selection" id="step-2">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" aria-label="Previous month">‹</button>
+                        <span class="calendar-month">August 2025</span>
+                        <button class="calendar-nav" aria-label="Next month">›</button>
+                    </div>
+
+                    <div class="date-picker">
+                        <div class="date-option" onclick="selectDate(this)" role="button" tabindex="0" aria-label="Select today, August 20">
+                            <div class="day">Today</div>
+                            <div class="date">20</div>
+                        </div>
+                        <div class="date-option selected" onclick="selectDate(this)" role="button" tabindex="0" aria-label="Select tomorrow, August 21" aria-selected="true">
+                            <div class="day">Tomorrow</div>
+                            <div class="date">21</div>
+                        </div>
+                        <div class="date-option" onclick="selectDate(this)" role="button" tabindex="0" aria-label="Select Thursday, August 22">
+                            <div class="day">Thu</div>
+                            <div class="date">22</div>
+                        </div>
+                        <div class="date-option" onclick="selectDate(this)" role="button" tabindex="0" aria-label="Select Friday, August 23">
+                            <div class="day">Fri</div>
+                            <div class="date">23</div>
+                        </div>
+                        <div class="date-option" onclick="selectDate(this)" role="button" tabindex="0" aria-label="Select Saturday, August 24">
+                            <div class="day">Sat</div>
+                            <div class="date">24</div>
+                        </div>
+                    </div>
+
+                    <div class="time-slots-header">
+                        <h3 class="time-slots-title">Available Times</h3>
+                        <div class="availability-filter">
+                            <div class="filter-chip active" onclick="filterTimes('all')">All</div>
+                            <div class="filter-chip" onclick="filterTimes('morning')">AM</div>
+                            <div class="filter-chip" onclick="filterTimes('evening')">PM</div>
+                        </div>
+                    </div>
+
+                    <div class="time-slots">
+                        <div class="time-slot" onclick="selectTimeSlot(this)" role="button" tabindex="0" aria-label="6:00 AM, 8 spots available">
+                            <div class="time">06:00 AM</div>
+                            <div class="spots high-availability">8 spots left</div>
+                        </div>
+                        <div class="time-slot selected" onclick="selectTimeSlot(this)" role="button" tabindex="0" aria-label="7:30 AM, 5 spots available" aria-selected="true">
+                            <div class="time">07:30 AM</div>
+                            <div class="spots">5 spots left</div>
+                        </div>
+                        <div class="time-slot" onclick="selectTimeSlot(this)" role="button" tabindex="0" aria-label="9:00 AM, 12 spots available">
+                            <div class="time">09:00 AM</div>
+                            <div class="spots high-availability">12 spots left</div>
+                        </div>
+                        <div class="time-slot unavailable" aria-label="10:30 AM, fully booked" aria-disabled="true">
+                            <div class="time">10:30 AM</div>
+                            <div class="spots">Full</div>
+                        </div>
+                        <div class="time-slot" onclick="selectTimeSlot(this)" role="button" tabindex="0" aria-label="6:00 PM, 3 spots available">
+                            <div class="time">06:00 PM</div>
+                            <div class="spots low-availability">3 spots left</div>
+                        </div>
+                        <div class="time-slot" onclick="selectTimeSlot(this)" role="button" tabindex="0" aria-label="7:30 PM, 9 spots available">
+                            <div class="time">07:30 PM</div>
+                            <div class="spots high-availability">9 spots left</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Booking Summary -->
+                <div class="step booking-summary" id="step-3">
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <div class="class-icon">🏋️‍♂️</div>
+                            <div class="summary-details">
+                                <h3 class="summary-class-name">HIIT Power Session</h3>
+                                <p class="summary-info">with Mike Johnson</p>
+                            </div>
+                        </div>
+                        <div class="summary-items">
+                            <div class="summary-item">
+                                <span>Date & Time</span>
+                                <span>Aug 21, 07:30 AM</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Duration</span>
+                                <span>45 minutes</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Location</span>
+                                <span>FitZone Premium</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Participants</span>
+                                <span id="participant-count">1 person</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total Cost</span>
+                                <span id="total-cost">2 💎</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Add Participants -->
+                <div class="step participants-section" id="step-4">
+                    <div class="participant-counter">
+                        <div class="counter-label">Number of participants</div>
+                        <div class="counter-controls">
+                            <button class="counter-btn" onclick="changeParticipants(-1)" id="minus-btn">−</button>
+                            <span class="counter-value" id="participants">1</span>
+                            <button class="counter-btn" onclick="changeParticipants(1)" id="plus-btn">+</button>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <h3 style="margin-bottom: 16px; color: var(--sl-neutral-900);">Booking Summary</h3>
+                        <div class="summary-items">
+                            <div class="summary-item">
+                                <span>Base price (1 person)</span>
+                                <span>2 💎</span>
+                            </div>
+                            <div class="summary-item" id="additional-cost" style="display: none;">
+                                <span>Additional participants</span>
+                                <span id="additional-amount">0 💎</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total</span>
+                                <span id="total-amount">2 💎</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="participant-details" style="margin-top: 24px;">
+                        <div class="summary-card">
+                            <h3 style="margin-bottom: 16px; color: var(--sl-neutral-900);">Class Details</h3>
+                            <div class="summary-items">
+                                <div class="summary-item">
+                                    <span>Class</span>
+                                    <span id="review-class-name">HIIT Power Session</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Instructor</span>
+                                    <span id="review-instructor">Mike Johnson</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Date & Time</span>
+                                    <span id="review-datetime">Aug 21, 07:30 AM</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Duration</span>
+                                    <span id="review-duration">45 minutes</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Location</span>
+                                    <span id="review-location">FitZone Premium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Payment Method -->
+                <div class="step payment-methods" id="step-5">
+                    <div class="method-option selected" onclick="selectPaymentMethod(this)">
+                        <div class="method-header">
+                            <div class="method-icon credits">💎</div>
+                            <div>
+                                <div class="method-title">StudioLoop Credits</div>
+                                <div class="method-balance">Balance: 12 credits</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="method-option" onclick="selectPaymentMethod(this)">
+                        <div class="method-header">
+                            <div class="method-icon whatsapp">📱</div>
+                            <div>
+                                <div class="method-title">WhatsApp Pay</div>
+                                <div class="method-balance">Pay via WhatsApp Business</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cancellation-policy">
+                        <div class="policy-title">📋 Cancellation Policy</div>
+                        <div class="policy-text">
+                            Free cancellation up to 4 hours before class start time. 
+                            Late cancellations (less than 4 hours) or no-shows will 
+                            result in full charge. Emergency cancellations may be reviewed 
+                            case-by-case.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6: Confirmation -->
+                <div class="step confirmation-success" id="step-6">
+                    <div class="success-icon">✅</div>
+                    <h2 class="success-title">Booking Confirmed!</h2>
+                    <p class="success-message">Your HIIT Power Session is booked for tomorrow at 7:30 AM</p>
+                    
+                    <div class="booking-details">
+                        <div class="summary-item">
+                            <span>Booking ID</span>
+                            <span>#SL2024-0821-001</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Class</span>
+                            <span>HIIT Power Session</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Instructor</span>
+                            <span>Mike Johnson</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Date & Time</span>
+                            <span>Aug 21, 07:30 AM</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Location</span>
+                            <span>FitZone Premium</span>
+                        </div>
+                    </div>
+
+                    <button class="whatsapp-option" onclick="shareToWhatsApp()">
+                        📱 Share confirmation via WhatsApp
+                    </button>
+
+                    <button class="btn-primary" onclick="goToHome()" style="width: 100%; margin-bottom: 16px;">
+                        Back to Home
+                    </button>
+                </div>
+            </main>
+
+            <!-- Bottom Actions -->
+            <div class="bottom-actions" id="bottom-actions">
+                <button class="btn-secondary" onclick="goBack()">Back</button>
+                <button class="btn-primary" onclick="nextStep()" id="next-btn">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced State Management
+        class BookingState {
+            constructor() {
+                this.currentStep = 1;
+                this.maxStep = 6;
+                this.isLoading = false;
+                this.data = {
+                    instructor: null,
+                    className: null,
+                    date: 'Aug 21',
+                    time: '07:30 AM',
+                    location: 'FitZone Premium',
+                    duration: '45 minutes',
+                    participants: 1,
+                    basePrice: 2,
+                    paymentMethod: 'credits'
+                };
+                this.errors = [];
+            }
+
+            updateData(key, value) {
+                this.data[key] = value;
+                this.validateCurrentStep();
+            }
+
+            validateStep(step) {
+                const errors = [];
+                switch(step) {
+                    case 1:
+                        if (!this.data.instructor) {
+                            errors.push('Please select a class and instructor');
+                        }
+                        break;
+                    case 2:
+                        if (!this.data.date || !this.data.time) {
+                            errors.push('Please select a date and time');
+                        }
+                        break;
+                    case 4:
+                        if (this.data.participants < 1 || this.data.participants > 10) {
+                            errors.push('Please select between 1-10 participants');
+                        }
+                        break;
+                    case 5:
+                        if (!this.data.paymentMethod) {
+                            errors.push('Please select a payment method');
+                        }
+                        break;
+                }
+                return errors;
+            }
+
+            validateCurrentStep() {
+                this.errors = this.validateStep(this.currentStep);
+                return this.errors.length === 0;
+            }
+
+            getTotalCost() {
+                return this.data.basePrice * this.data.participants;
+            }
+        }
+
+        // Initialize state
+        const bookingState = new BookingState();
+
+        const stepTitles = {
+            1: 'Select Class',
+            2: 'Choose Time',
+            3: 'Booking Summary',
+            4: 'Add Participants',
+            5: 'Payment Method',
+            6: 'Confirmation'
+        };
+
+        // Initialize GSAP animations
+        gsap.registerPlugin();
+
+        // UI Management Functions
+        function showLoading(message = 'Processing...') {
+            const overlay = document.getElementById('loading-overlay');
+            const text = overlay.querySelector('.loading-text');
+            text.textContent = message;
+            overlay.classList.add('show');
+            bookingState.isLoading = true;
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.classList.remove('show');
+            bookingState.isLoading = false;
+        }
+
+        function showError(message) {
+            hideSuccess();
+            const errorElement = document.getElementById('global-error');
+            const errorText = document.getElementById('error-text');
+            errorText.textContent = message;
+            errorElement.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorElement.classList.remove('show');
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            hideError();
+            const successElement = document.getElementById('global-success');
+            const successText = document.getElementById('success-text');
+            successText.textContent = message;
+            successElement.classList.add('show');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                successElement.classList.remove('show');
+            }, 3000);
+        }
+
+        function hideError() {
+            document.getElementById('global-error').classList.remove('show');
+        }
+
+        function hideSuccess() {
+            document.getElementById('global-success').classList.remove('show');
+        }
+
+        function updateProgress() {
+            // Update progress dots and lines
+            for (let i = 1; i <= bookingState.maxStep; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                const line = document.getElementById(`line-${i}`);
+                
+                dot.classList.remove('active', 'completed');
+                if (line) line.classList.remove('completed');
+                
+                if (i < bookingState.currentStep) {
+                    dot.classList.add('completed');
+                    if (line) line.classList.add('completed');
+                } else if (i === bookingState.currentStep) {
+                    dot.classList.add('active');
+                }
+            }
+            
+            // Update header title
+            document.getElementById('header-title').textContent = stepTitles[bookingState.currentStep];
+            
+            // Update bottom actions visibility
+            const bottomActions = document.getElementById('bottom-actions');
+            if (bookingState.currentStep === bookingState.maxStep) {
+                bottomActions.style.display = 'none';
+            } else {
+                bottomActions.style.display = 'flex';
+            }
+            
+            // Update aria-current for accessibility
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.removeAttribute('aria-current');
+                if (index + 1 === bookingState.currentStep) {
+                    step.setAttribute('aria-current', 'step');
+                }
+            });
+        }
+
+        function nextStep() {
+            if (bookingState.isLoading) return;
+            
+            if (bookingState.currentStep < bookingState.maxStep) {
+                // Validate current step
+                if (!bookingState.validateCurrentStep()) {
+                    showError(bookingState.errors[0]);
+                    addErrorStateToStep(bookingState.currentStep);
+                    return;
+                }
+
+                showLoading('Moving to next step...');
+                
+                // Hide current step
+                const currentStepElement = document.getElementById(`step-${bookingState.currentStep}`);
+                currentStepElement.classList.remove('active');
+                currentStepElement.classList.add('prev');
+                
+                bookingState.currentStep++;
+                
+                // Show next step with delay for loading effect
+                setTimeout(() => {
+                    const nextStepElement = document.getElementById(`step-${bookingState.currentStep}`);
+                    nextStepElement.classList.add('active');
+                    
+                    // Enhanced GSAP animation
+                    gsap.fromTo(nextStepElement, 
+                        {
+                            x: 100,
+                            opacity: 0,
+                            scale: 0.95
+                        },
+                        {
+                            duration: 0.6,
+                            x: 0,
+                            opacity: 1,
+                            scale: 1,
+                            ease: "power3.out"
+                        }
+                    );
+                    
+                    updateProgress();
+                    updateNextButton();
+                    hideLoading();
+                    
+                    // Special handling for specific steps
+                    if (bookingState.currentStep === 3) {
+                        updateBookingSummary();
+                    } else if (bookingState.currentStep === 6) {
+                        showConfirmationAnimation();
+                    }
+                    
+                    // Focus management for accessibility
+                    nextStepElement.focus();
+                    announceStepChange();
+                }, 300);
+            }
+        }
+
+        // Enhanced Accessibility Functions
+        function announceStepChange() {
+            const stepTitle = stepTitles[bookingState.currentStep];
+            const announcement = `Now on step ${bookingState.currentStep} of ${bookingState.maxStep}: ${stepTitle}`;
+            
+            let announcer = document.getElementById('sr-announcer');
+            if (!announcer) {
+                announcer = document.createElement('div');
+                announcer.id = 'sr-announcer';
+                announcer.setAttribute('aria-live', 'polite');
+                announcer.setAttribute('aria-atomic', 'true');
+                announcer.style.cssText = 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;';
+                document.body.appendChild(announcer);
+            }
+            announcer.textContent = announcement;
+        }
+
+        function addErrorStateToStep(stepNumber) {
+            const stepElement = document.getElementById(`step-${stepNumber}`);
+            const interactiveElements = stepElement.querySelectorAll('.instructor-card, .date-option, .time-slot');
+            
+            interactiveElements.forEach(element => {
+                element.classList.add('error');
+                setTimeout(() => element.classList.remove('error'), 3000);
+            });
+        }
+
+        function goBack() {
+            if (bookingState.isLoading) return;
+            
+            if (bookingState.currentStep > 1) {
+                showLoading('Going back...');
+                
+                const currentStepElement = document.getElementById(`step-${bookingState.currentStep}`);
+                currentStepElement.classList.remove('active');
+                
+                bookingState.currentStep--;
+                
+                setTimeout(() => {
+                    const prevStepElement = document.getElementById(`step-${bookingState.currentStep}`);
+                    prevStepElement.classList.remove('prev');
+                    prevStepElement.classList.add('active');
+                    
+                    gsap.fromTo(prevStepElement, 
+                        { x: -100, opacity: 0, scale: 0.95 },
+                        { duration: 0.6, x: 0, opacity: 1, scale: 1, ease: "power3.out" }
+                    );
+                    
+                    updateProgress();
+                    updateNextButton();
+                    hideLoading();
+                    hideError();
+                    
+                    prevStepElement.focus();
+                    announceStepChange();
+                }, 200);
+            } else {
+                window.location.href = 'home-screen.html';
+            }
+        }
+
+        function updateNextButton() {
+            const nextBtn = document.getElementById('next-btn');
+            
+            switch (bookingState.currentStep) {
+                case 1:
+                    nextBtn.textContent = 'Select Time';
+                    nextBtn.disabled = !bookingState.data.instructor;
+                    break;
+                case 2:
+                    nextBtn.textContent = 'Review Booking';
+                    nextBtn.disabled = false;
+                    break;
+                case 3:
+                    nextBtn.textContent = 'Add Participants';
+                    nextBtn.disabled = false;
+                    break;
+                case 4:
+                    nextBtn.textContent = 'Choose Payment';
+                    nextBtn.disabled = false;
+                    break;
+                case 5:
+                    nextBtn.textContent = 'Confirm Booking';
+                    nextBtn.disabled = false;
+                    break;
+                default:
+                    nextBtn.textContent = 'Continue';
+                    nextBtn.disabled = false;
+            }
+        }
+
+        // Step 1: Class Selection
+        function selectInstructor(card) {
+            if (bookingState.isLoading) return;
+            
+            // Remove previous selection
+            document.querySelectorAll('.instructor-card').forEach(c => {
+                c.classList.remove('selected');
+                c.setAttribute('aria-selected', 'false');
+            });
+            
+            // Add selection to clicked card
+            card.classList.add('selected');
+            card.setAttribute('aria-selected', 'true');
+            
+            // Update state
+            const instructorName = card.dataset.instructor;
+            const className = card.dataset.class;
+            const duration = card.dataset.duration;
+            
+            bookingState.updateData('instructor', instructorName);
+            bookingState.updateData('className', className);
+            bookingState.updateData('duration', `${duration} minutes`);
+            
+            // Enhanced selection animation
+            gsap.to(card, {
+                duration: 0.4,
+                scale: 1.02,
+                ease: "back.out(2)"
+            });
+            
+            setTimeout(() => {
+                gsap.to(card, {
+                    duration: 0.4,
+                    scale: 1,
+                    ease: "power2.out"
+                });
+            }, 300);
+            
+            updateNextButton();
+            showSuccess(`Selected ${className} with ${instructorName}`);
+            
+            // Auto-advance after selection (with delay for feedback)
+            setTimeout(() => {
+                if (bookingState.currentStep === 1) {
+                    nextStep();
+                }
+            }, 1500);
+        }
+
+        // Step 2: Time Selection
+        function selectDate(dateElement) {
+            if (bookingState.isLoading) return;
+            
+            document.querySelectorAll('.date-option').forEach(d => {
+                d.classList.remove('selected');
+                d.setAttribute('aria-selected', 'false');
+            });
+            
+            dateElement.classList.add('selected');
+            dateElement.setAttribute('aria-selected', 'true');
+            
+            const dateText = dateElement.querySelector('.date').textContent;
+            const dateString = `Aug ${dateText}`;
+            
+            bookingState.updateData('date', dateString);
+            
+            gsap.to(dateElement, {
+                duration: 0.3,
+                scale: 1.05,
+                ease: "back.out(1.7)"
+            });
+            
+            setTimeout(() => {
+                gsap.to(dateElement, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: "power2.out"
+                });
+            }, 200);
+        }
+
+        function selectTimeSlot(slot) {
+            if (slot.classList.contains('unavailable') || bookingState.isLoading) {
+                return;
+            }
+            
+            document.querySelectorAll('.time-slot').forEach(s => {
+                s.classList.remove('selected');
+                s.setAttribute('aria-selected', 'false');
+            });
+            
+            slot.classList.add('selected');
+            slot.setAttribute('aria-selected', 'true');
+            
+            const time = slot.querySelector('.time').textContent;
+            bookingState.updateData('time', time);
+            
+            gsap.to(slot, {
+                duration: 0.3,
+                scale: 1.05,
+                ease: "back.out(1.7)"
+            });
+            
+            setTimeout(() => {
+                gsap.to(slot, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: "power2.out"
+                });
+            }, 200);
+        }
+
+        function filterTimes(filter) {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const timeSlots = document.querySelectorAll('.time-slot');
+            timeSlots.forEach(slot => {
+                const time = slot.querySelector('.time').textContent;
+                const isAM = time.includes('AM');
+                const isPM = time.includes('PM');
+                
+                let shouldShow = true;
+                if (filter === 'morning' && !isAM) shouldShow = false;
+                if (filter === 'evening' && !isPM) shouldShow = false;
+                
+                if (shouldShow) {
+                    gsap.to(slot, { duration: 0.3, opacity: 1, scale: 1 });
+                } else {
+                    gsap.to(slot, { duration: 0.3, opacity: 0.3, scale: 0.95 });
+                }
+            });
+        }
+
+        // Step 3: Update booking summary
+        function updateBookingSummary() {
+            // Update step 3 summary
+            document.querySelector('.summary-class-name').textContent = bookingState.data.className || 'HIIT Power Session';
+            document.querySelector('.summary-info').textContent = `with ${bookingState.data.instructor || 'Mike Johnson'}`;
+            
+            const summaryItems = document.querySelectorAll('#step-3 .summary-item');
+            if (summaryItems.length > 0) {
+                summaryItems[0].querySelector('span:last-child').textContent = `${bookingState.data.date}, ${bookingState.data.time}`;
+                summaryItems[1].querySelector('span:last-child').textContent = bookingState.data.duration;
+                summaryItems[3].querySelector('span:last-child').textContent = `${bookingState.data.participants} person${bookingState.data.participants > 1 ? 's' : ''}`;
+                summaryItems[4].querySelector('span:last-child').textContent = `${bookingState.getTotalCost()} 💎`;
+            }
+            
+            // Update step 4 review details
+            const reviewElements = {
+                'review-class-name': bookingState.data.className || 'HIIT Power Session',
+                'review-instructor': bookingState.data.instructor || 'Mike Johnson',
+                'review-datetime': `${bookingState.data.date}, ${bookingState.data.time}`,
+                'review-duration': bookingState.data.duration,
+                'review-location': bookingState.data.location
+            };
+            
+            Object.entries(reviewElements).forEach(([id, value]) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            });
+        }
+
+        // Step 4: Participant management
+        function changeParticipants(delta) {
+            const newCount = bookingState.data.participants + delta;
+            
+            if (newCount >= 1 && newCount <= 10) {
+                bookingState.updateData('participants', newCount);
+                updateParticipantDisplay();
+                updateBookingSummary();
+                
+                // Update button states
+                document.getElementById('minus-btn').disabled = newCount <= 1;
+                document.getElementById('plus-btn').disabled = newCount >= 10;
+                
+                // Animate counter
+                const counter = document.getElementById('participants');
+                gsap.to(counter, {
+                    duration: 0.3,
+                    scale: 1.2,
+                    ease: "back.out(1.7)",
+                    onComplete: () => {
+                        gsap.to(counter, {
+                            duration: 0.3,
+                            scale: 1,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+            }
+        }
+
+        function updateParticipantDisplay() {
+            const participantCount = bookingState.data.participants;
+            const totalCost = bookingState.getTotalCost();
+            
+            // Update counter display
+            document.getElementById('participants').textContent = participantCount;
+            
+            // Update additional cost display
+            const additionalCost = document.getElementById('additional-cost');
+            const additionalAmount = document.getElementById('additional-amount');
+            const totalAmount = document.getElementById('total-amount');
+            
+            if (participantCount > 1) {
+                const additionalPrice = (participantCount - 1) * bookingState.data.basePrice;
+                additionalCost.style.display = 'flex';
+                additionalAmount.textContent = `${additionalPrice} 💎`;
+            } else {
+                additionalCost.style.display = 'none';
+            }
+            
+            totalAmount.textContent = `${totalCost} 💎`;
+            
+            // Update participant count in step 3 if visible
+            const participantCountElement = document.getElementById('participant-count');
+            if (participantCountElement) {
+                participantCountElement.textContent = `${participantCount} person${participantCount > 1 ? 's' : ''}`;
+            }
+            
+            // Update total cost in step 3 if visible
+            const totalCostElement = document.getElementById('total-cost');
+            if (totalCostElement) {
+                totalCostElement.textContent = `${totalCost} 💎`;
+            }
+        }
+
+        // Step 5: Payment method selection
+        function selectPaymentMethod(method) {
+            if (bookingState.isLoading) return;
+            
+            // Remove previous selection
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('selected');
+                option.setAttribute('aria-selected', 'false');
+            });
+            
+            // Add selection to clicked method
+            method.classList.add('selected');
+            method.setAttribute('aria-selected', 'true');
+            
+            // Update state
+            const methodTitle = method.querySelector('.method-title').textContent;
+            const methodType = methodTitle.includes('Credits') ? 'credits' : 'whatsapp';
+            bookingState.updateData('paymentMethod', methodType);
+            
+            // Animate selection
+            gsap.to(method, {
+                duration: 0.3,
+                scale: 1.02,
+                ease: "back.out(1.7)"
+            });
+            
+            setTimeout(() => {
+                gsap.to(method, {
+                    duration: 0.3,
+                    scale: 1,
+                    ease: "power2.out"
+                });
+            }, 200);
+            
+            showSuccess(`Selected ${methodTitle} as payment method`);
+        }
+
+        function showConfirmationAnimation() {
+            const successIcon = document.querySelector('.success-icon');
+            const successTitle = document.querySelector('.success-title');
+            const successMessage = document.querySelector('.success-message');
+            
+            const tl = gsap.timeline();
+            
+            tl.from(successIcon, {
+                duration: 0.8,
+                scale: 0,
+                rotation: -180,
+                ease: "back.out(1.7)"
+            })
+            .from(successTitle, {
+                duration: 0.6,
+                y: 30,
+                opacity: 0,
+                ease: "power2.out"
+            }, "-=0.4")
+            .from(successMessage, {
+                duration: 0.6,
+                y: 20,
+                opacity: 0,
+                ease: "power2.out"
+            }, "-=0.3");
+            
+            gsap.to(successIcon, {
+                duration: 1,
+                scale: 1.1,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: 1
+            });
+        }
+
+        // Utility functions
+        function goToHome() {
+            window.location.href = 'home-screen.html';
+        }
+
+        function shareToWhatsApp() {
+            const message = `🎉 Booking Confirmed!\n\n📋 Class: ${bookingState.data.className}\n👨‍💼 Instructor: ${bookingState.data.instructor}\n📅 Date: ${bookingState.data.date}\n⏰ Time: ${bookingState.data.time}\n📍 Location: ${bookingState.data.location}\n👥 Participants: ${bookingState.data.participants}\n💎 Total Cost: ${bookingState.getTotalCost()} credits\n\nBooking ID: #SL2024-0821-001\n\nSee you there! 💪`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initialize on DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgress();
+            updateNextButton();
+            updateParticipantDisplay();
+            
+            // Initialize button states
+            document.getElementById('minus-btn').disabled = bookingState.data.participants <= 1;
+            document.getElementById('plus-btn').disabled = bookingState.data.participants >= 10;
+            
+            // Enhanced entrance animations
+            gsap.fromTo('.header', 
+                { y: -50, opacity: 0 },
+                { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }
+            );
+            
+            gsap.fromTo('.instructor-card', 
+                { y: 30, opacity: 0 },
+                { 
+                    duration: 0.6, 
+                    y: 0, 
+                    opacity: 1, 
+                    stagger: 0.1, 
+                    ease: "power2.out", 
+                    delay: 0.3 
+                }
+            );
+            
+            gsap.fromTo('.bottom-actions', 
+                { y: 50, opacity: 0 },
+                { duration: 0.6, y: 0, opacity: 1, ease: "power2.out", delay: 0.5 }
+            );
+            
+            // Add keyboard support for accessibility
+            document.addEventListener('keydown', (e) => {
+                if (bookingState.isLoading) return;
+                
+                switch(e.key) {
+                    case 'Enter':
+                        if (bookingState.currentStep < bookingState.maxStep) {
+                            nextStep();
+                        }
+                        break;
+                    case 'Escape':
+                        goBack();
+                        break;
+                    case 'ArrowRight':
+                        if (e.ctrlKey && bookingState.currentStep < bookingState.maxStep) {
+                            nextStep();
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        if (e.ctrlKey && bookingState.currentStep > 1) {
+                            goBack();
+                        }
+                        break;
+                }
+            });
+
+            // Add focus management for interactive elements
+            document.querySelectorAll('.instructor-card, .date-option, .time-slot').forEach(element => {
+                element.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        element.click();
+                    }
+                });
+            });
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translate(-50%, -40px); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,3152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop - Discover Fitness Studios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-50: #eff6ff;
+            --sl-brand-100: #dbeafe;
+            --sl-brand-200: #bfdbfe;
+            --sl-brand-300: #93c5fd;
+            --sl-brand-400: #60a5fa;
+            --sl-brand-500: #3b82f6;
+            --sl-brand-600: #2563eb;
+            --sl-brand-700: #1d4ed8;
+            --sl-brand-800: #1e40af;
+            --sl-brand-900: #1e3a8a;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-success: #10b981;
+            --sl-warning: #f59e0b;
+            --sl-error: #ef4444;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f9fafb;
+            --sl-neutral-100: #f3f4f6;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-300: #d1d5db;
+            --sl-neutral-400: #9ca3af;
+            --sl-neutral-500: #6b7280;
+            --sl-neutral-600: #4b5563;
+            --sl-neutral-700: #374151;
+            --sl-neutral-800: #1f2937;
+            --sl-neutral-900: #111827;
+            
+            /* Spacing system - 8px grid */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            --space-3xl: 64px;
+            
+            /* Border radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--sl-neutral-50) 0%, var(--sl-brand-50) 100%);
+            color: var(--sl-neutral-900);
+            line-height: 1.6;
+            font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+            overflow: hidden;
+            margin: 0;
+            padding: var(--space-lg);
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            border-radius: var(--space-2xl);
+            padding: var(--space-sm);
+            box-shadow: var(--shadow-xl), 
+                        0 0 0 1px rgba(255, 255, 255, 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--sl-neutral-0);
+            border-radius: calc(var(--space-2xl) - var(--space-sm));
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: var(--sl-neutral-0);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .signal-bars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .bar {
+            width: 3px;
+            background: var(--sl-neutral-900);
+            border-radius: 1px;
+        }
+
+        .bar:nth-child(1) { height: 4px; }
+        .bar:nth-child(2) { height: 6px; }
+        .bar:nth-child(3) { height: 8px; }
+        .bar:nth-child(4) { height: 10px; }
+
+        .battery {
+            width: 24px;
+            height: 12px;
+            border: 1px solid var(--sl-neutral-900);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: var(--sl-neutral-900);
+            border-radius: 0 1px 1px 0;
+        }
+
+        .battery-level {
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            background: var(--sl-success);
+            border-radius: 1px;
+            width: 80%;
+        }
+
+        /* Header */
+        .header {
+            background: var(--sl-neutral-0);
+            padding: 60px var(--space-lg) var(--space-lg) var(--space-lg);
+            border-bottom: 1px solid var(--sl-neutral-100);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo svg {
+            width: var(--space-xl);
+            height: var(--space-xl);
+            color: var(--sl-brand);
+            filter: drop-shadow(0 2px 4px rgba(0, 119, 255, 0.2));
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--sl-brand);
+            letter-spacing: -0.02em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .location-btn {
+            background: var(--sl-brand-50);
+            border: 1px solid var(--sl-brand-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-sm) var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--sl-brand-700);
+        }
+
+        .location-btn:hover {
+            background: var(--sl-brand-100);
+            border-color: var(--sl-brand-300);
+        }
+
+        .location-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .filter-btn {
+            background: var(--sl-neutral-0);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--sl-brand);
+            background: var(--sl-brand-50);
+        }
+
+        .filter-btn svg {
+            width: 20px;
+            height: 20px;
+            color: var(--sl-neutral-600);
+        }
+
+        .filter-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--sl-brand);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--sl-neutral-0);
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--sl-neutral-100);
+            border-radius: var(--radius-md);
+            padding: var(--space-xs);
+            gap: var(--space-xs);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .view-btn {
+            padding: var(--space-sm) var(--space-md);
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--sl-neutral-600);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            position: relative;
+        }
+
+        .view-btn.active {
+            background: var(--sl-neutral-0);
+            color: var(--sl-brand);
+            box-shadow: var(--shadow-sm);
+            transform: none;
+        }
+
+        .view-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-md) var(--space-lg) var(--space-md) 48px;
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: var(--radius-lg);
+            background: var(--sl-neutral-50);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: var(--sl-neutral-400);
+            font-weight: 500;
+        }
+
+        .search-input:focus {
+            border-color: var(--sl-brand);
+            background: var(--sl-neutral-0);
+            box-shadow: 0 0 0 4px var(--sl-brand-100);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--sl-neutral-500);
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-clear {
+            position: absolute;
+            right: var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--sl-neutral-400);
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .search-input:focus + .search-icon + .search-clear,
+        .search-input:not(:placeholder-shown) + .search-icon + .search-clear {
+            opacity: 1;
+        }
+
+        /* Content Area */
+        .content {
+            position: absolute;
+            top: 160px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--sl-neutral-50);
+        }
+
+        /* Map View */
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 100px;
+            background: var(--sl-neutral-100);
+            overflow: hidden;
+            transition: opacity 0.4s ease;
+        }
+
+        .mapbox-map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--sl-neutral-600);
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: var(--space-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .map-placeholder svg {
+            width: 60px;
+            height: 60px;
+            color: var(--sl-brand);
+            margin-bottom: var(--space-md);
+            opacity: 0.8;
+        }
+
+        .map-placeholder h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            color: var(--sl-neutral-900);
+        }
+
+        .map-placeholder p {
+            font-size: 14px;
+            color: var(--sl-neutral-600);
+            margin-bottom: var(--space-md);
+            line-height: 1.5;
+        }
+
+        .enable-location-btn {
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin: 0 auto;
+        }
+
+        .enable-location-btn:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .enable-location-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .map-markers {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: var(--sl-brand);
+            border: 3px solid var(--sl-neutral-0);
+            border-radius: 50%;
+            box-shadow: var(--shadow-md);
+            animation: mapPulse 2s infinite;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .map-marker:hover {
+            transform: scale(1.3);
+            background: var(--sl-accent-peach);
+            z-index: 20;
+        }
+
+        .map-marker.active {
+            background: var(--sl-accent-peach);
+            transform: scale(1.3);
+            z-index: 20;
+        }
+
+        .map-marker:nth-child(1) { top: 20%; left: 25%; animation-delay: 0s; }
+        .map-marker:nth-child(2) { top: 35%; right: 20%; animation-delay: 0.4s; }
+        .map-marker:nth-child(3) { bottom: 40%; left: 35%; animation-delay: 0.8s; }
+        .map-marker:nth-child(4) { top: 65%; right: 35%; animation-delay: 1.2s; }
+        .map-marker:nth-child(5) { bottom: 25%; right: 25%; animation-delay: 1.6s; }
+        .map-marker:nth-child(6) { top: 45%; left: 15%; animation-delay: 2s; }
+
+        @keyframes mapPulse {
+            0% { 
+                box-shadow: var(--shadow-md), 0 0 0 0 rgba(0, 119, 255, 0.7); 
+            }
+            70% { 
+                box-shadow: var(--shadow-md), 0 0 0 10px rgba(0, 119, 255, 0); 
+            }
+            100% { 
+                box-shadow: var(--shadow-md), 0 0 0 0 rgba(0, 119, 255, 0); 
+            }
+        }
+
+        .gym-popup {
+            position: absolute;
+            bottom: var(--space-md);
+            left: var(--space-md);
+            right: var(--space-md);
+            background: var(--sl-neutral-0);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--sl-neutral-200);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .gym-popup.active {
+            transform: translateY(0);
+        }
+
+        .popup-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .popup-image {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--sl-brand), var(--sl-accent-aqua));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .popup-image svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .popup-info h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: var(--space-xs);
+        }
+
+        .popup-location {
+            font-size: 14px;
+            color: var(--sl-neutral-600);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-xs);
+        }
+
+        .popup-location svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .popup-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--sl-neutral-700);
+        }
+
+        .popup-rating svg {
+            width: 14px;
+            height: 14px;
+            color: #fbbf24;
+        }
+
+        .popup-actions {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+
+        .popup-btn {
+            flex: 1;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .popup-btn.primary {
+            background: var(--sl-brand);
+            color: white;
+        }
+
+        .popup-btn.primary:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-1px);
+        }
+
+        .popup-btn.secondary {
+            background: var(--sl-neutral-100);
+            color: var(--sl-neutral-700);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .popup-btn.secondary:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .popup-close {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            background: var(--sl-neutral-100);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .popup-close:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .popup-close svg {
+            width: 16px;
+            height: 16px;
+            color: var(--sl-neutral-600);
+        }
+
+        /* List View */
+        .list-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 100px;
+            padding: var(--space-lg);
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            background: var(--sl-neutral-50);
+        }
+
+        .list-container.active {
+            opacity: 1;
+        }
+
+        /* CRITICAL FIX: Force gym cards to be visible */
+        .gym-grid,
+        .gym-grid *,
+        .gym-card,
+        .gym-card * {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .gym-card {
+            display: block !important;
+        }
+
+        /* Fix initial view state */
+        .map-container {
+            opacity: 1;
+        }
+
+        .list-container {
+            opacity: 0;
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+            padding: 0 var(--space-xs);
+        }
+
+        .results-count {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--sl-neutral-700);
+        }
+
+        .sort-dropdown {
+            position: relative;
+        }
+
+        .sort-btn {
+            background: var(--sl-neutral-0);
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--sl-neutral-700);
+            transition: all 0.2s ease;
+        }
+
+        .sort-btn:hover {
+            border-color: var(--sl-brand);
+            background: var(--sl-brand-50);
+        }
+
+        .sort-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .gym-grid {
+            display: grid;
+            gap: var(--space-lg);
+            padding-bottom: var(--space-3xl);
+        }
+
+        .gym-card {
+            background: var(--sl-neutral-0);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border: 1px solid var(--sl-neutral-200);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gym-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--sl-brand-300);
+        }
+
+        .gym-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sl-brand), var(--sl-accent-aqua));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gym-card:hover::before {
+            opacity: 1;
+        }
+
+        .gym-image {
+            height: 160px;
+            background: linear-gradient(45deg, var(--sl-brand), var(--sl-accent-aqua));
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .gym-image.variant-1 { background: linear-gradient(45deg, var(--sl-brand), var(--sl-accent-aqua)); }
+        .gym-image.variant-2 { background: linear-gradient(45deg, var(--sl-accent-violet), var(--sl-accent-peach)); }
+        .gym-image.variant-3 { background: linear-gradient(45deg, var(--sl-accent-aqua), var(--sl-success)); }
+        .gym-image.variant-4 { background: linear-gradient(45deg, var(--sl-accent-peach), var(--sl-warning)); }
+        .gym-image.variant-5 { background: linear-gradient(45deg, var(--sl-brand-700), var(--sl-accent-violet)); }
+
+        .gym-image svg {
+            width: 40px;
+            height: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 2;
+        }
+
+        .gym-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+            z-index: 1;
+        }
+
+        .gym-badge {
+            position: absolute;
+            top: var(--space-md);
+            left: var(--space-md);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-sm);
+            padding: var(--space-xs) var(--space-sm);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
+
+        .gym-badge.featured {
+            color: var(--sl-brand);
+        }
+
+        .gym-badge.new {
+            color: var(--sl-success);
+        }
+
+        .gym-badge.popular {
+            color: var(--sl-accent-peach);
+        }
+
+        .gym-favorite {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .gym-favorite:hover {
+            background: var(--sl-neutral-0);
+            transform: scale(1.1);
+        }
+
+        .gym-favorite svg {
+            width: 18px;
+            height: 18px;
+            color: var(--sl-neutral-600);
+            transition: color 0.2s ease;
+        }
+
+        .gym-favorite.active svg {
+            color: var(--sl-error);
+            fill: var(--sl-error);
+        }
+
+        .gym-details {
+            padding: var(--space-xl);
+        }
+
+        .gym-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+            gap: var(--space-md);
+        }
+
+        .gym-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            flex: 1;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        .gym-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: var(--sl-neutral-100);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--sl-neutral-700);
+            white-space: nowrap;
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .gym-rating svg {
+            width: 14px;
+            height: 14px;
+            color: #fbbf24;
+        }
+
+        .gym-location {
+            color: var(--sl-neutral-600);
+            font-size: 14px;
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-weight: 500;
+        }
+
+        .gym-location svg {
+            width: 14px;
+            height: 14px;
+            color: var(--sl-brand);
+            flex-shrink: 0;
+        }
+
+        .gym-description {
+            font-size: 14px;
+            color: var(--sl-neutral-600);
+            margin-bottom: var(--space-lg);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .gym-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .gym-amenity {
+            background: var(--sl-brand-50);
+            color: var(--sl-brand-700);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--sl-brand-200);
+        }
+
+        .gym-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .gym-tag {
+            background: linear-gradient(45deg, var(--sl-brand), var(--sl-accent-aqua));
+            color: white;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            font-size: 12px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            letter-spacing: 0.2px;
+        }
+
+        .gym-stats {
+            display: flex;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md);
+            background: var(--sl-neutral-50);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .gym-stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .gym-stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            display: block;
+        }
+
+        .gym-stat-label {
+            font-size: 12px;
+            color: var(--sl-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: var(--space-xs);
+        }
+
+        .gym-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--sl-neutral-200);
+        }
+
+        .gym-price-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .gym-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--sl-brand);
+            letter-spacing: -0.02em;
+        }
+
+        .gym-price-label {
+            font-size: 12px;
+            color: var(--sl-neutral-500);
+            font-weight: 500;
+        }
+
+        .gym-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .gym-action {
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            font-family: inherit;
+        }
+
+        .gym-action:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .gym-action.secondary {
+            background: var(--sl-neutral-100);
+            color: var(--sl-neutral-700);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .gym-action.secondary:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .availability-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-top: var(--space-md);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .availability-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .availability-dot.available {
+            background: var(--sl-success);
+        }
+
+        .availability-dot.busy {
+            background: var(--sl-warning);
+        }
+
+        .availability-dot.full {
+            background: var(--sl-error);
+        }
+
+        .availability-indicator.available {
+            color: var(--sl-success);
+        }
+
+        .availability-indicator.busy {
+            color: var(--sl-warning);
+        }
+
+        .availability-indicator.full {
+            color: var(--sl-error);
+        }
+
+        /* Filter Bottom Sheet */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--sl-neutral-0);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            box-shadow: var(--shadow-xl), 0 -4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(calc(100% - 80px));
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 200;
+            max-height: 80vh;
+            border: 1px solid var(--sl-neutral-200);
+            border-bottom: none;
+        }
+
+        .bottom-sheet.expanded {
+            transform: translateY(0);
+        }
+
+        .sheet-preview {
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--sl-brand-50);
+            border-bottom: 1px solid var(--sl-brand-200);
+        }
+
+        .active-filters-preview {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .filter-count {
+            background: var(--sl-brand);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .filter-summary {
+            font-size: 14px;
+            color: var(--sl-brand-700);
+            font-weight: 600;
+        }
+
+        .clear-filters {
+            background: none;
+            border: none;
+            color: var(--sl-brand);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .clear-filters:hover {
+            background: var(--sl-brand-100);
+        }
+
+        .sheet-header {
+            padding: var(--space-xl) var(--space-xl) var(--space-lg);
+            border-bottom: 1px solid var(--sl-neutral-200);
+            position: relative;
+            background: var(--sl-neutral-0);
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--sl-neutral-300);
+            border-radius: 2px;
+            position: absolute;
+            top: var(--space-md);
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sheet-handle:hover {
+            background: var(--sl-neutral-500);
+            transform: translateX(-50%) scaleX(1.2);
+        }
+
+        .sheet-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: var(--space-md);
+        }
+
+        .sheet-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            letter-spacing: -0.01em;
+        }
+
+        .sheet-close {
+            background: var(--sl-neutral-100);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sheet-close:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .sheet-close svg {
+            width: 16px;
+            height: 16px;
+            color: var(--sl-neutral-600);
+        }
+
+        .sheet-content {
+            padding: var(--space-xl);
+            overflow-y: auto;
+            max-height: calc(80vh - 160px);
+        }
+
+        .filter-section {
+            margin-bottom: var(--space-2xl);
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .filter-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--sl-brand);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        .filter-option {
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: var(--radius-lg);
+            background: var(--sl-neutral-0);
+            color: var(--sl-neutral-700);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .filter-option:hover {
+            border-color: var(--sl-brand-300);
+            background: var(--sl-brand-50);
+            color: var(--sl-brand-700);
+        }
+
+        .filter-option.selected {
+            background: var(--sl-brand);
+            border-color: var(--sl-brand);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--sl-success);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .filter-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .filter-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--sl-neutral-600);
+            margin-bottom: var(--space-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .price-range {
+            background: var(--sl-neutral-50);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .price-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .price-value {
+            background: var(--sl-brand);
+            color: white;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .range-container {
+            position: relative;
+            margin: var(--space-xl) 0;
+        }
+
+        .range-input {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--sl-neutral-200);
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--sl-brand);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s ease;
+            border: 3px solid var(--sl-neutral-0);
+        }
+
+        .range-input::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .range-input::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--sl-neutral-600);
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: var(--space-sm);
+        }
+
+        .distance-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+        }
+
+        .distance-option {
+            padding: var(--space-md);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: var(--radius-md);
+            background: var(--sl-neutral-0);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            color: var(--sl-neutral-700);
+        }
+
+        .distance-option:hover {
+            border-color: var(--sl-brand-300);
+            background: var(--sl-brand-50);
+        }
+
+        .distance-option.selected {
+            background: var(--sl-brand);
+            border-color: var(--sl-brand);
+            color: white;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+        }
+
+        .amenity-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md);
+            border: 2px solid var(--sl-neutral-200);
+            border-radius: var(--radius-md);
+            background: var(--sl-neutral-0);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--sl-neutral-700);
+        }
+
+        .amenity-option:hover {
+            border-color: var(--sl-brand-300);
+            background: var(--sl-brand-50);
+        }
+
+        .amenity-option.selected {
+            background: var(--sl-brand);
+            border-color: var(--sl-brand);
+            color: white;
+        }
+
+        .amenity-option svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .filter-actions {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--sl-neutral-0);
+            border-top: 1px solid var(--sl-neutral-200);
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .filter-btn.primary {
+            background: var(--sl-brand);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-btn.primary:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .filter-btn.secondary {
+            background: var(--sl-neutral-100);
+            color: var(--sl-neutral-700);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .filter-btn.secondary:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .results-preview {
+            background: var(--sl-brand-50);
+            border: 1px solid var(--sl-brand-200);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-top: var(--space-md);
+            text-align: center;
+        }
+
+        .results-preview-text {
+            color: var(--sl-brand-700);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(24px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .scale-in {
+            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.8);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+        }
+
+        .bounce-in {
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.3);
+            }
+            50% { 
+                transform: scale(1.05);
+            }
+            70% { 
+                transform: scale(0.9);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, 
+                var(--sl-neutral-200) 0%, 
+                var(--sl-neutral-100) 50%, 
+                var(--sl-neutral-200) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Responsive Design - Mobile First */
+        @media (max-width: 480px) {
+            body {
+                padding: var(--space-sm);
+            }
+
+            .phone-frame {
+                width: 100%;
+                max-width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                padding: 0;
+                box-shadow: none;
+                background: var(--sl-neutral-0);
+            }
+
+            .phone-screen {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .status-bar {
+                display: none;
+            }
+
+            .header {
+                padding-top: env(safe-area-inset-top, 44px);
+            }
+
+            .content {
+                top: 140px;
+                bottom: env(safe-area-inset-bottom, 0);
+            }
+
+            .gym-grid {
+                gap: var(--space-md);
+            }
+
+            .gym-details {
+                padding: var(--space-lg);
+            }
+
+            .bottom-sheet {
+                max-height: 85vh;
+            }
+
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .distance-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: var(--space-md);
+            }
+
+            .phone-frame {
+                width: 100%;
+                max-width: 420px;
+                height: 90vh;
+            }
+
+            .gym-grid {
+                gap: var(--space-lg);
+            }
+        }
+
+        @media (min-width: 769px) {
+            body {
+                padding: var(--space-xl);
+            }
+
+            .phone-frame {
+                width: 375px;
+                height: 812px;
+            }
+        }
+
+        /* High DPI Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .gym-image::after {
+                background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.2) 100%);
+            }
+
+            .phone-frame {
+                box-shadow: var(--shadow-xl), 
+                            0 0 0 0.5px rgba(255, 255, 255, 0.1),
+                            inset 0 0.5px 0 rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --sl-neutral-0: #111827;
+                --sl-neutral-25: #0f172a;
+                --sl-neutral-50: #1f2937;
+                --sl-neutral-100: #374151;
+                --sl-neutral-200: #4b5563;
+                --sl-neutral-900: #f9fafb;
+                --sl-neutral-800: #e5e7eb;
+                --sl-neutral-700: #d1d5db;
+            }
+
+            .phone-frame {
+                background: linear-gradient(145deg, #000, #1a1a1a);
+            }
+
+            .map-placeholder {
+                background: rgba(17, 24, 39, 0.95);
+            }
+
+            .gym-image::after {
+                background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%);
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .map-marker {
+                animation: none;
+            }
+
+            .shimmer {
+                animation: none;
+                background: var(--sl-neutral-200);
+            }
+        }
+
+        /* Focus Styles for Accessibility */
+        .view-btn:focus-visible,
+        .filter-btn:focus-visible,
+        .gym-action:focus-visible,
+        .search-input:focus-visible,
+        .filter-option:focus-visible,
+        .amenity-option:focus-visible,
+        .distance-option:focus-visible {
+            outline: 2px solid var(--sl-brand);
+            outline-offset: 2px;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 240px;
+            color: var(--sl-neutral-600);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--sl-neutral-200);
+            border-top: 3px solid var(--sl-brand);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: var(--space-md);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .skeleton-card {
+            background: var(--sl-neutral-0);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--sl-neutral-200);
+        }
+
+        .skeleton-image {
+            height: 160px;
+            background: var(--sl-neutral-200);
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-content {
+            padding: var(--space-xl);
+        }
+
+        .skeleton-line {
+            height: 16px;
+            background: var(--sl-neutral-200);
+            border-radius: 4px;
+            margin-bottom: var(--space-sm);
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-line.title { width: 70%; height: 20px; }
+        .skeleton-line.subtitle { width: 50%; }
+        .skeleton-line.text { width: 90%; }
+        .skeleton-line.short { width: 40%; }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: calc(env(safe-area-inset-top, 44px) + 80px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--sl-neutral-900);
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: calc(100vw - var(--space-xl));
+        }
+
+        .notification.success {
+            background: var(--sl-success);
+        }
+
+        .notification.error {
+            background: var(--sl-error);
+        }
+
+        .notification.warning {
+            background: var(--sl-warning);
+        }
+
+        @keyframes slideDown {
+            from { 
+                transform: translate(-50%, -20px); 
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, 0); 
+                opacity: 1;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .gym-card {
+                border: 2px solid var(--sl-neutral-900);
+            }
+
+            .filter-option,
+            .amenity-option,
+            .distance-option {
+                border-width: 3px;
+            }
+
+            .view-btn.active {
+                outline: 2px solid var(--sl-neutral-900);
+                outline-offset: 2px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .phone-frame {
+                width: 100%;
+                height: auto;
+                border-radius: 0;
+                box-shadow: none;
+                background: white;
+            }
+
+            .header,
+            .bottom-sheet,
+            .map-container,
+            .filter-btn,
+            .gym-action {
+                display: none !important;
+            }
+
+            .list-container {
+                position: static;
+                opacity: 1;
+                padding: 0;
+            }
+
+            .gym-card {
+                break-inside: avoid;
+                margin-bottom: var(--space-lg);
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- Status Bar -->
+            <div class="status-bar" aria-hidden="true">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <div class="signal-bars">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <span>100%</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="StudioLoop logo" fill="none">
+                            <g stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M128 84 Q 88 120 80 166" />
+                                <path d="M128 84 Q 168 120 176 166" />
+                                <path d="M80 166 Q 128 208 176 166" />
+                            </g>
+                            <g fill="currentColor">
+                                <circle cx="128" cy="56" r="24"/>
+                                <circle cx="68" cy="188" r="24"/>
+                                <circle cx="188" cy="188" r="24"/>
+                            </g>
+                        </svg>
+                        <span class="logo-text">Discover</span>
+                    </div>
+
+                    <div class="header-actions">
+                        <button class="location-btn" aria-label="Current location: Sandton">
+                            <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                            </svg>
+                            Sandton
+                        </button>
+                        <button class="filter-btn" id="filter-trigger" aria-label="Open filters">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            <div class="filter-badge" id="filter-badge">3</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="view-toggle" role="tablist" aria-label="View options">
+                    <button class="view-btn active" id="map-btn" role="tab" aria-selected="true" aria-controls="map-view">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        Map
+                    </button>
+                    <button class="view-btn" id="list-btn" role="tab" aria-selected="false" aria-controls="list-view">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                        </svg>
+                        List
+                    </button>
+                </div>
+
+                <div class="search-container">
+                    <label for="search-input" class="sr-only">Search for gyms, classes, or trainers</label>
+                    <input 
+                        type="search" 
+                        id="search-input"
+                        class="search-input" 
+                        placeholder="Search gyms, classes, trainers..."
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <button class="search-clear" aria-label="Clear search" tabindex="-1">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="content">
+                <!-- Map View -->
+                <div class="map-container" id="map-view" role="tabpanel" aria-labelledby="map-btn">
+                    <div id="mapbox-container" class="mapbox-map"></div>
+                    <div class="map-placeholder">
+                        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <h3>Discover Nearby Studios</h3>
+                        <p>Find fitness studios and gyms in your area</p>
+                        <button class="enable-location-btn" id="enable-location">
+                            <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                            </svg>
+                            Enable Location
+                        </button>
+                    </div>
+                    <div class="map-markers" role="group" aria-label="Fitness studio locations">
+                        <button class="map-marker" data-gym="fitzone" aria-label="FitZone Premium, 4.8 stars"></button>
+                        <button class="map-marker" data-gym="powerhouse" aria-label="PowerHouse Gym, 4.6 stars"></button>
+                        <button class="map-marker" data-gym="zen" aria-label="Zen Wellness Studio, 4.9 stars"></button>
+                        <button class="map-marker" data-gym="elite" aria-label="Elite Fitness Center, 4.7 stars"></button>
+                        <button class="map-marker" data-gym="rhythm" aria-label="Rhythm Dance Studio, 4.5 stars"></button>
+                        <button class="map-marker" data-gym="iron" aria-label="Iron Temple Gym, 4.4 stars"></button>
+                    </div>
+                    
+                    <!-- Gym Popup -->
+                    <div class="gym-popup" id="gym-popup">
+                        <button class="popup-close" aria-label="Close popup">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                        <div class="popup-header">
+                            <div class="popup-image">
+                                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/>
+                                </svg>
+                            </div>
+                            <div class="popup-info">
+                                <h4 id="popup-name">FitZone Premium</h4>
+                                <div class="popup-location">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                                    </svg>
+                                    <span id="popup-location">Sandton City • 0.8km away</span>
+                                </div>
+                                <div class="popup-rating">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <span id="popup-rating">4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="popup-actions">
+                            <button class="popup-btn secondary">View Details</button>
+                            <button class="popup-btn primary">Book Class</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div class="list-container" id="list-view" role="tabpanel" aria-labelledby="list-btn">
+                    <div class="list-header">
+                        <div class="results-count" id="results-count">
+                            <span class="sr-only">Search results: </span>24 studios nearby
+                        </div>
+                        <div class="sort-dropdown">
+                            <button class="sort-btn" aria-haspopup="true" aria-expanded="false">
+                                <span>Distance</span>
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="gym-grid">
+                        <!-- Gym Card 1 -->
+                        <article class="gym-card fade-in" data-gym="fitzone">
+                            <div class="gym-image variant-1">
+                                <div class="gym-badge featured">Featured</div>
+                                <button class="gym-favorite" aria-label="Add to favorites" data-favorited="false">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </button>
+                                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/>
+                                </svg>
+                            </div>
+                            <div class="gym-details">
+                                <div class="gym-header">
+                                    <h3 class="gym-name">FitZone Premium</h3>
+                                    <div class="gym-rating" title="4.8 out of 5 stars">
+                                        <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                        4.8
+                                    </div>
+                                </div>
+                                <div class="gym-location">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                                    </svg>
+                                    Sandton City • 0.8km away
+                                </div>
+                                <p class="gym-description">
+                                    Premium fitness experience with state-of-the-art equipment, expert trainers, and luxurious amenities in the heart of Sandton.
+                                </p>
+                                <div class="gym-amenities">
+                                    <span class="gym-amenity">Personal Training</span>
+                                    <span class="gym-amenity">Parking</span>
+                                    <span class="gym-amenity">Towel Service</span>
+                                    <span class="gym-amenity">Showers</span>
+                                </div>
+                                <div class="gym-tags">
+                                    <span class="gym-tag">Strength Training</span>
+                                    <span class="gym-tag">HIIT</span>
+                                    <span class="gym-tag">Yoga</span>
+                                </div>
+                                <div class="gym-stats">
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">150+</span>
+                                        <span class="gym-stat-label">Classes</span>
+                                    </div>
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">25</span>
+                                        <span class="gym-stat-label">Trainers</span>
+                                    </div>
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">5k+</span>
+                                        <span class="gym-stat-label">Members</span>
+                                    </div>
+                                </div>
+                                <div class="availability-indicator available">
+                                    <div class="availability-dot available"></div>
+                                    Available now • 3 classes today
+                                </div>
+                                <div class="gym-footer">
+                                    <div class="gym-price-container">
+                                        <div class="gym-price">From R180</div>
+                                        <div class="gym-price-label">per session</div>
+                                    </div>
+                                    <div class="gym-actions">
+                                        <button class="gym-action secondary">Details</button>
+                                        <button class="gym-action">Book Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Gym Card 2 -->
+                        <article class="gym-card fade-in" data-gym="powerhouse" style="animation-delay: 0.1s;">
+                            <div class="gym-image variant-2">
+                                <div class="gym-badge popular">Popular</div>
+                                <button class="gym-favorite" aria-label="Add to favorites" data-favorited="false">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </button>
+                                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                            </div>
+                            <div class="gym-details">
+                                <div class="gym-header">
+                                    <h3 class="gym-name">PowerHouse Gym</h3>
+                                    <div class="gym-rating" title="4.6 out of 5 stars">
+                                        <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                        4.6
+                                    </div>
+                                </div>
+                                <div class="gym-location">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                                    </svg>
+                                    Rosebank • 1.2km away
+                                </div>
+                                <p class="gym-description">
+                                    Hardcore training facility for serious athletes and fitness enthusiasts seeking intense workouts and professional coaching.
+                                </p>
+                                <div class="gym-amenities">
+                                    <span class="gym-amenity">Free Weights</span>
+                                    <span class="gym-amenity">Boxing Ring</span>
+                                    <span class="gym-amenity">Nutrition Coaching</span>
+                                </div>
+                                <div class="gym-tags">
+                                    <span class="gym-tag">CrossFit</span>
+                                    <span class="gym-tag">Boxing</span>
+                                    <span class="gym-tag">Powerlifting</span>
+                                </div>
+                                <div class="gym-stats">
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">80+</span>
+                                        <span class="gym-stat-label">Classes</span>
+                                    </div>
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">15</span>
+                                        <span class="gym-stat-label">Trainers</span>
+                                    </div>
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">2k+</span>
+                                        <span class="gym-stat-label">Members</span>
+                                    </div>
+                                </div>
+                                <div class="availability-indicator busy">
+                                    <div class="availability-dot busy"></div>
+                                    Busy • 2 spots left in next class
+                                </div>
+                                <div class="gym-footer">
+                                    <div class="gym-price-container">
+                                        <div class="gym-price">From R150</div>
+                                        <div class="gym-price-label">per session</div>
+                                    </div>
+                                    <div class="gym-actions">
+                                        <button class="gym-action secondary">Details</button>
+                                        <button class="gym-action">Book Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Gym Card 3 -->
+                        <article class="gym-card fade-in" data-gym="zen" style="animation-delay: 0.2s;">
+                            <div class="gym-image variant-3">
+                                <div class="gym-badge new">New</div>
+                                <button class="gym-favorite active" aria-label="Remove from favorites" data-favorited="true">
+                                    <svg fill="currentColor" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </button>
+                                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div class="gym-details">
+                                <div class="gym-header">
+                                    <h3 class="gym-name">Zen Wellness Studio</h3>
+                                    <div class="gym-rating" title="4.9 out of 5 stars">
+                                        <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                        4.9
+                                    </div>
+                                </div>
+                                <div class="gym-location">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                                    </svg>
+                                    Melville • 2.1km away
+                                </div>
+                                <p class="gym-description">
+                                    Holistic wellness approach combining mindfulness, movement, and recovery in a peaceful, nurturing environment.
+                                </p>
+                                <div class="gym-amenities">
+                                    <span class="gym-amenity">Meditation Room</span>
+                                    <span class="gym-amenity">Wellness Spa</span>
+                                    <span class="gym-amenity">Healthy Café</span>
+                                </div>
+                                <div class="gym-tags">
+                                    <span class="gym-tag">Yoga</span>
+                                    <span class="gym-tag">Pilates</span>
+                                    <span class="gym-tag">Meditation</span>
+                                </div>
+                                <div class="gym-stats">
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">60+</span>
+                                        <span class="gym-stat-label">Classes</span>
+                                    </div>
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">12</span>
+                                        <span class="gym-stat-label">Instructors</span>
+                                    </div>
+                                    <div class="gym-stat">
+                                        <span class="gym-stat-value">1k+</span>
+                                        <span class="gym-stat-label">Members</span>
+                                    </div>
+                                </div>
+                                <div class="availability-indicator available">
+                                    <div class="availability-dot available"></div>
+                                    Available now • 4 classes today
+                                </div>
+                                <div class="gym-footer">
+                                    <div class="gym-price-container">
+                                        <div class="gym-price">From R120</div>
+                                        <div class="gym-price-label">per session</div>
+                                    </div>
+                                    <div class="gym-actions">
+                                        <button class="gym-action secondary">Details</button>
+                                        <button class="gym-action">Book Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Filter Bottom Sheet -->
+            <aside class="bottom-sheet" id="filter-sheet" aria-label="Filters and preferences" aria-hidden="true">
+                <div class="sheet-preview">
+                    <div class="active-filters-preview">
+                        <div class="filter-count" id="active-filter-count">3</div>
+                        <div class="filter-summary">Active filters</div>
+                    </div>
+                    <button class="clear-filters" id="clear-all-filters">Clear All</button>
+                </div>
+                
+                <div class="sheet-header">
+                    <div class="sheet-handle" aria-label="Drag to expand filters"></div>
+                    <div class="sheet-title-row">
+                        <h2 class="sheet-title">Filters & Preferences</h2>
+                        <button class="sheet-close" id="close-filters" aria-label="Close filters">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="sheet-content">
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/>
+                            </svg>
+                            Activity Type
+                        </h3>
+                        <div class="filter-options" role="group" aria-labelledby="activity-filter">
+                            <button class="filter-option" data-filter="activity" data-value="gym">Gym</button>
+                            <button class="filter-option selected" data-filter="activity" data-value="yoga">Yoga</button>
+                            <button class="filter-option" data-filter="activity" data-value="crossfit">CrossFit</button>
+                            <button class="filter-option" data-filter="activity" data-value="pilates">Pilates</button>
+                            <button class="filter-option" data-filter="activity" data-value="boxing">Boxing</button>
+                            <button class="filter-option selected" data-filter="activity" data-value="swimming">Swimming</button>
+                            <button class="filter-option" data-filter="activity" data-value="dance">Dance</button>
+                            <button class="filter-option" data-filter="activity" data-value="martial-arts">Martial Arts</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                            </svg>
+                            Distance
+                        </h3>
+                        <div class="distance-selector" role="group" aria-labelledby="distance-filter">
+                            <button class="distance-option" data-distance="2">Within 2km</button>
+                            <button class="distance-option selected" data-distance="5">Within 5km</button>
+                            <button class="distance-option" data-distance="10">Within 10km</button>
+                            <button class="distance-option" data-distance="any">Any distance</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9Z"/>
+                            </svg>
+                            Price Range
+                        </h3>
+                        <div class="price-range">
+                            <div class="price-display">
+                                <div class="price-value" id="price-display">Up to R250</div>
+                            </div>
+                            <div class="range-container">
+                                <input 
+                                    type="range" 
+                                    class="range-input" 
+                                    id="price-range" 
+                                    min="50" 
+                                    max="500" 
+                                    value="250"
+                                    aria-label="Maximum price per session"
+                                >
+                            </div>
+                            <div class="range-labels">
+                                <span>R50</span>
+                                <span>R500+</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                            </svg>
+                            Amenities
+                        </h3>
+                        <div class="filter-group">
+                            <div class="filter-group-title">Facilities</div>
+                            <div class="amenities-grid">
+                                <button class="amenity-option selected" data-amenity="parking">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M6,3H18V21H16V15H8V21H6V3M8,5V13H16V5H8Z"/>
+                                    </svg>
+                                    Parking
+                                </button>
+                                <button class="amenity-option" data-amenity="showers">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M9,2V4H15V2H17V4H19A2,2 0 0,1 21,6V20A2,2 0 0,1 19,22H5A2,2 0 0,1 3,20V6A2,2 0 0,1 5,4H7V2H9M5,8V20H19V8H5M7,10H9V12H7V10M11,10H13V12H11V10M15,10H17V12H15V10Z"/>
+                                    </svg>
+                                    Showers
+                                </button>
+                                <button class="amenity-option" data-amenity="towels">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    Towel Service
+                                </button>
+                                <button class="amenity-option" data-amenity="wifi">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    WiFi
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-group-title">Services</div>
+                            <div class="amenities-grid">
+                                <button class="amenity-option" data-amenity="personal-training">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    Personal Training
+                                </button>
+                                <button class="amenity-option" data-amenity="group-classes">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    Group Classes
+                                </button>
+                                <button class="amenity-option" data-amenity="nutrition">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    Nutrition Coaching
+                                </button>
+                                <button class="amenity-option" data-amenity="childcare">
+                                    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    Childcare
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="results-preview">
+                        <div class="results-preview-text" id="results-preview">
+                            Found 24 studios matching your preferences
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="filter-btn secondary" id="reset-filters">Reset</button>
+                    <button class="filter-btn primary" id="apply-filters">Show Results (24)</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // Modern Fitness Discovery App Implementation
+        class StudioLoopDiscovery {
+            constructor() {
+                this.state = {
+                    currentView: 'list',
+                    filters: {
+                        activities: ['yoga', 'swimming'],
+                        distance: 5,
+                        maxPrice: 250,
+                        amenities: ['parking']
+                    },
+                    searchQuery: '',
+                    selectedGym: null,
+                    isFilterExpanded: false
+                };
+                
+                this.gymData = this.initializeGymData();
+                this.init();
+            }
+            
+            initializeGymData() {
+                return {
+                    'fitzone': {
+                        name: 'FitZone Premium',
+                        location: 'Sandton City • 0.8km away',
+                        rating: 4.8,
+                        description: 'Premium fitness experience with state-of-the-art equipment, expert trainers, and luxurious amenities in the heart of Sandton.',
+                        price: 180,
+                        activities: ['gym', 'yoga', 'hiit'],
+                        amenities: ['parking', 'personal-training', 'towels', 'showers']
+                    },
+                    'powerhouse': {
+                        name: 'PowerHouse Gym',
+                        location: 'Rosebank • 1.2km away',
+                        rating: 4.6,
+                        description: 'Hardcore training facility for serious athletes and fitness enthusiasts seeking intense workouts.',
+                        price: 150,
+                        activities: ['gym', 'crossfit', 'boxing'],
+                        amenities: ['parking', 'nutrition', 'group-classes']
+                    },
+                    'zen': {
+                        name: 'Zen Wellness Studio',
+                        location: 'Melville • 2.1km away',
+                        rating: 4.9,
+                        description: 'Holistic wellness approach combining mindfulness, movement, and recovery.',
+                        price: 120,
+                        activities: ['yoga', 'pilates', 'meditation'],
+                        amenities: ['parking', 'showers', 'wifi']
+                    },
+                    'elite': {
+                        name: 'Elite Fitness Center',
+                        location: 'Hyde Park • 1.8km away',
+                        rating: 4.7,
+                        description: 'Modern fitness center with cutting-edge equipment and professional trainers.',
+                        price: 200,
+                        activities: ['gym', 'hiit', 'swimming'],
+                        amenities: ['parking', 'personal-training', 'childcare']
+                    },
+                    'rhythm': {
+                        name: 'Rhythm Dance Studio',
+                        location: 'Braamfontein • 3.2km away',
+                        rating: 4.5,
+                        description: 'Energetic dance studio offering various dance styles and fitness classes.',
+                        price: 95,
+                        activities: ['dance', 'yoga', 'pilates'],
+                        amenities: ['wifi', 'showers']
+                    },
+                    'iron': {
+                        name: 'Iron Temple Gym',
+                        location: 'Fordsburg • 4.1km away',
+                        rating: 4.4,
+                        description: 'Traditional bodybuilding gym with heavy equipment and experienced trainers.',
+                        price: 130,
+                        activities: ['gym', 'powerlifting'],
+                        amenities: ['parking', 'personal-training']
+                    }
+                };
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.setupAnimations();
+                this.initializeFilters();
+                this.showWelcomeAnimation();
+            }
+            
+            setupEventListeners() {
+                // View toggle
+                const mapBtn = document.getElementById('map-btn');
+                const listBtn = document.getElementById('list-btn');
+                
+                mapBtn?.addEventListener('click', () => this.switchView('map'));
+                listBtn?.addEventListener('click', () => this.switchView('list'));
+                
+                // Search functionality
+                const searchInput = document.getElementById('search-input');
+                const searchClear = document.querySelector('.search-clear');
+                
+                searchInput?.addEventListener('input', (e) => this.handleSearch(e.target.value));
+                searchInput?.addEventListener('focus', () => this.handleSearchFocus());
+                searchInput?.addEventListener('blur', () => this.handleSearchBlur());
+                searchClear?.addEventListener('click', () => this.clearSearch());
+                
+                // Filter system
+                const filterTrigger = document.getElementById('filter-trigger');
+                const sheetHandle = document.querySelector('.sheet-handle');
+                const sheetClose = document.getElementById('close-filters');
+                
+                filterTrigger?.addEventListener('click', () => this.toggleFilters());
+                sheetHandle?.addEventListener('click', () => this.toggleFilters());
+                sheetClose?.addEventListener('click', () => this.closeFilters());
+                
+                // Filter options
+                document.querySelectorAll('.filter-option').forEach(option => {
+                    option.addEventListener('click', () => this.handleFilterOption(option));
+                });
+                
+                document.querySelectorAll('.distance-option').forEach(option => {
+                    option.addEventListener('click', () => this.handleDistanceFilter(option));
+                });
+                
+                document.querySelectorAll('.amenity-option').forEach(option => {
+                    option.addEventListener('click', () => this.handleAmenityFilter(option));
+                });
+                
+                // Price range
+                const priceRange = document.getElementById('price-range');
+                priceRange?.addEventListener('input', (e) => this.handlePriceRange(e.target.value));
+                
+                // Filter actions
+                document.getElementById('apply-filters')?.addEventListener('click', () => this.applyFilters());
+                document.getElementById('reset-filters')?.addEventListener('click', () => this.resetFilters());
+                document.getElementById('clear-all-filters')?.addEventListener('click', () => this.clearAllFilters());
+                
+                // Map markers
+                document.querySelectorAll('.map-marker').forEach(marker => {
+                    marker.addEventListener('click', () => this.handleMapMarker(marker));
+                });
+                
+                // Gym cards
+                document.querySelectorAll('.gym-card').forEach(card => {
+                    card.addEventListener('click', () => this.handleGymCard(card));
+                });
+                
+                // Favorite buttons
+                document.querySelectorAll('.gym-favorite').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.handleFavorite(e, btn));
+                });
+                
+                // Location button
+                document.querySelector('.location-btn')?.addEventListener('click', () => this.handleLocation());
+                document.getElementById('enable-location')?.addEventListener('click', () => this.enableLocation());
+                
+                // Popup close
+                document.querySelector('.popup-close')?.addEventListener('click', () => this.closeGymPopup());
+                
+                // Touch gestures for mobile
+                this.setupTouchGestures();
+                
+                // Keyboard navigation
+                this.setupKeyboardNavigation();
+            }
+            
+            setupAnimations() {
+                // Initialize GSAP animations
+                if (typeof gsap !== 'undefined') {
+                    // Entrance animation timeline
+                    this.entranceTl = gsap.timeline({ paused: true });
+                    
+                    this.entranceTl
+                        .from('.logo', { duration: 0.8, y: -20, opacity: 0, ease: 'power3.out' })
+                        .from('.header-actions', { duration: 0.6, x: 20, opacity: 0, ease: 'power2.out' }, '-=0.4')
+                        .from('.view-toggle', { duration: 0.6, scale: 0.8, opacity: 0, ease: 'back.out(1.7)' }, '-=0.3')
+                        .from('.search-container', { duration: 0.8, y: 20, opacity: 0, ease: 'power3.out' }, '-=0.4')
+                        .from('.gym-card', { 
+                            duration: 0.6, 
+                            y: 30, 
+                            opacity: 0, 
+                            stagger: 0.1, 
+                            ease: 'power2.out' 
+                        }, '-=0.2');
+                }
+            }
+            
+            showWelcomeAnimation() {
+                setTimeout(() => {
+                    this.entranceTl?.play();
+                    this.showNotification('Welcome to StudioLoop! Discover amazing fitness studios near you.', 'success');
+                }, 500);
+            }
+            
+            switchView(view) {
+                if (this.state.currentView === view) return;
+                
+                this.state.currentView = view;
+                const mapView = document.getElementById('map-view');
+                const listView = document.getElementById('list-view');
+                const mapBtn = document.getElementById('map-btn');
+                const listBtn = document.getElementById('list-btn');
+                
+                // Update button states
+                [mapBtn, listBtn].forEach(btn => {
+                    btn?.classList.remove('active');
+                    btn?.setAttribute('aria-selected', 'false');
+                });
+                
+                if (view === 'map') {
+                    mapBtn?.classList.add('active');
+                    mapBtn?.setAttribute('aria-selected', 'true');
+                    listView?.classList.remove('active');
+                    
+                    // Animate view transition
+                    gsap.to(listView, { duration: 0.3, opacity: 0, ease: 'power2.in' });
+                    gsap.to(mapView, { duration: 0.4, opacity: 1, ease: 'power2.out', delay: 0.1 });
+                    
+                    listView?.classList.remove('active');
+                    
+                    this.showNotification('Map view activated - Explore studios visually', 'success');
+                } else {
+                    listBtn?.classList.add('active');
+                    listBtn?.setAttribute('aria-selected', 'true');
+                    listView?.classList.add('active');
+                    
+                    // Animate view transition
+                    gsap.to(mapView, { duration: 0.3, opacity: 0, ease: 'power2.in' });
+                    gsap.to(listView, { duration: 0.4, opacity: 1, ease: 'power2.out', delay: 0.1 });
+                    
+                    // Ensure gym cards are visible
+                    gsap.to('.gym-card', { 
+                        duration: 0.5, 
+                        opacity: 1, 
+                        y: 0,
+                        stagger: 0.1,
+                        ease: 'power2.out',
+                        delay: 0.4 
+                    });
+                    
+                    this.showNotification('List view activated - Browse detailed studio info', 'success');
+                }
+            }
+            
+            handleSearch(query) {
+                this.state.searchQuery = query;
+                
+                if (query.length > 2) {
+                    this.showNotification(`Searching for "${query}"...`);
+                    // Simulate search with loading state
+                    this.simulateSearch(query);
+                }
+                
+                // Show/hide clear button
+                const clearBtn = document.querySelector('.search-clear');
+                if (query.length > 0) {
+                    clearBtn?.style.setProperty('opacity', '1');
+                } else {
+                    clearBtn?.style.setProperty('opacity', '0');
+                }
+            }
+            
+            simulateSearch(query) {
+                // Show loading skeleton
+                const gymGrid = document.querySelector('.gym-grid');
+                const resultCount = document.getElementById('results-count');
+                
+                // Simulate API delay
+                setTimeout(() => {
+                    const matchingResults = Math.floor(Math.random() * 15) + 5;
+                    resultCount.textContent = `${matchingResults} studios found for "${query}"`;
+                    this.showNotification(`Found ${matchingResults} studios matching "${query}"`);
+                }, 800);
+            }
+            
+            clearSearch() {
+                const searchInput = document.getElementById('search-input');
+                searchInput.value = '';
+                this.state.searchQuery = '';
+                
+                const clearBtn = document.querySelector('.search-clear');
+                clearBtn?.style.setProperty('opacity', '0');
+                
+                document.getElementById('results-count').textContent = '24 studios nearby';
+                this.showNotification('Search cleared');
+            }
+            
+            toggleFilters() {
+                const sheet = document.getElementById('filter-sheet');
+                this.state.isFilterExpanded = !this.state.isFilterExpanded;
+                
+                if (this.state.isFilterExpanded) {
+                    sheet?.classList.add('expanded');
+                    sheet?.setAttribute('aria-hidden', 'false');
+                    this.showNotification('Filters opened');
+                } else {
+                    sheet?.classList.remove('expanded');
+                    sheet?.setAttribute('aria-hidden', 'true');
+                }
+            }
+            
+            closeFilters() {
+                const sheet = document.getElementById('filter-sheet');
+                sheet?.classList.remove('expanded');
+                sheet?.setAttribute('aria-hidden', 'true');
+                this.state.isFilterExpanded = false;
+            }
+            
+            handleFilterOption(option) {
+                const filter = option.dataset.filter;
+                const value = option.dataset.value;
+                
+                option.classList.toggle('selected');
+                
+                if (filter === 'activity') {
+                    if (option.classList.contains('selected')) {
+                        if (!this.state.filters.activities.includes(value)) {
+                            this.state.filters.activities.push(value);
+                        }
+                    } else {
+                        this.state.filters.activities = this.state.filters.activities.filter(a => a !== value);
+                    }
+                }
+                
+                this.updateFilterCount();
+                this.updateResultsPreview();
+            }
+            
+            handleDistanceFilter(option) {
+                document.querySelectorAll('.distance-option').forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                this.state.filters.distance = option.dataset.distance;
+                this.updateFilterCount();
+                this.updateResultsPreview();
+            }
+            
+            handleAmenityFilter(option) {
+                const amenity = option.dataset.amenity;
+                option.classList.toggle('selected');
+                
+                if (option.classList.contains('selected')) {
+                    if (!this.state.filters.amenities.includes(amenity)) {
+                        this.state.filters.amenities.push(amenity);
+                    }
+                } else {
+                    this.state.filters.amenities = this.state.filters.amenities.filter(a => a !== amenity);
+                }
+                
+                this.updateFilterCount();
+                this.updateResultsPreview();
+            }
+            
+            handlePriceRange(value) {
+                this.state.filters.maxPrice = parseInt(value);
+                const priceDisplay = document.getElementById('price-display');
+                
+                if (value >= 500) {
+                    priceDisplay.textContent = 'Any price';
+                } else {
+                    priceDisplay.textContent = `Up to R${value}`;
+                }
+                
+                this.updateResultsPreview();
+            }
+            
+            updateFilterCount() {
+                const count = this.state.filters.activities.length + 
+                             this.state.filters.amenities.length + 
+                             (this.state.filters.distance !== 'any' ? 1 : 0);
+                             
+                document.getElementById('active-filter-count').textContent = count;
+                document.getElementById('filter-badge').textContent = count;
+            }
+            
+            updateResultsPreview() {
+                // Simulate filtering results
+                const matchingStudios = this.calculateMatchingStudios();
+                document.getElementById('results-preview').textContent = 
+                    `Found ${matchingStudios} studios matching your preferences`;
+                document.getElementById('apply-filters').textContent = 
+                    `Show Results (${matchingStudios})`;
+            }
+            
+            calculateMatchingStudios() {
+                // Simple simulation based on filter complexity
+                const baseCount = 24;
+                const activityFilter = this.state.filters.activities.length > 0 ? 0.7 : 1;
+                const amenityFilter = this.state.filters.amenities.length > 0 ? 0.8 : 1;
+                const priceFilter = this.state.filters.maxPrice < 200 ? 0.6 : 1;
+                
+                return Math.max(3, Math.floor(baseCount * activityFilter * amenityFilter * priceFilter));
+            }
+            
+            applyFilters() {
+                this.closeFilters();
+                const matchingStudios = this.calculateMatchingStudios();
+                
+                // Update results count
+                document.getElementById('results-count').textContent = 
+                    `${matchingStudios} studios nearby`;
+                
+                // Animate results update
+                gsap.from('.gym-card', { 
+                    duration: 0.5, 
+                    y: 20, 
+                    opacity: 0, 
+                    stagger: 0.1,
+                    ease: 'power2.out'
+                });
+                
+                this.showNotification(`Filters applied - Found ${matchingStudios} matching studios`, 'success');
+            }
+            
+            resetFilters() {
+                this.state.filters = {
+                    activities: [],
+                    distance: 'any',
+                    maxPrice: 500,
+                    amenities: []
+                };
+                
+                // Reset UI
+                document.querySelectorAll('.filter-option.selected').forEach(opt => 
+                    opt.classList.remove('selected'));
+                document.querySelectorAll('.distance-option.selected').forEach(opt => 
+                    opt.classList.remove('selected'));
+                document.querySelectorAll('.amenity-option.selected').forEach(opt => 
+                    opt.classList.remove('selected'));
+                    
+                document.getElementById('price-range').value = 500;
+                document.getElementById('price-display').textContent = 'Any price';
+                
+                this.updateFilterCount();
+                this.updateResultsPreview();
+                this.showNotification('Filters reset');
+            }
+            
+            clearAllFilters() {
+                this.resetFilters();
+                this.showNotification('All filters cleared');
+            }
+            
+            handleMapMarker(marker) {
+                const gymId = marker.dataset.gym;
+                const gymData = this.gymData[gymId];
+                
+                // Remove active state from other markers
+                document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('active'));
+                marker.classList.add('active');
+                
+                // Show gym popup
+                this.showGymPopup(gymData);
+                
+                this.showNotification(`Selected ${gymData.name}`);
+            }
+            
+            showGymPopup(gymData) {
+                const popup = document.getElementById('gym-popup');
+                
+                // Update popup content
+                document.getElementById('popup-name').textContent = gymData.name;
+                document.getElementById('popup-location').textContent = gymData.location;
+                document.getElementById('popup-rating').textContent = gymData.rating;
+                
+                // Show popup with animation
+                popup?.classList.add('active');
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    this.closeGymPopup();
+                }, 10000);
+            }
+            
+            closeGymPopup() {
+                const popup = document.getElementById('gym-popup');
+                popup?.classList.remove('active');
+                
+                // Remove active state from markers
+                document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('active'));
+            }
+            
+            handleGymCard(card) {
+                const gymId = card.dataset.gym;
+                // Animate card selection
+                gsap.to(card, { duration: 0.2, scale: 0.98, yoyo: true, repeat: 1 });
+                
+                this.showNotification(`Opening ${this.gymData[gymId]?.name} details...`);
+                
+                // Simulate navigation to detail page
+                setTimeout(() => {
+                    this.showNotification('Gym details loaded!', 'success');
+                }, 1000);
+            }
+            
+            handleFavorite(e, btn) {
+                e.stopPropagation();
+                
+                const isFavorited = btn.dataset.favorited === 'true';
+                btn.dataset.favorited = !isFavorited;
+                
+                if (!isFavorited) {
+                    btn.classList.add('active');
+                    gsap.to(btn, { duration: 0.3, scale: 1.2, yoyo: true, repeat: 1 });
+                    this.showNotification('Added to favorites', 'success');
+                } else {
+                    btn.classList.remove('active');
+                    this.showNotification('Removed from favorites');
+                }
+            }
+            
+            handleLocation() {
+                this.showNotification('Updating location to current area...');
+                
+                // Simulate location update
+                setTimeout(() => {
+                    this.showNotification('Location updated successfully!', 'success');
+                }, 1500);
+            }
+            
+            enableLocation() {
+                this.showNotification('Requesting location permission...');
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            this.showNotification('Location enabled! Finding nearby studios...', 'success');
+                            
+                            // Simulate loading nearby studios
+                            setTimeout(() => {
+                                this.showNotification('Found 24 studios near you!', 'success');
+                                // Hide map placeholder and show actual map
+                                document.querySelector('.map-placeholder')?.style.setProperty('display', 'none');
+                            }, 2000);
+                        },
+                        (error) => {
+                            this.showNotification('Location permission denied. Using default area.', 'warning');
+                        }
+                    );
+                } else {
+                    this.showNotification('Geolocation not supported by browser.', 'error');
+                }
+            }
+            
+            setupTouchGestures() {
+                const sheet = document.getElementById('filter-sheet');
+                let startY = 0;
+                let currentY = 0;
+                
+                sheet?.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                sheet?.addEventListener('touchmove', (e) => {
+                    currentY = e.touches[0].clientY;
+                    const diff = startY - currentY;
+                    
+                    if (diff > 50 && !this.state.isFilterExpanded) {
+                        this.toggleFilters();
+                    } else if (diff < -50 && this.state.isFilterExpanded) {
+                        this.closeFilters();
+                    }
+                }, { passive: true });
+            }
+            
+            setupKeyboardNavigation() {
+                document.addEventListener('keydown', (e) => {
+                    // Escape key closes filters
+                    if (e.key === 'Escape' && this.state.isFilterExpanded) {
+                        this.closeFilters();
+                    }
+                    
+                    // Tab navigation for gym cards
+                    if (e.key === 'Tab') {
+                        // Enhanced focus management
+                        this.manageFocusVisibility();
+                    }
+                });
+            }
+            
+            manageFocusVisibility() {
+                // Add focus-visible class for keyboard navigation
+                document.body.classList.add('keyboard-navigation');
+                
+                setTimeout(() => {
+                    document.body.classList.remove('keyboard-navigation');
+                }, 100);
+            }
+            
+            initializeFilters() {
+                // Set initial filter state from UI
+                document.querySelectorAll('.filter-option.selected').forEach(option => {
+                    const filter = option.dataset.filter;
+                    const value = option.dataset.value;
+                    
+                    if (filter === 'activity') {
+                        this.state.filters.activities.push(value);
+                    }
+                });
+                
+                document.querySelectorAll('.amenity-option.selected').forEach(option => {
+                    this.state.filters.amenities.push(option.dataset.amenity);
+                });
+                
+                this.updateFilterCount();
+                this.updateResultsPreview();
+            }
+            
+            showNotification(message, type = 'info') {
+                // Remove existing notifications
+                document.querySelectorAll('.notification').forEach(n => n.remove());
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Auto-remove notification
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        gsap.to(notification, {
+                            duration: 0.3,
+                            y: -20,
+                            opacity: 0,
+                            ease: 'power2.in',
+                            onComplete: () => notification.remove()
+                        });
+                    }
+                }, 4000);
+            }
+        }
+        
+        // Initialize the application when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.studioLoopApp = new StudioLoopDiscovery();
+            });
+        } else {
+            window.studioLoopApp = new StudioLoopDiscovery();
+        }
+    </script>
+</body>
+</html>

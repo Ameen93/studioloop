@@ -1,0 +1,26 @@
+{
+  "brand": {
+    "primary": "#0077ff",
+    "primary_700": "#0057cc",
+    "primary_900": "#0f2b6b"
+  },
+  "accents": {
+    "aqua": "#00e5ff",
+    "violet": "#8e24aa",
+    "peach": "#ff8a65"
+  },
+  "neutrals": {
+    "0": "#ffffff",
+    "25": "#fcfcfd",
+    "50": "#f8fafc",
+    "200": "#e5e7eb",
+    "700": "#374151",
+    "900": "#0f172a"
+  },
+  "gradients": {
+    "grad_1": [
+      "#00e5ff",
+      "#8e24aa"
+    ]
+  }
+}

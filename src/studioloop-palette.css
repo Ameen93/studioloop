@@ -1,0 +1,27 @@
+:root {
+  /* Brand */
+  --sl-brand: #0077ff;         /* primary */
+  --sl-brand-700: #0057cc;     /* hover/active */
+  --sl-brand-900: #0f2b6b;     /* deep accent */
+
+  /* Accents */
+  --sl-accent-aqua: #00e5ff;
+  --sl-accent-violet: #8e24aa;
+  --sl-accent-peach: #ff8a65;
+
+  /* Neutrals */
+  --sl-neutral-0: #ffffff;
+  --sl-neutral-25: #fcfcfd;
+  --sl-neutral-50: #f8fafc;
+  --sl-neutral-200: #e5e7eb;
+  --sl-neutral-700: #374151;
+  --sl-neutral-900: #0f172a;
+
+  /* Gradients */
+  --sl-grad-1: linear-gradient(45deg, #00e5ff, #8e24aa);
+}
+
+/* Example helpers (optional) */
+.text-brand { color: var(--sl-brand); }
+.bg-brand { background: var(--sl-brand); }
+.bg-grad-1 { background: var(--sl-grad-1); }

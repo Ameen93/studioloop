@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop Trainer Equipment</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Brand Variables */
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-100: #f1f5f9;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-300: #d1d5db;
+            --sl-neutral-400: #9ca3af;
+            --sl-neutral-500: #6b7280;
+            --sl-neutral-600: #4b5563;
+            --sl-neutral-700: #374151;
+            --sl-neutral-800: #1f2937;
+            --sl-neutral-900: #0f172a;
+            --sl-grad-1: linear-gradient(45deg, #00e5ff, #8e24aa);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--sl-neutral-50);
+            color: var(--sl-neutral-700);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--sl-neutral-0);
+            border-right: 1px solid var(--sl-neutral-200);
+            padding: 24px 0;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            color: var(--sl-brand);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--sl-grad-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            text-decoration: none;
+            color: var(--sl-neutral-600);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 3px solid transparent;
+            position: relative;
+            border-radius: 0 12px 12px 0;
+            margin-right: 16px;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--sl-brand);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+            transform: translateX(4px);
+        }
+        
+        .nav-link:hover::before {
+            width: 3px;
+        }
+
+        .nav-link.active {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+            border-right-color: var(--sl-brand);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::before {
+            width: 3px;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--sl-neutral-50);
+            width: calc(100vw - 280px);
+            position: relative;
+        }
+
+        .header {
+            background: var(--sl-neutral-0);
+            border-bottom: 1px solid var(--sl-neutral-200);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--sl-neutral-100);
+            border: 1px solid var(--sl-neutral-200);
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--sl-neutral-700);
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .request-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--sl-brand);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .request-btn:hover {
+            background: var(--sl-brand-700);
+            transform: translateY(-2px);
+        }
+
+        /* Equipment Content */
+        .equipment-content {
+            padding: 32px;
+            width: 100%;
+        }
+
+        /* Equipment Grid */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .equipment-card {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .equipment-image {
+            height: 200px;
+            background: var(--sl-neutral-100);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .equipment-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .equipment-status {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-available {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-rented {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-maintenance {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .equipment-info {
+            padding: 20px;
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .equipment-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .equipment-category {
+            font-size: 12px;
+            color: var(--sl-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .equipment-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+        }
+
+        .equipment-details {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            color: var(--sl-neutral-500);
+            font-size: 14px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .equipment-description {
+            color: var(--sl-neutral-600);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .equipment-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .price-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .price-unit {
+            font-size: 12px;
+            color: var(--sl-neutral-500);
+        }
+
+        .equipment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid var(--sl-neutral-200);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            color: var(--sl-neutral-700);
+        }
+
+        .action-btn.primary {
+            background: var(--sl-brand);
+            color: white;
+            border-color: var(--sl-brand);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--sl-brand-700);
+        }
+
+        .action-btn:hover {
+            background: var(--sl-neutral-50);
+        }
+
+        .action-btn:disabled {
+            background: var(--sl-neutral-100);
+            color: var(--sl-neutral-400);
+            cursor: not-allowed;
+        }
+
+        /* My Equipment Section */
+        .my-equipment {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .rental-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--sl-neutral-50);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .rental-item:hover {
+            background: var(--sl-neutral-100);
+        }
+
+        .rental-image {
+            width: 80px;
+            height: 80px;
+            background: var(--sl-neutral-200);
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .rental-info {
+            flex: 1;
+        }
+
+        .rental-name {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .rental-details {
+            font-size: 14px;
+            color: var(--sl-neutral-500);
+            margin-bottom: 8px;
+        }
+
+        .rental-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rental-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-overdue {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .rental-return {
+            font-size: 12px;
+            color: var(--sl-neutral-400);
+        }
+
+        .rental-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rental-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--sl-neutral-200);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .rental-btn.extend {
+            color: var(--sl-brand);
+            border-color: var(--sl-brand);
+        }
+
+        .rental-btn.extend:hover {
+            background: rgba(0, 119, 255, 0.1);
+        }
+
+        .rental-btn.return {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .rental-btn.return:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Equipment Categories */
+        .category-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            background: var(--sl-neutral-100);
+            border: none;
+            border-radius: 20px;
+            color: var(--sl-neutral-600);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .category-btn.active {
+            background: var(--sl-brand);
+            color: white;
+        }
+
+        .category-btn:hover {
+            background: var(--sl-neutral-200);
+        }
+
+        .category-btn.active:hover {
+            background: var(--sl-brand-700);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .equipment-content {
+                padding: 16px;
+            }
+
+            .equipment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .equipment-actions {
+                flex-direction: column;
+            }
+
+            .rental-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .rental-image {
+                width: 100%;
+                height: 120px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Equipment placeholder images */
+        .equipment-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--sl-neutral-400);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-section">
+            <svg class="logo" viewBox="0 0 40 40" fill="currentColor">
+                <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M20 10 L25 20 L20 30 L15 20 Z" fill="currentColor"/>
+            </svg>
+            <span class="logo-text">StudioLoop</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="trainer-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-schedule.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-analytics.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-earnings.html" class="nav-link">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-communications.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-equipment.html" class="nav-link active">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Equipment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Equipment Management</h1>
+            <div class="header-actions">
+                <div class="filter-dropdown">
+                    <button class="filter-btn">
+                        <i class="fas fa-filter"></i>
+                        <span>Filter</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <button class="request-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Request Equipment</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Equipment Content -->
+        <div class="equipment-content">
+            <!-- My Current Rentals -->
+            <div class="my-equipment fade-in">
+                <div class="section-header">
+                    <h2 class="section-title">My Current Rentals</h2>
+                    <span style="font-size: 14px; color: var(--sl-neutral-500);">2 items rented</span>
+                </div>
+                
+                <div class="rental-item">
+                    <div class="rental-image equipment-placeholder">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="rental-info">
+                        <div class="rental-name">Adjustable Dumbbells (5-50kg)</div>
+                        <div class="rental-details">Rented on Aug 15, 2024 • Studio A</div>
+                        <div class="rental-status">
+                            <span class="rental-badge badge-active">Active</span>
+                            <span class="rental-return">Return by Aug 29</span>
+                        </div>
+                    </div>
+                    <div class="rental-actions">
+                        <button class="rental-btn extend">Extend</button>
+                        <button class="rental-btn return">Return</button>
+                    </div>
+                </div>
+
+                <div class="rental-item">
+                    <div class="rental-image equipment-placeholder">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <div class="rental-info">
+                        <div class="rental-name">Interval Timer System</div>
+                        <div class="rental-details">Rented on Aug 20, 2024 • Studio B</div>
+                        <div class="rental-status">
+                            <span class="rental-badge badge-overdue">Overdue</span>
+                            <span class="rental-return">Was due Aug 22</span>
+                        </div>
+                    </div>
+                    <div class="rental-actions">
+                        <button class="rental-btn extend">Extend</button>
+                        <button class="rental-btn return">Return Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipment Categories -->
+            <div class="category-filters fade-in">
+                <button class="category-btn active">All Equipment</button>
+                <button class="category-btn">Weights</button>
+                <button class="category-btn">Cardio</button>
+                <button class="category-btn">Functional</button>
+                <button class="category-btn">Accessories</button>
+                <button class="category-btn">Technology</button>
+            </div>
+
+            <!-- Equipment Grid -->
+            <div class="equipment-grid">
+                <div class="equipment-card fade-in">
+                    <div class="equipment-image">
+                        <div class="equipment-placeholder">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="equipment-status status-available">Available</div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <div>
+                                <div class="equipment-name">Professional Kettlebell Set</div>
+                                <div class="equipment-category">Weights</div>
+                            </div>
+                            <div class="equipment-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <i class="fas fa-weight-hanging"></i>
+                                <span>8-32kg</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                <span>15 max</span>
+                            </div>
+                        </div>
+                        <div class="equipment-description">
+                            Complete kettlebell set with 8, 12, 16, 20, 24, 28, and 32kg weights. Perfect for functional training and HIIT classes.
+                        </div>
+                        <div class="equipment-price">
+                            <div class="price-info">
+                                <div class="price">R45</div>
+                                <div class="price-unit">per day</div>
+                            </div>
+                        </div>
+                        <div class="equipment-actions">
+                            <button class="action-btn primary">Rent Now</button>
+                            <button class="action-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-image">
+                        <div class="equipment-placeholder">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="equipment-status status-available">Available</div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <div>
+                                <div class="equipment-name">Heart Rate Monitor System</div>
+                                <div class="equipment-category">Technology</div>
+                            </div>
+                            <div class="equipment-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.9</span>
+                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                <span>20 units</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-battery-full"></i>
+                                <span>12hr battery</span>
+                            </div>
+                        </div>
+                        <div class="equipment-description">
+                            Wireless heart rate monitoring system with 20 chest straps and tablet display. Real-time tracking for group classes.
+                        </div>
+                        <div class="equipment-price">
+                            <div class="price-info">
+                                <div class="price">R85</div>
+                                <div class="price-unit">per day</div>
+                            </div>
+                        </div>
+                        <div class="equipment-actions">
+                            <button class="action-btn primary">Rent Now</button>
+                            <button class="action-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-image">
+                        <div class="equipment-placeholder">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                        <div class="equipment-status status-rented">Rented</div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <div>
+                                <div class="equipment-name">Yoga Mat Set (20pcs)</div>
+                                <div class="equipment-category">Accessories</div>
+                            </div>
+                            <div class="equipment-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.7</span>
+                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <i class="fas fa-ruler"></i>
+                                <span>6mm thick</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-leaf"></i>
+                                <span>Eco-friendly</span>
+                            </div>
+                        </div>
+                        <div class="equipment-description">
+                            Premium yoga mats with excellent grip and cushioning. Non-slip surface, easy to clean. Set of 20 matching mats.
+                        </div>
+                        <div class="equipment-price">
+                            <div class="price-info">
+                                <div class="price">R25</div>
+                                <div class="price-unit">per day</div>
+                            </div>
+                        </div>
+                        <div class="equipment-actions">
+                            <button class="action-btn" disabled>Currently Rented</button>
+                            <button class="action-btn">Join Waitlist</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-image">
+                        <div class="equipment-placeholder">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="equipment-status status-available">Available</div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <div>
+                                <div class="equipment-name">Portable Sound System</div>
+                                <div class="equipment-category">Technology</div>
+                            </div>
+                            <div class="equipment-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.6</span>
+                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <i class="fas fa-volume-up"></i>
+                                <span>150W</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-bluetooth-b"></i>
+                                <span>Bluetooth</span>
+                            </div>
+                        </div>
+                        <div class="equipment-description">
+                            High-quality portable speaker system with wireless microphone. Perfect for outdoor classes or backup audio.
+                        </div>
+                        <div class="equipment-price">
+                            <div class="price-info">
+                                <div class="price">R35</div>
+                                <div class="price-unit">per day</div>
+                            </div>
+                        </div>
+                        <div class="equipment-actions">
+                            <button class="action-btn primary">Rent Now</button>
+                            <button class="action-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-image">
+                        <div class="equipment-placeholder">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="equipment-status status-maintenance">Maintenance</div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <div>
+                                <div class="equipment-name">Agility Ladder Set</div>
+                                <div class="equipment-category">Functional</div>
+                            </div>
+                            <div class="equipment-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.5</span>
+                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <i class="fas fa-ruler-horizontal"></i>
+                                <span>6m length</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-cogs"></i>
+                                <span>Adjustable</span>
+                            </div>
+                        </div>
+                        <div class="equipment-description">
+                            Professional agility training equipment with adjustable rungs. Great for speed and coordination training.
+                        </div>
+                        <div class="equipment-price">
+                            <div class="price-info">
+                                <div class="price">R20</div>
+                                <div class="price-unit">per day</div>
+                            </div>
+                        </div>
+                        <div class="equipment-actions">
+                            <button class="action-btn" disabled>Under Maintenance</button>
+                            <button class="action-btn">Get Notified</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-image">
+                        <div class="equipment-placeholder">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                        <div class="equipment-status status-available">Available</div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="equipment-header">
+                            <div>
+                                <div class="equipment-name">Boxing Glove Set</div>
+                                <div class="equipment-category">Functional</div>
+                            </div>
+                            <div class="equipment-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.4</span>
+                            </div>
+                        </div>
+                        <div class="equipment-details">
+                            <div class="detail-item">
+                                <i class="fas fa-fist-raised"></i>
+                                <span>20 pairs</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Various sizes</span>
+                            </div>
+                        </div>
+                        <div class="equipment-description">
+                            Professional boxing gloves in multiple sizes (S, M, L, XL). Includes hand wraps and sanitizing equipment.
+                        </div>
+                        <div class="equipment-price">
+                            <div class="price-info">
+                                <div class="price">R40</div>
+                                <div class="price-unit">per day</div>
+                            </div>
+                        </div>
+                        <div class="equipment-actions">
+                            <button class="action-btn primary">Rent Now</button>
+                            <button class="action-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category filter functionality
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Here you would filter the equipment based on category
+                    // For now, we'll just show all items
+                });
+            });
+
+            // Rent now functionality
+            const rentBtns = document.querySelectorAll('.action-btn.primary');
+            rentBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.textContent === 'Rent Now') {
+                        this.textContent = 'Processing...';
+                        this.disabled = true;
+                        
+                        // Simulate API call
+                        setTimeout(() => {
+                            this.textContent = 'Rented';
+                            this.style.background = 'var(--success)';
+                            
+                            // Update card status
+                            const card = this.closest('.equipment-card');
+                            const status = card.querySelector('.equipment-status');
+                            status.textContent = 'Rented';
+                            status.className = 'equipment-status status-rented';
+                        }, 2000);
+                    }
+                });
+            });
+
+            // Rental actions
+            const extendBtns = document.querySelectorAll('.rental-btn.extend');
+            extendBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.textContent = 'Extended';
+                    this.disabled = true;
+                    this.style.background = 'var(--success)';
+                    this.style.color = 'white';
+                    this.style.borderColor = 'var(--success)';
+                });
+            });
+
+            const returnBtns = document.querySelectorAll('.rental-btn.return');
+            returnBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const rentalItem = this.closest('.rental-item');
+                    rentalItem.style.opacity = '0';
+                    rentalItem.style.transform = 'translateX(-100%)';
+                    
+                    setTimeout(() => {
+                        rentalItem.remove();
+                        
+                        // Update count
+                        const countEl = document.querySelector('.section-header span');
+                        const currentCount = parseInt(countEl.textContent.match(/\d+/)[0]);
+                        countEl.textContent = `${currentCount - 1} items rented`;
+                    }, 300);
+                });
+            });
+
+            // Animate cards on load
+            const cards = document.querySelectorAll('.equipment-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Animate rental items
+            const rentalItems = document.querySelectorAll('.rental-item');
+            rentalItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 200 + (index * 100));
+            });
+        });
+    </script>
+</body>
+</html>

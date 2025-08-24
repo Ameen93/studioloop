@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudioLoop Trainer Earnings</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Brand Variables */
+        :root {
+            --sl-brand: #0077ff;
+            --sl-brand-700: #0057cc;
+            --sl-brand-900: #0f2b6b;
+            --sl-accent-aqua: #00e5ff;
+            --sl-accent-violet: #8e24aa;
+            --sl-accent-peach: #ff8a65;
+            --sl-neutral-0: #ffffff;
+            --sl-neutral-25: #fcfcfd;
+            --sl-neutral-50: #f8fafc;
+            --sl-neutral-100: #f1f5f9;
+            --sl-neutral-200: #e5e7eb;
+            --sl-neutral-300: #d1d5db;
+            --sl-neutral-400: #9ca3af;
+            --sl-neutral-500: #6b7280;
+            --sl-neutral-600: #4b5563;
+            --sl-neutral-700: #374151;
+            --sl-neutral-800: #1f2937;
+            --sl-neutral-900: #0f172a;
+            --sl-grad-1: linear-gradient(45deg, #00e5ff, #8e24aa);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--sl-neutral-50);
+            color: var(--sl-neutral-700);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--sl-neutral-0);
+            border-right: 1px solid var(--sl-neutral-200);
+            padding: 24px 0;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--sl-neutral-200);
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            color: var(--sl-brand);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--sl-grad-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            text-decoration: none;
+            color: var(--sl-neutral-600);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 3px solid transparent;
+            position: relative;
+            border-radius: 0 12px 12px 0;
+            margin-right: 16px;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--sl-brand);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--sl-neutral-50);
+            color: var(--sl-brand);
+            transform: translateX(4px);
+        }
+        
+        .nav-link:hover::before {
+            width: 3px;
+        }
+
+        .nav-link.active {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+            border-right-color: var(--sl-brand);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::before {
+            width: 3px;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--sl-neutral-50);
+            width: calc(100vw - 280px);
+            position: relative;
+        }
+
+        .header {
+            background: var(--sl-neutral-0);
+            border-bottom: 1px solid var(--sl-neutral-200);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .payout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .payout-btn:hover {
+            background: #0d9d73;
+            transform: translateY(-2px);
+        }
+
+        .period-selector {
+            display: flex;
+            background: var(--sl-neutral-100);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .period-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--sl-neutral-600);
+            transition: all 0.2s ease;
+        }
+
+        .period-btn.active {
+            background: var(--sl-neutral-0);
+            color: var(--sl-brand);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Earnings Content */
+        .earnings-content {
+            padding: 32px;
+            width: 100%;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--sl-brand);
+        }
+
+        .summary-card.pending::before {
+            background: var(--warning);
+        }
+
+        .summary-card.total::before {
+            background: var(--success);
+        }
+
+        .summary-card.next-payout::before {
+            background: var(--sl-accent-violet);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-icon.earnings {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+        }
+
+        .card-icon.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .card-icon.total {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .card-icon.next {
+            background: rgba(142, 36, 170, 0.1);
+            color: var(--sl-accent-violet);
+        }
+
+        .card-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .card-trend.up {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .card-trend.down {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 14px;
+            color: var(--sl-neutral-500);
+        }
+
+        .card-detail {
+            font-size: 12px;
+            color: var(--sl-neutral-400);
+            margin-top: 4px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-option {
+            padding: 6px 12px;
+            border: 1px solid var(--sl-neutral-200);
+            background: var(--sl-neutral-0);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--sl-neutral-600);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chart-option.active {
+            background: var(--sl-brand);
+            color: white;
+            border-color: var(--sl-brand);
+        }
+
+        /* Payment History */
+        .payment-history {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .view-all-btn {
+            color: var(--sl-brand);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .payment-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--sl-neutral-100);
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--sl-neutral-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--sl-neutral-600);
+        }
+
+        .payment-icon.bank {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--sl-brand);
+        }
+
+        .payment-details h4 {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .payment-details p {
+            font-size: 14px;
+            color: var(--sl-neutral-500);
+        }
+
+        .payment-amount {
+            text-align: right;
+        }
+
+        .amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sl-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .payment-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-processing {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        /* Breakdown Section */
+        .breakdown-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .breakdown-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .breakdown-card {
+            background: var(--sl-neutral-0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--sl-neutral-100);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        .breakdown-label {
+            color: var(--sl-neutral-600);
+        }
+
+        .breakdown-value {
+            font-weight: 600;
+            color: var(--sl-neutral-900);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .earnings-content {
+                padding: 16px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-section">
+            <svg class="logo" viewBox="0 0 40 40" fill="currentColor">
+                <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M20 10 L25 20 L20 30 L15 20 Z" fill="currentColor"/>
+            </svg>
+            <span class="logo-text">StudioLoop</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="trainer-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-schedule.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-analytics.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-earnings.html" class="nav-link active">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-communications.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-equipment.html" class="nav-link">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Equipment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="trainer-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Earnings & Payments</h1>
+            <div class="header-actions">
+                <div class="period-selector">
+                    <button class="period-btn">Week</button>
+                    <button class="period-btn active">Month</button>
+                    <button class="period-btn">Year</button>
+                </div>
+                <button class="payout-btn">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Request Payout</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Earnings Content -->
+        <div class="earnings-content">
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="summary-card fade-in">
+                    <div class="card-header">
+                        <div class="card-icon earnings">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>18%</span>
+                        </div>
+                    </div>
+                    <div class="card-value">R18,450</div>
+                    <div class="card-label">This Month's Earnings</div>
+                    <div class="card-detail">From 98 classes taught</div>
+                </div>
+
+                <div class="summary-card pending fade-in">
+                    <div class="card-header">
+                        <div class="card-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="card-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5%</span>
+                        </div>
+                    </div>
+                    <div class="card-value">R3,280</div>
+                    <div class="card-label">Pending Payout</div>
+                    <div class="card-detail">Available Aug 30</div>
+                </div>
+
+                <div class="summary-card total fade-in">
+                    <div class="card-header">
+                        <div class="card-icon total">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>22%</span>
+                        </div>
+                    </div>
+                    <div class="card-value">R94,720</div>
+                    <div class="card-label">Total Earned</div>
+                    <div class="card-detail">Since joining StudioLoop</div>
+                </div>
+
+                <div class="summary-card next-payout fade-in">
+                    <div class="card-header">
+                        <div class="card-icon next">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Aug 30</div>
+                    <div class="card-label">Next Payout Date</div>
+                    <div class="card-detail">R3,280 available</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-container fade-in">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Earnings Trend</h3>
+                        <div class="chart-options">
+                            <button class="chart-option">Daily</button>
+                            <button class="chart-option active">Weekly</button>
+                            <button class="chart-option">Monthly</button>
+                        </div>
+                    </div>
+                    <canvas id="earningsChart" height="300"></canvas>
+                </div>
+
+                <div class="chart-container fade-in">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Class Type Breakdown</h3>
+                    </div>
+                    <canvas id="classTypeChart" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Breakdown Section -->
+            <div class="breakdown-section">
+                <div class="breakdown-card fade-in">
+                    <h3 class="section-title">Earnings Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Base Rate (R188/class)</span>
+                        <span class="breakdown-value">R14,160</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Performance Bonus</span>
+                        <span class="breakdown-value">R2,840</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Peak Hour Bonus</span>
+                        <span class="breakdown-value">R1,120</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Special Events</span>
+                        <span class="breakdown-value">R330</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Total Gross</span>
+                        <span class="breakdown-value">R18,450</span>
+                    </div>
+                </div>
+
+                <div class="breakdown-card fade-in">
+                    <h3 class="section-title">Deductions</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Platform Fee (8%)</span>
+                        <span class="breakdown-value">R1,476</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Insurance</span>
+                        <span class="breakdown-value">R120</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Equipment Rental</span>
+                        <span class="breakdown-value">R0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Net Earnings</span>
+                        <span class="breakdown-value">R16,854</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment History -->
+            <div class="payment-history fade-in">
+                <div class="section-header">
+                    <h3 class="section-title">Payment History</h3>
+                    <a href="#" class="view-all-btn">View All</a>
+                </div>
+                
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <div class="payment-icon bank">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h4>Monthly Payout</h4>
+                            <p>July 2024 • FNB ****1234</p>
+                        </div>
+                    </div>
+                    <div class="payment-amount">
+                        <div class="amount">R15,680</div>
+                        <span class="payment-status status-completed">Completed</span>
+                    </div>
+                </div>
+
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <div class="payment-icon bank">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h4>Monthly Payout</h4>
+                            <p>June 2024 • FNB ****1234</p>
+                        </div>
+                    </div>
+                    <div class="payment-amount">
+                        <div class="amount">R13,920</div>
+                        <span class="payment-status status-completed">Completed</span>
+                    </div>
+                </div>
+
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <div class="payment-icon bank">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h4>Bonus Payout</h4>
+                            <p>Performance bonus • June 2024</p>
+                        </div>
+                    </div>
+                    <div class="payment-amount">
+                        <div class="amount">R2,500</div>
+                        <span class="payment-status status-completed">Completed</span>
+                    </div>
+                </div>
+
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <div class="payment-icon bank">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h4>Monthly Payout</h4>
+                            <p>May 2024 • FNB ****1234</p>
+                        </div>
+                    </div>
+                    <div class="payment-amount">
+                        <div class="amount">R12,340</div>
+                        <span class="payment-status status-completed">Completed</span>
+                    </div>
+                </div>
+
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <div class="payment-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h4>Pending Payout</h4>
+                            <p>August 2024 • Scheduled for Aug 30</p>
+                        </div>
+                    </div>
+                    <div class="payment-amount">
+                        <div class="amount">R3,280</div>
+                        <span class="payment-status status-pending">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Earnings Chart
+            const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+            new Chart(earningsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Earnings',
+                        data: [3200, 4100, 4800, 6350],
+                        borderColor: '#0077ff',
+                        backgroundColor: 'rgba(0, 119, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#0077ff',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R' + value;
+                                }
+                            },
+                            grid: {
+                                color: '#f1f5f9'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Class Type Chart
+            const classTypeCtx = document.getElementById('classTypeChart').getContext('2d');
+            new Chart(classTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['HIIT', 'Yoga', 'Strength', 'Bootcamp', 'Pilates'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: [
+                            '#0077ff',
+                            '#8e24aa',
+                            '#10b981',
+                            '#ff8a65',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Period selector functionality
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Here you would update the data based on selected period
+                });
+            });
+
+            // Chart options functionality
+            document.querySelectorAll('.chart-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.closest('.chart-container');
+                    parent.querySelectorAll('.chart-option').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Here you would update the chart based on selected option
+                });
+            });
+
+            // Animate summary cards
+            const cards = document.querySelectorAll('.summary-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Animate payment items
+            const paymentItems = document.querySelectorAll('.payment-item');
+            paymentItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 500 + (index * 100));
+            });
+        });
+    </script>
+</body>
+</html>
