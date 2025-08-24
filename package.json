@@ -1,0 +1,30 @@
+{
+  "name": "studioloop-prototypes",
+  "version": "1.0.0",
+  "description": "StudioLoop BMS + Marketplace Dashboard Prototypes - Interactive business demonstrations with comprehensive business context annotations",
+  "main": "prototypes/index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 3000 --directory prototypes",
+    "build": "echo 'Static HTML prototypes - no build required'",
+    "start": "npm run dev"
+  },
+  "keywords": [
+    "fitness",
+    "bms",
+    "business-management-system", 
+    "marketplace",
+    "studio-management",
+    "prototype",
+    "dashboard"
+  ],
+  "author": "StudioLoop Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/studioloop/prototypes"
+  },
+  "homepage": "https://studioloop-prototypes.vercel.app",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

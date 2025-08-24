@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "name": "studioloop-prototypes",
+  "builds": [
+    {
+      "src": "prototypes/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/prototypes/index.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/prototypes/trainer-dashboard.html"
+    },
+    {
+      "src": "/analytics",
+      "dest": "/prototypes/trainer-analytics.html"
+    },
+    {
+      "src": "/schedule",
+      "dest": "/prototypes/trainer-schedule.html"
+    },
+    {
+      "src": "/earnings",
+      "dest": "/prototypes/trainer-earnings.html"
+    },
+    {
+      "src": "/communications",
+      "dest": "/prototypes/trainer-communications.html"
+    },
+    {
+      "src": "/equipment",
+      "dest": "/prototypes/trainer-equipment.html"
+    },
+    {
+      "src": "/settings",
+      "dest": "/prototypes/trainer-settings.html"
+    },
+    {
+      "src": "/prototypes/(.*)",
+      "dest": "/prototypes/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}

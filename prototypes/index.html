@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudioLoop Prototypes</title>
+    <title>StudioLoop - Cape Town's Fitness Marketplace</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,176 +14,746 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            background: linear-gradient(135deg, #0077ff 0%, #00e5ff 50%, #8e24aa 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
         }
         
-        .container {
+        .header {
+            background: linear-gradient(135deg, #0077ff 0%, #00e5ff 50%, #8e24aa 100%);
+            color: white;
+            padding: 2rem 0;
             text-align: center;
-            padding: 40px;
-            max-width: 1000px;
-            width: 100%;
+        }
+        
+        .header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
         
         .logo {
-            font-size: 48px;
+            font-size: 3.5rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
         }
         
         .subtitle {
-            font-size: 20px;
-            margin-bottom: 40px;
-            opacity: 0.9;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
-        .prototype-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .prototype-card {
-            background: rgba(255, 255, 255, 0.1);
+        .nav-bar {
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            padding: 0 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            padding: 1rem;
             text-decoration: none;
-            color: white;
+            color: #333;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .prototype-card:hover {
-            transform: translateY(-4px);
-            background: rgba(255, 255, 255, 0.2);
+        .nav-link:hover, .nav-link.active {
+            color: #0077ff;
+            border-bottom-color: #0077ff;
         }
         
-        .prototype-card h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
         }
         
-        .prototype-card p {
-            font-size: 14px;
-            opacity: 0.9;
-            line-height: 1.4;
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section.hidden {
+            display: none;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
         }
         
         .section-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 40px 0 8px;
-            text-align: left;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
         }
         
         .section-description {
-            font-size: 16px;
-            opacity: 0.8;
-            margin-bottom: 20px;
-            text-align: left;
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: #0077ff;
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0077ff;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .card-description {
+            color: #666;
             line-height: 1.5;
         }
         
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+            border-radius: 16px;
+            border: 1px solid #e3f2fd;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #0077ff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .doc-category {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .doc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .doc-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+        
+        .doc-item:hover {
+            border-color: #0077ff;
+            box-shadow: 0 2px 8px rgba(0, 119, 255, 0.1);
+        }
+        
+        .doc-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .doc-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #0077ff;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 3rem 0;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        
         @media (max-width: 768px) {
-            .prototype-grid {
+            .nav-links {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .nav-link {
+                padding: 0.75rem;
+                text-align: center;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .cards-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">StudioLoop</div>
-        <div class="subtitle">Interactive Design Prototypes</div>
-        
-        <div class="section-title">📱 StudioLoop Consumer App (B2C)</div>
-        <div class="section-description">Mobile app for fitness enthusiasts to discover, book, and manage their workout sessions</div>
-        <div class="prototype-grid">
-            <a href="welcome-flow.html" class="prototype-card">
-                <h3>🚀 Welcome & Auth Flow</h3>
-                <p>User onboarding, registration, and phone verification</p>
-            </a>
-            
-            <a href="home-screen.html" class="prototype-card">
-                <h3>🏠 Home Dashboard</h3>
-                <p>Personal dashboard with credits, quick actions, and class recommendations</p>
-            </a>
-            
-            <a href="discovery.html" class="prototype-card">
-                <h3>🗺️ Studio Discovery</h3>
-                <p>Find nearby gyms and studios with interactive map and filters</p>
-            </a>
-            
-            <a href="booking-flow.html" class="prototype-card">
-                <h3>📅 Class Booking</h3>
-                <p>Complete booking flow from class selection to confirmation</p>
-            </a>
-            
-            <a href="class-schedule.html" class="prototype-card">
-                <h3>📋 Class Schedule</h3>
-                <p>Browse daily/weekly class schedules and make bookings</p>
-            </a>
-            
-            <a href="payment.html" class="prototype-card">
-                <h3>💳 Payment Gateway</h3>
-                <p>Secure payments with African payment methods and mobile money</p>
-            </a>
-            
-            <a href="profile.html" class="prototype-card">
-                <h3>👤 User Profile</h3>
-                <p>Personal profile, fitness goals, booking history, and achievements</p>
-            </a>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">StudioLoop</h1>
+            <p class="tagline">One membership. Every studio in Cape Town.</p>
+            <p class="subtitle">Cape Town's premier fitness marketplace connecting you to 30+ boutique fitness studios with a single token-based subscription</p>
         </div>
-        
-        <div class="section-title">💼 StudioLoop Business Dashboard (B2B)</div>
-        <div class="section-description">Management system for gym owners, trainers, and fitness studios</div>
-        <div class="prototype-grid">
-            <a href="trainer-dashboard.html" class="prototype-card">
-                <h3>📊 Main Dashboard</h3>
-                <p>Overview with KPIs, recent activity, and member management</p>
-            </a>
-            
-            <a href="trainer-schedule.html" class="prototype-card">
-                <h3>🗓️ Schedule Management</h3>
-                <p>Drag-and-drop class scheduling with load-shedding integration</p>
-            </a>
-            
-            <a href="trainer-analytics.html" class="prototype-card">
-                <h3>📈 Business Analytics</h3>
-                <p>Revenue trends, attendance patterns, and performance insights</p>
-            </a>
-            
-            <a href="trainer-earnings.html" class="prototype-card">
-                <h3>💰 Earnings & Payouts</h3>
-                <p>Financial tracking with South African banking and tax integration</p>
-            </a>
-            
-            <a href="trainer-equipment.html" class="prototype-card">
-                <h3>🏋️ Equipment Management</h3>
-                <p>Inventory tracking, maintenance scheduling, and QR codes</p>
-            </a>
-            
-            <a href="trainer-communications.html" class="prototype-card">
-                <h3>💬 WhatsApp Communications</h3>
-                <p>Bulk messaging, templates, and emergency alerts for members</p>
-            </a>
-            
-            <a href="trainer-settings.html" class="prototype-card">
-                <h3>⚙️ Business Settings</h3>
-                <p>Profile, business info, payments, and system preferences</p>
-            </a>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#overview" class="nav-link active">Overview</a></li>
+                <li><a href="#prototypes" class="nav-link">Interactive Prototypes</a></li>
+                <li><a href="#business-docs" class="nav-link">Business Documentation</a></li>
+                <li><a href="#technical-docs" class="nav-link">Technical Resources</a></li>
+            </ul>
         </div>
-        
-        <div style="margin-top: 40px; opacity: 0.8; font-size: 14px;">
-            Built for StudioLoop • Cape Town's Fitness Marketplace
-        </div>
-    </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Business Overview</h2>
+                <p class="section-description">
+                    StudioLoop is revolutionizing Cape Town's fitness scene by creating a unified marketplace 
+                    that connects fitness enthusiasts with boutique studios through a flexible token-based subscription model.
+                </p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">30+</div>
+                    <div class="stat-label">Partner Studios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Classes Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Target Users (Year 1)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">R2.8M</div>
+                    <div class="stat-label">Revenue Projection</div>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Vision & Mission</h3>
+                    <p class="card-description">
+                        Solving fitness fragmentation in Cape Town by creating one membership that works across all boutique studios, 
+                        making premium fitness accessible and convenient.
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <h3 class="card-title">Revenue Model</h3>
+                    <p class="card-description">
+                        Multi-tiered subscriptions (Essential R650, Premium R950, Unlimited R1200) with 40-45% studio revenue share 
+                        and corporate wellness packages.
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🚀</div>
+                    <h3 class="card-title">Market Opportunity</h3>
+                    <p class="card-description">
+                        R2.8B+ South African fitness market with 67% growth in boutique fitness. Cape Town has 200+ independent studios 
+                        lacking unified booking systems.
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Development Status</h3>
+                    <p class="card-description">
+                        Pre-development phase complete. Ready to begin with landing page (Week 1), followed by 8-week MVP development 
+                        using BMAD™ framework.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Prototypes Section -->
+        <section id="prototypes" class="section hidden">
+            <div class="section-header">
+                <h2 class="section-title">Interactive Prototypes</h2>
+                <p class="section-description">
+                    Fully functional HTML/CSS/JS prototypes demonstrating the complete user experience 
+                    for both consumers and business partners.
+                </p>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-mobile-alt"></i>
+                    StudioLoop Consumer App (B2C)
+                </h3>
+                <div class="doc-list">
+                    <a href="welcome-flow.html" class="doc-item">
+                        <div class="doc-title">🚀 Welcome & Auth Flow</div>
+                        <div class="doc-description">User onboarding, registration, and phone verification</div>
+                    </a>
+                    <a href="home-screen.html" class="doc-item">
+                        <div class="doc-title">🏠 Home Dashboard</div>
+                        <div class="doc-description">Personal dashboard with credits, quick actions, and class recommendations</div>
+                    </a>
+                    <a href="discovery.html" class="doc-item">
+                        <div class="doc-title">🗺️ Studio Discovery</div>
+                        <div class="doc-description">Find nearby gyms and studios with interactive map and filters</div>
+                    </a>
+                    <a href="booking-flow.html" class="doc-item">
+                        <div class="doc-title">📅 Class Booking</div>
+                        <div class="doc-description">Complete booking flow from class selection to confirmation</div>
+                    </a>
+                    <a href="class-schedule.html" class="doc-item">
+                        <div class="doc-title">📋 Class Schedule</div>
+                        <div class="doc-description">Browse daily/weekly class schedules and make bookings</div>
+                    </a>
+                    <a href="payment.html" class="doc-item">
+                        <div class="doc-title">💳 Payment Gateway</div>
+                        <div class="doc-description">Secure payments with African payment methods and mobile money</div>
+                    </a>
+                    <a href="profile.html" class="doc-item">
+                        <div class="doc-title">👤 User Profile</div>
+                        <div class="doc-description">Personal profile, fitness goals, booking history, and achievements</div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-chart-bar"></i>
+                    StudioLoop BMS + Marketplace Platform (B2B)
+                </h3>
+                <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 14px; font-style: italic;">
+                    💡 <strong>Press 'B' on any dashboard to see comprehensive business context annotations</strong>
+                </p>
+                <div class="doc-list">
+                    <a href="trainer-dashboard.html" class="doc-item">
+                        <div class="doc-title">🏠 Main Dashboard - BMS Operations Center</div>
+                        <div class="doc-description">Complete studio management: direct members + marketplace network. Real-time operations with dual revenue streams.</div>
+                    </a>
+                    <a href="trainer-analytics.html" class="doc-item">
+                        <div class="doc-title">📊 Analytics - Business Intelligence Suite</div>
+                        <div class="doc-description">Multi-stream revenue analysis, marketplace performance, and network benchmarking. Data-driven optimization.</div>
+                    </a>
+                    <a href="trainer-schedule.html" class="doc-item">
+                        <div class="doc-title">📅 Schedule - Complete Resource Management</div>
+                        <div class="doc-description">Multi-room scheduling, instructor assignments, capacity optimization. Handles ALL booking channels.</div>
+                    </a>
+                    <a href="trainer-earnings.html" class="doc-item">
+                        <div class="doc-title">💰 Earnings - Financial Management System</div>
+                        <div class="doc-description">Direct payments + marketplace commissions + equipment sharing. Automated payouts and tax reporting.</div>
+                    </a>
+                    <a href="trainer-communications.html" class="doc-item">
+                        <div class="doc-title">💬 Communications - Member Relationship CRM</div>
+                        <div class="doc-description">Unified messaging for direct + marketplace members. Automated campaigns and network communication tools.</div>
+                    </a>
+                    <a href="trainer-equipment.html" class="doc-item">
+                        <div class="doc-title">🏋️ Equipment - Asset Management + Network Sharing</div>
+                        <div class="doc-description">Complete asset lifecycle + inter-studio equipment sharing network. Transform costs into revenue streams.</div>
+                    </a>
+                    <a href="trainer-settings.html" class="doc-item">
+                        <div class="doc-title">⚙️ Settings - Complete Studio Configuration</div>
+                        <div class="doc-description">Brand management, business rules, staff permissions, and network participation settings for optimal performance.</div>
+                    </a>
+                </div>
+                <div style="background: #f0f8ff; border: 2px solid #0077ff; border-radius: 12px; padding: 20px; margin-top: 24px;">
+                    <h4 style="color: #0077ff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-lightbulb"></i>
+                        BMS-First Strategy Highlights
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 16px;">
+                        <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #10b981;">
+                            <strong style="color: #047857;">Dual Revenue Streams</strong><br>
+                            <span style="color: #6b7280; font-size: 14px;">SaaS subscriptions + marketplace commissions</span>
+                        </div>
+                        <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                            <strong style="color: #d97706;">Network Effects</strong><br>
+                            <span style="color: #6b7280; font-size: 14px;">Value increases with each new studio partner</span>
+                        </div>
+                        <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                            <strong style="color: #7c3aed;">High Switching Costs</strong><br>
+                            <span style="color: #6b7280; font-size: 14px;">Deep integration creates defensible moat</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Business Documentation Section -->
+        <section id="business-docs" class="section hidden">
+            <div class="section-header">
+                <h2 class="section-title">Business Documentation</h2>
+                <p class="section-description">
+                    Comprehensive business planning, market research, and strategic documentation 
+                    covering all aspects of the StudioLoop business model.
+                </p>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search documentation..." id="searchInput">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-route"></i>
+                    Planning & Strategy
+                </h3>
+                <div class="doc-list" id="planning-docs">
+                    <a href="../tech-roadmap-final.md" class="doc-item">
+                        <div class="doc-title">Technical Roadmap</div>
+                        <div class="doc-description">Complete 8-week development plan with detailed architecture and implementation timeline</div>
+                    </a>
+                    <a href="../marketing-plan-final.md" class="doc-item">
+                        <div class="doc-title">Marketing Plan</div>
+                        <div class="doc-description">Launch strategy targeting 500+ users and 30+ studios with comprehensive go-to-market approach</div>
+                    </a>
+                    <a href="../sales-partnership-roadmap.md" class="doc-item">
+                        <div class="doc-title">Sales & Partnership Strategy</div>
+                        <div class="doc-description">Studio acquisition strategy and revenue projections with partnership frameworks</div>
+                    </a>
+                    <a href="../mvp-technical-specifications.md" class="doc-item">
+                        <div class="doc-title">MVP Technical Specifications</div>
+                        <div class="doc-description">Detailed technical specs for booking system, database design, and API architecture</div>
+                    </a>
+                    <a href="../booking-system-project-brief.md" class="doc-item">
+                        <div class="doc-title">Project Brief</div>
+                        <div class="doc-description">Comprehensive project overview with scope, objectives, and success criteria</div>
+                    </a>
+                    <a href="../docs/product-backlog.md" class="doc-item">
+                        <div class="doc-title">Product Backlog</div>
+                        <div class="doc-description">User stories and sprint planning with prioritized feature development</div>
+                    </a>
+                    <a href="../docs/architecture.md" class="doc-item">
+                        <div class="doc-title">System Architecture</div>
+                        <div class="doc-description">Technical architecture decisions, infrastructure planning, and scalability considerations</div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-chart-line"></i>
+                    Market Research & Analysis
+                </h3>
+                <div class="doc-list" id="research-docs">
+                    <a href="../sa-gym-market-research.md" class="doc-item">
+                        <div class="doc-title">South African Fitness Market Research</div>
+                        <div class="doc-description">Comprehensive analysis of the R2.8B+ SA fitness market with trends and opportunities</div>
+                    </a>
+                    <a href="../booking-system-competitive-analysis.md" class="doc-item">
+                        <div class="doc-title">Competitive Analysis</div>
+                        <div class="doc-description">Detailed competitor landscape analysis with positioning and differentiation strategies</div>
+                    </a>
+                    <a href="../booking-system-feature-brainstorm.md" class="doc-item">
+                        <div class="doc-title">Feature Brainstorm</div>
+                        <div class="doc-description">Comprehensive feature ideation sessions with user-centered design thinking</div>
+                    </a>
+                    <a href="../partnership-strategies.md" class="doc-item">
+                        <div class="doc-title">Partnership Strategies</div>
+                        <div class="doc-description">Studio partnership approaches, onboarding frameworks, and relationship management</div>
+                    </a>
+                    <a href="../gym-owner-validation-guide.md" class="doc-item">
+                        <div class="doc-title">Gym Owner Validation Guide</div>
+                        <div class="doc-description">Customer validation framework for studio partners with feedback collection methods</div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-palette"></i>
+                    Design & User Experience
+                </h3>
+                <div class="doc-list" id="design-docs">
+                    <a href="../docs/interactive-prototype-specs.md" class="doc-item">
+                        <div class="doc-title">Interactive Prototype Specifications</div>
+                        <div class="doc-description">Technical specifications for HTML/CSS/JS prototypes with component documentation</div>
+                    </a>
+                    <a href="../docs/ux-improvements-welcome-flow.md" class="doc-item">
+                        <div class="doc-title">UX Improvements Guide</div>
+                        <div class="doc-description">User experience guidelines and optimization recommendations for welcome flows</div>
+                    </a>
+                    <a href="../docs/ui-mockups.md" class="doc-item">
+                        <div class="doc-title">UI Mockups & Design System</div>
+                        <div class="doc-description">Visual design specifications, component library, and brand guidelines</div>
+                    </a>
+                    <a href="../docs/design-handoff-guide.md" class="doc-item">
+                        <div class="doc-title">Design Handoff Guide</div>
+                        <div class="doc-description">Developer handoff documentation with design specifications and implementation notes</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Documentation Section -->
+        <section id="technical-docs" class="section hidden">
+            <div class="section-header">
+                <h2 class="section-title">Technical Resources</h2>
+                <p class="section-description">
+                    Technical architecture, development frameworks, and implementation resources 
+                    including the BMAD™ development methodology.
+                </p>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-cogs"></i>
+                    Development Framework (BMAD™)
+                </h3>
+                <div class="doc-list">
+                    <div class="doc-item">
+                        <div class="doc-title">🤖 BMAD Agent Teams</div>
+                        <div class="doc-description">Specialized AI agent configurations for different development phases and workflows</div>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-title">👥 Individual Agents</div>
+                        <div class="doc-description">PM, Developer, Architect, QA, and UX Expert agents for collaborative development</div>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-title">📋 Templates & Tasks</div>
+                        <div class="doc-description">Reusable document templates, development tasks, and quality assurance checklists</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-database"></i>
+                    Architecture & Data
+                </h3>
+                <div class="doc-list">
+                    <div class="doc-item">
+                        <div class="doc-title">🗄️ Database Schema</div>
+                        <div class="doc-description">Multi-tenant PostgreSQL design with user management, bookings, and payment systems</div>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-title">🔌 API Architecture</div>
+                        <div class="doc-description">RESTful API endpoints for authentication, booking management, and studio integration</div>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-title">☁️ Cloud Infrastructure</div>
+                        <div class="doc-description">AWS/GCP deployment architecture with Redis caching and real-time features</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-category">
+                <h3 class="category-title">
+                    <i class="fas fa-code"></i>
+                    Technology Stack
+                </h3>
+                <div class="doc-list">
+                    <div class="doc-item">
+                        <div class="doc-title">📱 Mobile Development</div>
+                        <div class="doc-description">React Native cross-platform app with iOS/Android deployment pipeline</div>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-title">⚡ Backend Services</div>
+                        <div class="doc-description">FastAPI/Node.js backend with PostgreSQL, Redis, and Stripe payment integration</div>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-title">🌐 Frontend & Landing</div>
+                        <div class="doc-description">Next.js landing page with Tailwind CSS and Vercel deployment</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 StudioLoop. Cape Town's Premier Fitness Marketplace.</p>
+        <p>Built with BMAD™ (Breakthrough Method of Agile AI-driven Development)</p>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Update active nav link
+                navLinks.forEach(nl => nl.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = link.getAttribute('href').substring(1);
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Search functionality for documentation
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const docItems = document.querySelectorAll('.doc-item');
+                
+                docItems.forEach(item => {
+                    const title = item.querySelector('.doc-title').textContent.toLowerCase();
+                    const description = item.querySelector('.doc-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
