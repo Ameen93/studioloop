@@ -1,39 +1,46 @@
 # Studio Loop Marketing Plan 🚀
 
 ## Overview
-Launch Studio Loop in Cape Town with 500+ active users and 30+ partner studios within 8 weeks.
+Launch StudioLoop's dual-platform ecosystem in Cape Town:
+- **B2B**: 30+ studios using our BMS within 8 weeks
+- **B2C**: 500+ app users (subscription + individual bookings) within 8 weeks
 
 ---
 
 ## Pre-Launch Phase (Weeks -4 to 0)
 
 ### 1. **Build Anticipation**
-- **Landing Page with Waitlist**
-  - Headline: "One membership. Every studio in Cape Town."
-  - Offer: "First 500 members get 2 free classes"
-  - Goal: 500+ email signups
+- **Dual Landing Page with Separate Waitlists**
+  - Headline: "The Complete Fitness Ecosystem for Cape Town"
+  - **B2B Offer**: "30-day free BMS trial + marketplace setup"
+  - **B2C Offer**: "First 500 members get 2 free classes"
+  - Goal: 100+ studio owner leads + 500+ consumer signups
 
-- **Social Media Foundation**
-  - Instagram: @studioloop_cpt
-  - Content: Behind-the-scenes, studio spotlights, wellness tips
-  - Post daily countdown content
+- **Dual Social Media Strategy**
+  - **@studioloop_cpt**: Consumer-focused (fitness, wellness, community)
+  - **@studioloop_bms**: Business-focused (operations, success stories, industry insights)
+  - Content mix: Consumer content 70%, business content 30%
 
-- **Influencer Partnerships**
+- **B2C Influencer Partnerships**
   - Identify 15 Cape Town fitness micro-influencers (5k-50k followers)
-  - Offer "Founding Member" status + 3 months free Platinum
+  - Offer "Founding Member" status + 3 months free Premium
   - Agreement: 3 posts + 5 stories during launch month
 
-### 2. **Community Building**
-- Partner with Sea Point Promenade running groups
-- University campus ambassador program (UCT, Stellenbosch)
-- Corporate wellness partnerships (tech companies in CBD)
-- Sponsor local wellness events
+- **B2B Thought Leadership**
+  - Partner with studio owners for case studies
+  - Industry podcast appearances
+  - Business publication articles
 
-### 3. **Content Strategy**
-- Weekly studio spotlight videos
-- "Day in the life" content with members
-- Educational posts about different workout types
-- Behind-the-scenes studio operations
+### 2. **Community Building**
+- **B2C Community**: Sea Point Promenade running groups, university campus ambassadors
+- **B2B Community**: Studio owner networking events, fitness industry meetups
+- **Corporate Partnerships**: Tech companies for employee wellness (B2B2C bridge)
+- **Sponsor Events**: Consumer wellness events + business industry conferences
+
+### 3. **Dual Content Strategy**
+- **B2C Content**: Weekly studio spotlights, member success stories, workout tips, community features
+- **B2B Content**: Studio operations optimization, revenue growth case studies, industry insights, BMS tutorials
+- **Bridge Content**: How BMS studios enhance member experiences, cross-platform success stories
 
 ---
 

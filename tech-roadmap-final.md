@@ -1,7 +1,12 @@
 # Studio Loop Technical Roadmap 🛠️
 
 ## Project Overview
-Build a marketplace app connecting users to boutique fitness studios in Cape Town via a token-based subscription model.
+Build a **dual-platform ecosystem** connecting fitness enthusiasts and studios through:
+
+1. **BMS System (B2B)** - Complete business management platform for gym/studio owners
+2. **StudioLoop App (B2C)** - Consumer marketplace with subscription model + individual bookings
+
+**Key Integration**: BMS-equipped gyms allow StudioLoop app users to book individual classes alongside their subscription members.
 
 ---
 
@@ -19,35 +24,45 @@ Build a marketplace app connecting users to boutique fitness studios in Cape Tow
 #### **Key Features:**
 ```
 Hero Section:
-- Headline: "One membership. Every studio in Cape Town."
-- Subheadline: "Access 200+ boutique fitness studios with one simple subscription"
-- CTA: "Join Waitlist - Get 2 Free Classes"
-- Hero video/image: Collage of Cape Town studios
+- Headline: "The Complete Fitness Ecosystem for Cape Town"
+- Subheadline: "BMS for studios • Membership platform for users • Connected experiences for all"
+- CTA: "Join Waitlist" with tabs for "Studio Owners" and "Fitness Enthusiasts"
+- Hero video/image: Split showing studio management + member experiences
 
-Waitlist Form:
+Dual Waitlist Forms:
+Studio Owners:
+- Studio name and location
+- Current class volume
+- Existing management system
+- Primary challenges
+
+Fitness Enthusiasts:
 - Email (required)
-- First name (required)
+- First name (required) 
 - Phone number (optional)
 - Fitness interests (yoga/HIIT/pilates/boxing/dance)
 - Current fitness routine (dropdown)
-- How did you hear about us? (referral tracking)
+- Preferred membership model (subscription vs pay-per-class)
 
-Social Proof Section:
-- "30+ partner studios"
-- "Launching February 2025"
-- Studio logos (once partnerships confirmed)
-- Founding team bios
+Value Propositions:
+For Studios: "Complete business management + marketplace revenue"
+For Members: "Flexible access - subscription OR individual bookings"
 
-How It Works:
-1. Subscribe to a monthly plan
-2. Get tokens for classes
-3. Book at any partner studio
-4. Check in with QR code
+How It Works (B2B):
+1. Complete BMS for managing your studio
+2. Access marketplace network for additional revenue
+3. Members can book through StudioLoop app or direct
+
+How It Works (B2C):
+1. Choose subscription plan OR pay-per-class
+2. Book at any partner studio through StudioLoop app  
+3. Check in with QR code
+4. Track progress and discover new studios
 
 Pricing Preview:
-- Essential: R650/month (8 tokens)
-- Premium: R950/month (12 tokens + perks)
-- Corporate packages available
+B2C Subscription: Essential R650/month, Premium R950/month
+B2C Individual: R120-180 per class (studio-dependent)  
+B2B BMS: R500-2000/month (studio size dependent)
 ```
 
 #### **Technical Requirements:**

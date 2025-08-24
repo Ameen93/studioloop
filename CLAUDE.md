@@ -4,41 +4,51 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Studio Loop is a fitness marketplace connecting users to boutique fitness studios in Cape Town via a token-based subscription model. The project aims to solve the fragmentation in Cape Town's fitness scene by creating one membership that works across 30+ partner studios.
+StudioLoop is a **dual-platform fitness ecosystem** serving both businesses and consumers:
+
+1. **BMS System (B2B)** - Complete business management platform for gym/studio owners
+2. **StudioLoop App (B2C)** - Consumer marketplace with flexible access models
 
 ### Vision Statement
-"One membership. Every studio in Cape Town." - Access 200+ boutique fitness classes with one simple subscription.
+"The Complete Fitness Ecosystem for Cape Town" - BMS for studios • Membership platform for users • Connected experiences for all.
 
 ### Business Model
-- **User Subscriptions**: Essential (R650/month), Premium (R950/month), Unlimited (R1200/month)  
-- **Studio Revenue Share**: 40-45% commission on bookings
-- **Corporate Packages**: Group wellness programs for companies
-- **Premium Services**: Photography, marketing, analytics for studios
+**B2B Revenue (BMS)**:
+- **BMS Subscriptions**: R500-2000/month per studio
+- **Setup & Migration Services**: R5,000-15,000 one-time fees
+
+**B2C Revenue (Consumer App)**:
+- **Subscription Plans**: Essential (R650/month), Premium (R950/month), Unlimited (R1200/month)
+- **Individual Bookings**: R120-180 per class (no subscription required)
+
+**Marketplace Revenue Share**: 40% commission on cross-bookings between platforms
 
 ## Development Status
 
 **Current Phase**: Pre-development / Planning & Documentation Complete
-- Comprehensive business planning and technical architecture finished
-- Marketing strategy and partnership roadmap established
-- MVP technical specifications and user stories defined
-- Ready to begin development with landing page as immediate priority
+- Dual-platform business strategy and technical architecture defined
+- B2B BMS and B2C marketplace strategies established  
+- MVP specifications for both platforms completed
+- Interactive prototypes demonstrating dual value proposition
+- Ready to begin development with dual landing page as immediate priority
 - Using BMAD™ (Breakthrough Method of Agile AI-driven Development) framework
 
 ## Planned Technology Stack
 
-### Landing Page (Week 1 Priority)
-- **Frontend**: Next.js + Tailwind CSS
+### Landing Page (Week 1 Priority) 
+- **Frontend**: Next.js + Tailwind CSS with dual audience targeting
 - **Hosting**: Vercel
-- **Email**: ConvertKit/Mailchimp
+- **Email**: ConvertKit/Mailchimp with separate lists (B2B/B2C)
 - **Domain**: studioloop.co.za
 
 ### Core Application (Weeks 2-8)
-- **Backend**: FastAPI (Python) or Node.js + Express
-- **Database**: PostgreSQL + Redis
-- **Mobile App**: React Native (cross-platform)
-- **Payments**: Stripe
+- **Backend**: FastAPI (Python) or Node.js + Express (shared API for both platforms)
+- **Database**: PostgreSQL + Redis (multi-tenant architecture)
+- **BMS Web App**: React + TypeScript (studio management interface)
+- **Consumer Mobile App**: React Native (cross-platform)
+- **Payments**: Stripe (B2B subscriptions + B2C transactions)
 - **Cloud**: AWS or Google Cloud Platform
-- **Authentication**: JWT + OAuth (Google/Apple)
+- **Authentication**: JWT + OAuth with role-based access (studio owners, consumers, admins)
 
 ## Key Documents
 
