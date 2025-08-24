@@ -1,48 +1,41 @@
 {
   "version": 2,
   "name": "studioloop-prototypes",
-  "builds": [
+  "buildCommand": "echo 'No build required for static files'",
+  "outputDirectory": "prototypes",
+  "framework": null,
+  "rewrites": [
     {
-      "src": "prototypes/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/prototypes/index.html"
+      "source": "/",
+      "destination": "/index.html"
     },
     {
-      "src": "/dashboard",
-      "dest": "/prototypes/trainer-dashboard.html"
+      "source": "/dashboard",
+      "destination": "/trainer-dashboard.html"
     },
     {
-      "src": "/analytics",
-      "dest": "/prototypes/trainer-analytics.html"
+      "source": "/analytics",
+      "destination": "/trainer-analytics.html"
     },
     {
-      "src": "/schedule",
-      "dest": "/prototypes/trainer-schedule.html"
+      "source": "/schedule",
+      "destination": "/trainer-schedule.html"
     },
     {
-      "src": "/earnings",
-      "dest": "/prototypes/trainer-earnings.html"
+      "source": "/earnings",
+      "destination": "/trainer-earnings.html"
     },
     {
-      "src": "/communications",
-      "dest": "/prototypes/trainer-communications.html"
+      "source": "/communications",
+      "destination": "/trainer-communications.html"
     },
     {
-      "src": "/equipment",
-      "dest": "/prototypes/trainer-equipment.html"
+      "source": "/equipment",
+      "destination": "/trainer-equipment.html"
     },
     {
-      "src": "/settings",
-      "dest": "/prototypes/trainer-settings.html"
-    },
-    {
-      "src": "/prototypes/(.*)",
-      "dest": "/prototypes/$1"
+      "source": "/settings",
+      "destination": "/trainer-settings.html"
     }
   ],
   "headers": [
